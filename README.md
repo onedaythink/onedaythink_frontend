@@ -1,4 +1,4 @@
-# newrecker_front
+# onedaythink_front
 
 ## Project setup
 ```
