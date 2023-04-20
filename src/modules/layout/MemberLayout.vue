@@ -17,5 +17,7 @@ export default {
 </script>
 
 <style>
-
+.router-view{
+    max-width: 448px;
+}
 </style>

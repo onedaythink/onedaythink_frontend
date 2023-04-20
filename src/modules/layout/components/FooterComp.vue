@@ -1,5 +1,5 @@
 <template>
-  <div>footer</div>
+  <v-footer class="footer">oneday think-footer</v-footer>
 </template>
 
 <script>
@@ -9,5 +9,7 @@ export default {
 </script>
 
 <style>
-
+.footer{
+  max-width: 448px;
+}
 </style>
