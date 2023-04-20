@@ -1,13 +1,26 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import MainView from '../views/home/MainView.vue'
+import MainLayout from '@/modules/layout/MainLayout'
+import MemberLayout from '@/modules/layout/MemberLayout'
+import AdminLayout from '@/modules/layout/AdminLayout'
 
 const routes = [
   {
     path: '/',
-    name: 'main',
-    component: MainView
-  }
-  
+    name: 'mainLayout',
+    component: MainLayout,
+    children : [
+    ]
+  },
+  {
+    path: '/home',
+    name: 'memberLayout',
+    component: MemberLayout
+  },
+  {
+    path: '/admin',
+    name: 'adminLayout',
+    component: AdminLayout
+  } 
 ]
 
 const router = createRouter({
