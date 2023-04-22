@@ -20,7 +20,7 @@ export default{
     name : 'SubjectCardComp'
 }
 </script>
-
+,
 <style>
 
 </style>
