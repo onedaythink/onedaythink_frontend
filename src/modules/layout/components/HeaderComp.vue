@@ -1,5 +1,10 @@
 <template>
+<<<<<<< HEAD
 <v-card max-width="448" class="mx-auto" color="grey-lighten-3">
+=======
+
+<v-card>
+>>>>>>> de1c0228dc0d71bc28febc91da6d4f978a41cbf2
  <v-layout>
   <v-app-bar
   color="white"
@@ -22,7 +27,7 @@
   </v-app-bar>
 
   <v-main>
-    
+
   </v-main>
   </v-layout>
 </v-card>
@@ -35,5 +40,10 @@ export default {
 </script>
 
 <style>
-
+ @media (max-width: 767px) {
+    .v-app {
+      width: 100%;
+      height: 100%;
+    }
+  }
 </style>
