@@ -1,30 +1,41 @@
 <template>
     <v-container fluid>
-        <v-textarea
+      <v-row>
+        <v-col cols="12">
+          <v-textarea
             name="input-7-1"
-            variant="filled"
-            bg-color="white"
-            color="orange orange-darken-4"
-            label="Label"
+            variant="standard"
+            bg-color="yellow-lighten-5"
+            label="나의 생각"
             auto-grow
-            model-value="The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through."
-        >
-        </v-textarea>
+            v-model="text"
+          ></v-textarea>
+        </v-col>
+      </v-row>
+      <v-row >
+        <v-col cols="12">
+          <v-btn class="mr-auto" @click="save">저장</v-btn>
+        </v-col>
+      </v-row>
     </v-container>
-    
-    <v-btn class="ml-auto">저장</v-btn>
-
   </template>
 
 <script>
 export default{
-    name : 'MyOpinionCardComp'
+    name : 'MyOpinionCardComp',
+    data() {
+    return {
+      text: '',
+    };
+  },
+  methods: {
+    save() {
+      // 저장 버튼을 클릭했을 때의 동작
+    },
+  },
 }
 </script>
 
 <style>
-.title {
-    font-size : 20px;
-    color : moccasin;
-}
+
 </style>
