@@ -20,7 +20,6 @@
 
 <script>
 import FooterComp from "@/modules/layout/components/FooterComp.vue";
-
 export default {
   name: "MainLayout",
   components: {
@@ -30,7 +29,6 @@ export default {
 </script>
 
 <style>
-
 .v-app {
   width: 360px;
   height: 800px;
