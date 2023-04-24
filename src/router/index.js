@@ -1,25 +1,47 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import MainLayout from '@/modules/layout/MainLayout'
-import MemberLayout from '@/modules/layout/MemberLayout'
+import MemberMainView from '@/modules/member/views/MemberMainView.vue'
 import AdminLayout from '@/modules/layout/AdminLayout'
+import MemberLayout from '@/modules/layout/MemberLayout'
+import AdminStatisticsView from '@/modules/layout/admin/AdminStatisticsView.vue'
+import ReportManagementView from '@/modules/layout/admin/ReportManagementView.vue'
+
 
 const routes = [
   {
     path: '/',
     name: 'mainLayout',
-    component: MainLayout,
-    children : [
-    ]
+    component: MainLayout
   },
   {
     path: '/home',
     name: 'memberLayout',
-    component: MemberLayout
+    component: MemberLayout,    
+    children : [
+      {
+        path: '/home',
+        name: 'memberMainView',
+        component: MemberMainView
+      }
+    ]
   },
   {
     path: '/admin',
     name: 'adminLayout',
-    component: AdminLayout
+    component: AdminLayout,
+    children: [
+      {
+        path: '/admin/statistics',
+        name: 'statistics',
+        component: AdminStatisticsView
+      },
+      {
+        path: '/admin/ReportManagement',
+        name: 'ReportManagement',
+        component: ReportManagementView
+      }
+
+    ]
   } 
 ]
 
