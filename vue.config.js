@@ -1,9 +1,13 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   transpileDependencies: true,
-  devServer:
-    {port:4000
-    },
+  outputDir: '../src/main/resources/static',
+  devServer:{
+    port: 4000
+        // '/api': {
+        //     target: 'http://localhost:8080'
+        // }
+      },
   pluginOptions: {
     vuetify: {
 			// https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vuetify-loader

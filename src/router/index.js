@@ -8,7 +8,14 @@ const routes = [
   {
     path: '/',
     name: 'mainLayout',
-    component: MainLayout
+    component: MainLayout,
+    children : [
+      {
+        path: '/home',
+        name: 'memberMainView',
+        component: MemberMainView
+      }
+    ]
   },
   {
     path: '/home',
@@ -22,6 +29,7 @@ const routes = [
       }
     ]
   },
+
   {
     path: '/admin',
     name: 'adminLayout',

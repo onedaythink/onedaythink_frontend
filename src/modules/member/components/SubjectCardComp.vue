@@ -37,11 +37,29 @@
 
 <script>
 export default{
-    name : 'SubjectCardComp',
-    data: () => ({
-      show: false,
-    })
+    name : 'SubjectCardComp'
 }
+</script>
+
+<script setup>
+import { $getSubject } from '@/api/subject';
+import { ref, onMounted } from 'vue';
+
+const subjectText = ref("");
+
+function getSubject() {
+  $getSubject().then(res => {
+    console.log(res)
+    subjectText.value = res.data
+  }).catch(err => {
+    console.log(err)
+  })
+}
+
+onMounted(() => {
+  getSubject();
+})
+
 </script>
 
 <style>

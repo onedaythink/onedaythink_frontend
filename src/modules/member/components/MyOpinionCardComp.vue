@@ -21,6 +21,8 @@
   </template>
 
 <script>
+import { $loginUser } from '@/api/member'
+
 export default{
     name : 'MyOpinionCardComp',
     data() {
@@ -31,6 +33,11 @@ export default{
   methods: {
     save() {
       // 저장 버튼을 클릭했을 때의 동작
+      $loginUser().then(res => {
+        console.log(res.data)
+      }).catch(err => {
+        console.log(err)
+      })
     },
   },
 }
