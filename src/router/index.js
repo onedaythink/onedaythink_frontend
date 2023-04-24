@@ -1,12 +1,13 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import MainLayout from '@/modules/layout/MainLayout'
-import MemberMainView from '@/modules/member/views/MemberMainView.vue'
+import MemberMainView from '@/modules/member/views/MemberMainView'
 import AdminLayout from '@/modules/layout/AdminLayout'
 import MemberLayout from '@/modules/layout/MemberLayout'
 import SignUpView from '@/modules/member/views/SignUpView.vue'
 import MainView from '@/modules/member/views/MainView.vue'
 import LoginView from '@/modules/member/views/LoginView'
-
+import OtherOpinionView from '@/modules/others/views/OtherOpinionView'
+import ChatWithOtherView from '@/modules/chat/views/ChatWithOtherView'
 
 const routes = [
   {
@@ -41,6 +42,16 @@ const routes = [
         path: '/home',
         name: 'memberMainView',
         component: MemberMainView
+      },
+      {
+        path: '/others',
+        name: 'otherOpinionView',
+        component: OtherOpinionView
+      },
+      {
+        path: '/chatwithother',
+        name: 'chatWithOtherView',
+        component: ChatWithOtherView
       }
     ]
   },
