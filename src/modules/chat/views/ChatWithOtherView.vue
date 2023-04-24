@@ -1,18 +1,16 @@
 <template>
     <div class="subject-card-wrapper">
-        <subject-card-comp></subject-card-comp>
-        <my-opinion-card-comp></my-opinion-card-comp>
+        <chat-list-comp></chat-list-comp>
     </div>
 </template>
 
 <script>
-import SubjectCardComp from '@/modules/member/components/SubjectCardComp.vue';
-import MyOpinionCardComp from '@/modules/member/components/MyOpinionCardComp.vue';
+import ChatListComp from '@/modules/chat/components/ChatListComp.vue';
 
 export default {
-    name: 'MemberMainView',
+    name: 'ChatWithOtherView',
     components: {
-        SubjectCardComp, MyOpinionCardComp
+        ChatListComp
     }
 }
 
@@ -20,7 +18,7 @@ export default {
 
 <style>
 /* 스크롤바 관련 설정 */
-  .subject-card-wrapper {
+.subject-card-wrapper {
   height: 500px;
   overflow-y: auto;
   margin-top: 60px;
@@ -31,5 +29,4 @@ export default {
 .subject-card-wrapper::-webkit-scrollbar {
   display: none;
 }
-
 </style>
