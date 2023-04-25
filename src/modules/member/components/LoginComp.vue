@@ -6,12 +6,13 @@
     @submit.prevent="onSubmit"
   >
     <v-text-field
-      v-model="email"
+      v-model="userid"
       :readonly="loading"
       :rules="[required]"
       class="mb-2"
       clearable
-      label="이메일:"
+      label="아이디:"
+      placeholder="아이디를 입력해주세요."
       outlined
       dense
     ></v-text-field>

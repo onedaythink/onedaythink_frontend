@@ -1,12 +1,14 @@
 <template>
   <v-card class="mx-auto" max-width="344" title="회원가입">
     <v-container>
+      <v-btn color="primary" @click="checkDuplicateId" class="small">중복확인</v-btn>
       <v-text-field
-        v-model="email"
+        v-model="userid"
         color="primary"
-        label="이메일"
+        label="아이디"
         variant="underlined"
       ></v-text-field>
+      
 
       <v-text-field
         v-model="password"
@@ -22,12 +24,15 @@
         variant="underlined"
       ></v-text-field>
 
+
+      <v-btn color="primary" @click="checkDuplicateNickname" class="small">중복확인</v-btn>
       <v-text-field
         v-model="nickname"
         color="primary"
         label="닉네임"
         variant="underlined"
       ></v-text-field>
+      
 
       <v-text-field
         v-model="name"
@@ -75,5 +80,20 @@ export default {
     password: null,
     terms: false,
   }),
+  methods: {
+    checkDuplicateId() {
+      // 아이디 중복 체크 로직 구현
+    },
+    checkDuplicateNickname() {
+      // 닉네임 중복 체크 로직 구현
+    },
+  },
 };
 </script>
+
+
+<style scoped>
+.small{
+  float: right;
+}
+</style>
