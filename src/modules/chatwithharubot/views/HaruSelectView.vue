@@ -1,16 +1,16 @@
 <template>
     <div class="subject-card-wrapper">
-        <chat-list-comp></chat-list-comp>
+        <haru-select-comp></haru-select-comp>
     </div>
 </template>
 
 <script>
-import ChatListComp from '@/modules/chat/components/ChatListComp.vue';
+import HaruSelectComp from '@/modules/chatwithharubot/components/HaruSelectComp.vue';
 
 export default {
-    name: 'ChatWithOtherView',
+    name: 'HaruSelectView',
     components: {
-        ChatListComp
+      HaruSelectComp
     }
 }
 
