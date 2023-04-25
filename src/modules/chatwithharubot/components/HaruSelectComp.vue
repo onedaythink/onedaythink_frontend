@@ -36,7 +36,7 @@
       </v-item-group>
     </v-container>
     <v-card-actions>
-      <v-btn v-if="selection.length > 0" @click="displaySelection" color="deep-purple accent-4;">하루봇 TALK START({{ selection.length }})</v-btn>
+      <v-btn v-if="selection.length > 0" @click="startTalk" color="deep-purple accent-4;">하루봇 TALK START({{ selection.length }})</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -102,7 +102,11 @@
           }
         }
         alert(message);
-      }
-    }
+      },
+      startTalk() {
+        this.displaySelection();
+        this.$router.push({ name: 'chatRoomHaruView' });
+      },
+    },
   }
 </script>
