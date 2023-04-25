@@ -10,6 +10,11 @@ import MainView from '@/modules/member/views/MainView.vue'
 import LoginView from '@/modules/member/views/LoginView'
 import OtherOpinionView from '@/modules/others/views/OtherOpinionView'
 import ChatWithOtherView from '@/modules/chat/views/ChatWithOtherView'
+import MyPageView from '@/modules/member/views/MyPageView'
+import HaruSelectView from '@/modules/chat/views/HaruSelectView'
+
+
+
 
 const routes = [
   {
@@ -54,6 +59,16 @@ const routes = [
         path: '/chatwithother',
         name: 'chatWithOtherView',
         component: ChatWithOtherView
+      },
+      {
+        path: '/mypage',
+        name: 'myPageView',
+        component: MyPageView
+      },
+      {
+        path:'/haruselect',
+        name:'haruSelectView',
+        component:HaruSelectView
       }
     ]
   },

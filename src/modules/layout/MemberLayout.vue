@@ -31,7 +31,7 @@
         <v-list-item prepend-icon="mdi-face" title="타인의 생각" value="ohterOpinionView" to="/others"></v-list-item>
         <v-list-item prepend-icon="mdi-face" title="타인과의 대화" value="chatWithOther" to="/chatwithother"></v-list-item>
         <v-list-item prepend-icon="mdi-face" title="하루봇과의 대화" value="chatWithHaru"></v-list-item>
-        <v-list-item prepend-icon="mdi-face" title="나의 공간" value="myPage"></v-list-item>
+        <v-list-item prepend-icon="mdi-face" title="나의 공간" value="myPage" to="/mypage"></v-list-item>
       </v-list>
     </v-navigation-drawer>
     <v-main >
