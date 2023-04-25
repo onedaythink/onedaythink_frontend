@@ -90,4 +90,5 @@ export default {
   align-items: stretch;
   justify-content: flex-end;
 }
+
 </style>
