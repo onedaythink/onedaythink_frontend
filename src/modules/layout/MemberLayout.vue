@@ -56,7 +56,6 @@ export default {
     drawer: false,
     group: null
   }),
-
   watch: {
     group () {
       this.drawer = false
@@ -71,7 +70,6 @@ export default {
   height: 800px;
   margin: 0 auto;
 }
-
   @media (max-width: 767px) {
   .v-app {
     width: 100%;
