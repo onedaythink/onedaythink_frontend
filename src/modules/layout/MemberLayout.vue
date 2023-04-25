@@ -7,13 +7,12 @@
   color="white"
   >
 
-  <v-app-bar-title>ONEDAY THINK</v-app-bar-title>
+  <v-app-bar-title>
+    <v-img class="logo" src="@/assets/onedaythink_haru0.png" alt="하루생각">
+    </v-img>
+  </v-app-bar-title>
 
   <v-spacer></v-spacer>
-
-  <v-btn icon>
-    <v-icon>mdi-heart</v-icon>
-  </v-btn>
 
   <v-btn icon>
     <v-icon>mdi-bell</v-icon>
@@ -30,12 +29,14 @@
         <v-list-item prepend-icon="mdi-face" title="오늘의 생각" value="memberMainView" to="/home"></v-list-item>
         <v-list-item prepend-icon="mdi-face" title="타인의 생각" value="ohterOpinionView" to="/others"></v-list-item>
         <v-list-item prepend-icon="mdi-face" title="타인과의 대화" value="chatWithOther" to="/chatwithother"></v-list-item>
-        <v-list-item prepend-icon="mdi-face" title="하루봇과의 대화" value="chatWithHaru"></v-list-item>
-        <v-list-item prepend-icon="mdi-face" title="나의 공간" value="myPage"></v-list-item>
+        <v-list-item prepend-icon="mdi-face" title="하루봇과의 대화" value="chatWithHaru" to="/chatwithharubot"></v-list-item>
+         <v-list-item prepend-icon="mdi-face" title="나의 공간" value="myPage" to="/mypage"></v-list-item>
+
       </v-list>
     </v-navigation-drawer>
-    <v-main >
+    <v-main class="mainview">
       <router-view> </router-view>
+      <sticky-haru-comp></sticky-haru-comp>
     </v-main>
   </v-layout>
   </v-card>
@@ -47,10 +48,12 @@
 
 <script>
 import FooterComp from '@/modules/layout/components/FooterComp.vue';
+import StickyHaruComp from '@/modules/layout/components/StickyHaruComp.vue';
+
 export default {
   name:'MemberLayout',
   components: {
-      FooterComp
+      FooterComp, StickyHaruComp
   },
   data: () => ({
     drawer: false,
@@ -75,5 +78,16 @@ export default {
     width: 100%;
     height: 100%;
   }
+}
+
+.logo{
+  left:-15px;
+}
+
+.mainview{
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-end;
 }
 </style>
