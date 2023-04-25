@@ -3,8 +3,8 @@ import MainLayout from '@/modules/layout/MainLayout'
 import MemberMainView from '@/modules/member/views/MemberMainView'
 import AdminLayout from '@/modules/layout/AdminLayout'
 import MemberLayout from '@/modules/layout/MemberLayout'
-import AdminStatisticsView from '@/modules/layout/admin/AdminStatisticsView.vue'
-import ReportManagementView from '@/modules/layout/admin/ReportManagementView.vue'
+import AdminStatisticsView from '@/modules/admin/AdminStatisticsView.vue'
+import ReportManagementView from '@/modules/admin/ReportManagementView.vue'
 import SignUpView from '@/modules/member/views/SignUpView.vue'
 import MainView from '@/modules/member/views/MainView.vue'
 import LoginView from '@/modules/member/views/LoginView'
@@ -63,12 +63,12 @@ const routes = [
     component: AdminLayout,
     children: [
       {
-        path: '/admin/statistics',
+        path: '/statistics',
         name: 'statistics',
         component: AdminStatisticsView
       },
       {
-        path: '/admin/ReportManagement',
+        path: '/ReportManagement',
         name: 'ReportManagement',
         component: ReportManagementView
       }
