@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import ChatListComp from '@/modules/chat/components/ChatListComp.vue';
+import ChatListComp from '@/modules/chatwithother/components/ChatListComp.vue';
 
 export default {
     name: 'ChatWithOtherView',

@@ -11,19 +11,17 @@
         >
         </v-img>
         <v-card-text>
-            silver
-            <br>
-            ♥ 21
+            Haru
         </v-card-text>
         </v-col>
         <v-col cols="9">
         <v-card-text>
-            <div>"Whitsunday Island, Whitsunday Islands"</div>
+            <div>"하루는 이렇게 생각해요 블라블라"</div>
         </v-card-text>
         
-        <v-card-actions>
-        <v-btn variant="outlined" color="yellow-accent-4" class="btn-bold">"좋아요"</v-btn>
-        <v-btn variant="outlined" color="blue-lighten-4" class="btn-bold">"대화하고싶어요"</v-btn>
+        <v-card-actions class="button">
+        <v-btn variant="outlined" color="yellow-accent-4" class="btn-bold">입장</v-btn>
+        <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold">종료</v-btn>
         </v-card-actions>
         </v-col>
         </v-row>
@@ -54,4 +52,12 @@
     text-transform: none;
 }
 
+.button {
+    align-items: center;
+    display: flex;
+    flex: none;
+    min-height: 52px;
+    padding: 0.5rem;
+    margin-left: 100px;
+}
 </style>

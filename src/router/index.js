@@ -9,7 +9,8 @@ import SignUpView from '@/modules/member/views/SignUpView.vue'
 import MainView from '@/modules/member/views/MainView.vue'
 import LoginView from '@/modules/member/views/LoginView'
 import OtherOpinionView from '@/modules/others/views/OtherOpinionView'
-import ChatWithOtherView from '@/modules/chat/views/ChatWithOtherView'
+import ChatWithOtherView from '@/modules/chatwithother/views/ChatWithOtherView'
+import ChatWithHaruView from '@/modules/chatwithharubot/views/ChatWithHaruView'
 
 const routes = [
   {
@@ -54,6 +55,11 @@ const routes = [
         path: '/chatwithother',
         name: 'chatWithOtherView',
         component: ChatWithOtherView
+      },
+      {
+        path: '/chatwithharubot',
+        name: 'chatWithHaruView',
+        component: ChatWithHaruView
       }
     ]
   },
