@@ -8,7 +8,7 @@
             :width="353"
             aspect-ratio="1/1"
             cover
-            src="/깨닫는-하루.png"
+             src="@/assets/onedaythink_haru0.png"
           ></v-img>
           <router-view></router-view>
         </v-main>
@@ -47,4 +47,5 @@ export default {
 #think-field{
   background-color: #D1F0EE;
 }
+
 </style>
