@@ -77,9 +77,5 @@ export default {
     width: 100%;
     height: 100%;
   }
-<<<<<<< HEAD
-
-=======
 }
->>>>>>> e995cb370cc1c611677db40861bb417f9c190021
 </style>
