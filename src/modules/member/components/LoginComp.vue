@@ -26,6 +26,7 @@
       placeholder="비밀번호를 입력해주세요."
       outlined
       dense
+      type="password" 
     ></v-text-field>
 
     <br />
