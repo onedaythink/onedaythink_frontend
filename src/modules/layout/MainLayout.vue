@@ -25,7 +25,7 @@ export default {
   components: {
     FooterComp,
   },
-};
+}
 </script>
 
 <style>
