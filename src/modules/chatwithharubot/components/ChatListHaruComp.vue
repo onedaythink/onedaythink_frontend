@@ -20,7 +20,7 @@
         </v-card-text>
         
         <v-card-actions class="button">
-        <v-btn variant="outlined" color="yellow-accent-4" class="btn-bold">입장</v-btn>
+        <v-btn @click="goToChatRoomHaru" variant="outlined" color="yellow-accent-4" class="btn-bold">입장</v-btn>
         <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold">종료</v-btn>
         </v-card-actions>
         </v-col>
@@ -29,6 +29,13 @@
 </template>
 
 <script>
+export default {
+  methods: {
+    goToChatRoomHaru() {
+      this.$router.push('/chatroomharu');
+    },
+  },
+};
 </script>
 
 <style>

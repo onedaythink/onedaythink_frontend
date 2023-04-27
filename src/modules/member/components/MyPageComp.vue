@@ -26,7 +26,7 @@
                 {{ user.email }}
               </p>
               <v-divider class="my-3"></v-divider>
-              <v-btn rounded variant="text"> 내 정보 수정하기 </v-btn>
+              <v-btn rounded variant="text" router-link to="/mypageupdate"> 내 정보 수정하기 </v-btn>
               <v-divider class="my-3"></v-divider>
               <v-btn rounded variant="text"> 탈퇴하기 </v-btn>
             </div>
@@ -48,8 +48,7 @@
         <v-card-subtitle> 내가 썼던 사유주제 </v-card-subtitle>
 
         <v-card-actions>
-          <v-btn color="orange-lighten-2" variant="text"> 더보기 </v-btn>
-
+      
           <v-spacer></v-spacer>
 
           <v-btn
@@ -64,7 +63,8 @@
 
             <v-card-text >
               <v-textarea v-model="myText" :value="'사용자가 적었던 기본 텍스트'"></v-textarea>
-              <v-btn type="submit">수정하기</v-btn>
+              <v-btn type="submit" class="mr-2">수정하기</v-btn>
+               <v-btn type="submit">삭제하기</v-btn>
             </v-card-text>
           </div>
         </v-expand-transition>
