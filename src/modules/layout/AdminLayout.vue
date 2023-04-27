@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import AdminHeaderComp from '@/modules/layout/components/AdminHeaderComp.vue';
-import AdminFooterComp from '@/modules/layout/components/AdminFooterComp.vue';
+import AdminHeaderComp from '@/modules/admin/components/AdminHeaderComp.vue';
+import AdminFooterComp from '@/modules/admin/components/AdminFooterComp.vue';
 export default {
     name:'AdminLayout',
     components: {

@@ -8,7 +8,9 @@
             :width="353"
             aspect-ratio="1/1"
             cover
-             src="@/assets/onedaythink_haru0.png"
+
+            src="@/assets/onedaythink_haru0.png"
+
           ></v-img>
           <router-view></router-view>
         </v-main>
@@ -25,7 +27,7 @@ export default {
   components: {
     FooterComp,
   },
-};
+}
 </script>
 
 <style>
