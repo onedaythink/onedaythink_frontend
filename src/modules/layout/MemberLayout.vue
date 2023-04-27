@@ -26,6 +26,7 @@
       temporary
     >
       <v-list>
+        <v-btn>로그아웃</v-btn>
         <v-list-item prepend-icon="mdi-face" title="오늘의 생각" value="memberMainView" to="/home"></v-list-item>
         <v-list-item prepend-icon="mdi-face" title="타인의 생각" value="ohterOpinionView" to="/others"></v-list-item>
         <v-list-item prepend-icon="mdi-face" title="타인과의 대화" value="chatWithOther" to="/chatwithother"></v-list-item>
