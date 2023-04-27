@@ -7,11 +7,28 @@
           class="back-arrow"
         ></v-img>
         <v-spacer></v-spacer>
-        <v-btn @click="$router.go(-1)" class="report-btn">
+        <v-btn @click="openReportModal" class="report-btn">
           신고하기
         </v-btn>
       </v-col>
     </v-row>
+
+      <!-- Add the modal for reporting -->
+    <v-dialog v-model="reportDialog" max-width="290" persistent>
+      <v-card>
+        <v-card-title class="headline">신고 사유 선택</v-card-title>
+        <v-card-text>
+          <v-checkbox v-model="reportReasons" label="욕설" value="1"></v-checkbox>
+          <v-checkbox v-model="reportReasons" label="그냥" value="2"></v-checkbox>
+          <v-checkbox v-model="reportReasons" label="심심해서" value="3"></v-checkbox>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="reportDialog = false">취소</v-btn>
+          <v-btn color="blue darken-1" text @click="submitReport">제출</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog> 
 
   <v-card>
     <v-card-actions class="topic-btn">
@@ -88,6 +105,8 @@ export default {
   name: "ChatRoom",
   data: () => ({
     show: false,
+    reportDialog: false,
+    reportReasons: [],
     otherName: "미라니",
     myName: "후니",
     messages: [], // 채팅 메시지 배열
@@ -102,6 +121,15 @@ export default {
     },
   },
   methods: {
+    // Add this method to handle opening the report modal
+      openReportModal() {
+    this.reportDialog = true;
+    },
+    // Add this method to handle submitting the report
+    submitReport() {
+      console.log("Report submitted with reasons:", this.reportReasons);
+      this.reportDialog = false;
+    },
     // 사용자가 새로운 메시지를 입력하면 호출되는 함수
     sendMessage() {
       // userMessage가 비어있으면 함수를 종료합니다.
