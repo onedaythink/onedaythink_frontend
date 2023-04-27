@@ -7,9 +7,6 @@
           class="back-arrow"
         ></v-img>
         <v-spacer></v-spacer>
-        <v-btn @click="$router.go(-1)" class="report-btn">
-          신고하기
-        </v-btn>
       </v-col>
     </v-row>
 

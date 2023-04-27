@@ -4,7 +4,8 @@ import MemberMainView from '@/modules/member/views/MemberMainView'
 import AdminLayout from '@/modules/layout/AdminLayout'
 import MemberLayout from '@/modules/layout/MemberLayout'
 import AdminStatisticsView from '@/modules/admin/views/AdminStatisticsView'
-import ReportManagementView from '@/modules/admin/views/ReportManagementView'
+import AdminReportView from '@/modules/admin/views/AdminReportView'
+import AdminOpinionView from '@/modules/admin/views/AdminOpinionView'
 import SignUpView from '@/modules/member/views/SignUpView.vue'
 import MainView from '@/modules/member/views/MainView.vue'
 import LoginView from '@/modules/member/views/LoginView'
@@ -93,22 +94,27 @@ const routes = [
       },
     ]
   },
+
   {
     path: '/admin',
     name: 'adminLayout',
     component: AdminLayout,
     children: [
       {
-        path: '/statistics',
-        name: 'statistics',
+        path: '/admin/statistics',
+        name: 'statisticsView',
         component: AdminStatisticsView
       },
       {
-        path: '/ReportManagement',
-        name: 'ReportManagement',
-        component: ReportManagementView
-      }
-
+        path: '/admin/report',
+        name: 'AdminReportView',
+        component: AdminReportView
+      },
+      {
+        path: '/admin/opinion',
+        name: 'AdminOpinionView',
+        component: AdminOpinionView
+      },
     ]
   } 
 ]
