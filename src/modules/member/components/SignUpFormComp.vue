@@ -10,19 +10,27 @@
       ></v-text-field>
       
 
-      <v-text-field
+     <v-text-field
         v-model="password"
         color="primary"
         label="비밀번호"
         variant="underlined"
-      ></v-text-field>
+        :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+        :type="showPassword ? 'text' : 'password'"
+        @click:append="showPassword = !showPassword"
+
+        ></v-text-field>
 
       <v-text-field
         v-model="passwordConfirmation"
         color="primary"
-        label="비밀번호 확인"
+        label="비밀번호"
         variant="underlined"
-      ></v-text-field>
+        :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
+        :type="showPassword ? 'text' : 'password'"
+        @click:append="showPassword = !showPassword"
+
+        ></v-text-field>
 
 
       <v-btn color="primary" @click="checkDuplicateNickname" class="small">중복확인</v-btn>
@@ -93,7 +101,7 @@ export default {
 
 
 <style scoped>
-.small{
+.small {
   float: right;
 }
 </style>
