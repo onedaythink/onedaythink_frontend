@@ -44,7 +44,7 @@
           로그인
         </v-btn>
       </router-link>
-      <router-link to="/home">
+      <!-- <router-link to="/home">
         <v-btn
           :disabled="!form"
           :loading="loading"
@@ -56,7 +56,7 @@
         >
           아이디/비밀번호 찾기
         </v-btn>
-      </router-link>
+      </router-link> -->
     </div>
   </v-form>
 </template>
