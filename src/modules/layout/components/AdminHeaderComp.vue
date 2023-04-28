@@ -9,7 +9,10 @@
           <router-link to="/admin/statistics" class="text">통계</router-link>
         </v-col>
         <v-col cols="auto" class="menu-item">
-          <router-link to="/admin/ReportManagement" class="text">신고관리</router-link>
+          <router-link to="/admin/report" class="text">신고관리</router-link>
+        </v-col>
+        <v-col cols="auto" class="menu-item">
+          <router-link to="/admin/opinion" class="text">논제관리</router-link>
         </v-col>
         <v-spacer></v-spacer>
         <v-col cols="auto" class="menu-item">

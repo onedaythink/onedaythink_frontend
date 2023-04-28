@@ -20,7 +20,7 @@
         </v-card-text>
         
         <v-card-actions class="button">
-        <v-btn variant="outlined" color="yellow-accent-4" class="btn-bold">수락</v-btn>
+        <v-btn @click="goToChatRoomOther" variant="outlined" color="yellow-accent-4" class="btn-bold" >수락</v-btn>
         <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold">거절</v-btn>
         </v-card-actions>
         </v-col>
@@ -48,7 +48,7 @@
         </v-card-text>
         
         <v-card-actions class="button">
-        <v-btn variant="outlined" color="yellow-accent-4" class="btn-bold">입장</v-btn>
+        <v-btn @click="goToChatRoomOther" variant="outlined" color="yellow-accent-4" class="btn-bold">입장</v-btn>
         <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold">종료</v-btn>
         </v-card-actions>
         </v-col>
@@ -65,6 +65,12 @@ export default {
 </script>
 
 <script setup>
+import { useRouter } from 'vue-router';
+    const router = useRouter()
+    
+    function goToChatRoomOther() {
+      router.push('/chatroomother');
+    }
 
 </script>
 
