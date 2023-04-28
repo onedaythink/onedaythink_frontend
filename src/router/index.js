@@ -75,6 +75,7 @@ const routes = [
       }
     ]
   },
+
   {
     path: '/admin',
     name: 'adminLayout',
@@ -90,7 +91,6 @@ const routes = [
         name: 'ReportManagement',
         component: ReportManagementView
       }
-
     ]
   } 
 ]

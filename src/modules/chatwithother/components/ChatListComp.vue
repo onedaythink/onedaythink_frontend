@@ -54,9 +54,18 @@
         </v-col>
         </v-row>
     </v-card>
+    <!-- <div @click="sendMessage"></div>
+    <div>{{last_Message}}</div> -->
 </template>
 
 <script>
+export default {
+    name: 'ChatListComp'
+}
+</script>
+
+<script setup>
+
 </script>
 
 <style>
