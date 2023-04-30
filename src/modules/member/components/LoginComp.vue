@@ -31,7 +31,6 @@
 
     <br />
     <div class="button-class">
-      <!-- <router-link to="/home"> -->
         <v-btn
           :disabled="!form"
           :loading="loading"
@@ -43,8 +42,7 @@
         >
           로그인
         </v-btn>
-      <!-- </router-link> -->
-      <router-link to="/home">
+
         <v-btn
           :disabled="!form"
           :loading="loading"
@@ -56,7 +54,6 @@
         >
           아이디/비밀번호 찾기
         </v-btn>
-      </router-link>
     </div>
   </v-form>
 </template>
@@ -94,23 +91,6 @@ import { useRouter } from 'vue-router';
     // setTimeout(() => (loading.value = false), 2000);
     console.log(loginInfo.value)
     $loginUser(loginInfo.value).then(res => {
-          // if (res.data.success === true) {
-          //   const userInfo = {
-          //     Authorization: res.headers.authorization,
-          //     RefreshTokenIdx: res.headers.refreshtokenidx,
-          //     userNo: res.data.userNo,
-          //     adminYN: res.data.adminYn
-          //   }
-          //   userStore.setLoginUserInfo(userInfo)
-
-          //   if (userInfo.adminYN === 'Y') {
-          //     router.push('/admin')
-          //   } else {
-          //     router.push('/')
-          //   }
-          // } else {
-          //   console.log('잘못된 접근입니다.')
-          // }
           console.log(res.data)
           userStore.setLoginUserJwt(res.data)
           router.push('/home')
