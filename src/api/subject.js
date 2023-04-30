@@ -1,12 +1,21 @@
 import { createJsonAxiosInstance } from "./index";
 
-async function $getSubject(){
+async function $getSubjects(){
     try {
         const axios = createJsonAxiosInstance()
-        return await axios.get('subject/');        
+        return await axios.get('subjects');        
     } catch (err) {
         console.log(err);
     }
 }
 
-export { $getSubject }
+async function $postMainSubject(yyyymmdd){
+    try {
+        const axios = createJsonAxiosInstance()
+        return await axios.post('subjects/main/'+yyyymmdd);        
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export { $getSubjects, $postMainSubject }

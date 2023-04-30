@@ -28,7 +28,7 @@
         <v-divider></v-divider>
 
         <v-card-text>
-          I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape.
+          {{ subjectText }}  
         </v-card-text>
       </div>
     </v-expand-transition>
@@ -42,15 +42,24 @@ export default {
 </script>
 
 <script setup>
-import { $getSubject } from '@/api/subject';
+import { $postMainSubject } from '@/api/subject';
 import { ref, onMounted, nextTick } from 'vue';
+import {useSubjectStore} from '@/store/subject';
 
-const subjectText = ref("");
+const subjectStore = useSubjectStore()
+const subjectText = subjectStore.getSubject.content
 
-function getSubject() {
-  $getSubject().then(res => {
-    console.log(res)
-    subjectText.value = res.data
+const today = new Date();
+const year = today.getFullYear();
+const month = (today.getMonth() + 1).toString().padStart(2, '0');
+const date = today.getDate().toString().padStart(2, '0');
+const yyyymmdd = `${year}${month}${date}`;
+
+const show = ref(false)
+
+function postMainSubject() {
+  $postMainSubject(yyyymmdd).then(res => {
+    subjectStore.setSubject(res.data)
   }).catch(err => {
     console.log(err)
   })
@@ -58,7 +67,7 @@ function getSubject() {
 
 onMounted( async () => {
   await nextTick()
-  getSubject();
+  postMainSubject();
 })
 
 </script>
