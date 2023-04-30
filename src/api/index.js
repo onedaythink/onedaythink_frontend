@@ -24,6 +24,7 @@ function createJsonAxiosInstance (userInfo) {
       instance.defaults.headers.common['Authorization'] = userInfo.Authorization
       instance.defaults.headers.common['RefreshTokenIdx'] = userInfo.RefreshTokenIdx
     }
+
     return instance
   }
   
