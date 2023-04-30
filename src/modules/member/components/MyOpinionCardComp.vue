@@ -7,7 +7,7 @@
             bg-color="yellow-lighten-5"      
             label="나의 생각"
             auto-grow
-            v-model="text"
+            v-model="opinion.opinion"
           ></v-textarea>
         </v-col>
       </v-row>
@@ -21,29 +21,70 @@
   </template>
 
 <script>
-import { $loginUser } from '@/api/user'
+export default {
+  name : 'MyOpinionCardComp'
+}
+</script>
 
-export default{
-    name : 'MyOpinionCardComp',
-    data() {
-    return {
-      text: '',
-    };
-  },
-  methods: {
-    save() {
+<script setup>
+import { $addOpinion, $getOpinion } from '@/api/opinion'
+import { useUserStore } from '@/store/user'
+import { useSubjectStore } from '@/store/subject'
+import { onMounted, nextTick, ref } from 'vue'
+
+const userStore = useUserStore()
+const subjectStore = useSubjectStore()
+
+
+const today = new Date();
+const year = today.getFullYear();
+const month = (today.getMonth() + 1).toString().padStart(2, '0');
+const date = today.getDate().toString().padStart(2, '0');
+const yyyymmdd = `${year}${month}${date}`;
+
+
+const opinion = ref({
+  userNo : userStore.getLoginUser.userNo,
+  subNo : '',
+  subDate : yyyymmdd,
+  opinion : "",
+  isPublic : "n"
+})
+
+function save() {
+  opinion.value.subNo = subjectStore.getSubject.subNo
       // 저장 버튼을 클릭했을 때의 동작
-      $loginUser().then(res => {
+      $addOpinion(opinion).then(res => {
         console.log(res.data)
+        getMyOpinion()
       }).catch(err => {
         console.log(err)
       })
-    },
-    share() {
-      // 공유 버튼을 클릭했을 때의 동작
     }
-  },
+
+function share() {
+      if (opinion.value.isPublic == 'y') {
+        opinion.value.isPublic = 'n'
+      } else {
+        opinion.value.isPublic = 'y'
+      }
+    }
+
+function getMyOpinion() {
+  $getOpinion(opinion.value.userNo, opinion.value.subDate)
+  .then(res => {
+    if (res.data != null || res.data != '') {
+      opinion.value = res.data
+    }
+    console.log(res.data)
+  }).catch(err => console.log(err))
 }
+
+onMounted( async () => {
+  await nextTick()
+  getMyOpinion()
+})
+
 </script>
 
 <style>

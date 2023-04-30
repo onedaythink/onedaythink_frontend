@@ -47,7 +47,7 @@ import { ref, onMounted, nextTick } from 'vue';
 import {useSubjectStore} from '@/store/subject';
 
 const subjectStore = useSubjectStore()
-const subjectText = subjectStore.getSubject.content
+const subjectText = ref('')
 
 const today = new Date();
 const year = today.getFullYear();
@@ -60,6 +60,7 @@ const show = ref(false)
 function postMainSubject() {
   $postMainSubject(yyyymmdd).then(res => {
     subjectStore.setSubject(res.data)
+    subjectText.value = subjectStore.getSubject.content
   }).catch(err => {
     console.log(err)
   })

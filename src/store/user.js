@@ -6,20 +6,20 @@ export const useUserStore = defineStore('user', () => {
 
   // 로그인 시 header 에 전달된 jwt 와 refrechindex 정보를 전역에 저장
 
-  const userJwt = ref(null)
+  const user = ref(null)
 
   const router = useRouter()
 
-  const getLoginUserJwt = computed(() => userJwt.value)
+  const getLoginUser = computed(() => user.value)
 
   const logout = () => {
-    setLoginUserJwt(null)
+    setLoginUser(null)
     router.push('/')
   }
-  function setLoginUserJwt (jwt) {
-    userJwt.value = jwt
-    console.log(userJwt.value)
+  function setLoginUser (current_user) {
+    user.value = current_user
+    console.log(user.value)
   }
 
-  return { getLoginUserJwt, setLoginUserJwt, logout }
+  return { getLoginUser, setLoginUser, logout }
 })

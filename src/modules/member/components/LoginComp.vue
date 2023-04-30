@@ -92,7 +92,7 @@ import { useRouter } from 'vue-router';
     console.log(loginInfo.value)
     $loginUser(loginInfo.value).then(res => {
           console.log(res.data)
-          userStore.setLoginUserJwt(res.data)
+          userStore.setLoginUser(res.data)
           router.push('/home')
         })
         .catch(err => console.log(err)
