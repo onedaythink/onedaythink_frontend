@@ -6,7 +6,7 @@
     @submit.prevent="onSubmit"
   >
     <v-text-field
-      v-model="userid"
+      v-model="loginInfo.userId"
       :readonly="loading"
       :rules="[required]"
       class="mb-2"
@@ -18,7 +18,7 @@
     ></v-text-field>
 
     <v-text-field
-      v-model="password"
+      v-model="loginInfo.userPwd"
       :readonly="loading"
       :rules="[required]"
       clearable
@@ -31,7 +31,7 @@
 
     <br />
     <div class="button-class">
-      <router-link to="/home">
+      <!-- <router-link to="/home"> -->
         <v-btn
           :disabled="!form"
           :loading="loading"
@@ -43,7 +43,7 @@
         >
           로그인
         </v-btn>
-      </router-link>
+      <!-- </router-link> -->
       <router-link to="/home">
         <v-btn
           :disabled="!form"
@@ -63,25 +63,69 @@
 
 <script>
 export default {
-  name: "LoginComp",
-  data: () => ({
-    form: false,
-    email: null,
-    password: null,
-    loading: false,
-  }),
+  name: "LoginComp"
+}
 
-  methods: {
-    onSubmit() {
-      if (!this.form) return;
-
-      this.loading = true;
-
-      setTimeout(() => (this.loading = false), 2000);
-    },
-    required(v) {
-      return !!v || "Field is required";
-    },
-  },
-};
 </script>
+
+<script setup>
+import { ref } from 'vue';
+import { useUserStore } from '@/store/user';
+import { $loginUser } from '@/api/user';
+import { useRouter } from 'vue-router';
+
+
+  const form = ref(false)
+  const loading = ref(false)
+  const loginInfo = ref({
+      userId: null,
+      userPwd: null
+  })
+
+  const userStore = useUserStore()
+  
+  const router = useRouter()
+
+  function onSubmit() {
+    if (!form.value) return;
+    
+    // loading.value = true;
+
+    // setTimeout(() => (loading.value = false), 2000);
+    console.log(loginInfo.value)
+    $loginUser(loginInfo.value).then(res => {
+          // if (res.data.success === true) {
+          //   const userInfo = {
+          //     Authorization: res.headers.authorization,
+          //     RefreshTokenIdx: res.headers.refreshtokenidx,
+          //     userNo: res.data.userNo,
+          //     adminYN: res.data.adminYn
+          //   }
+          //   userStore.setLoginUserInfo(userInfo)
+
+          //   if (userInfo.adminYN === 'Y') {
+          //     router.push('/admin')
+          //   } else {
+          //     router.push('/')
+          //   }
+          // } else {
+          //   console.log('잘못된 접근입니다.')
+          // }
+          console.log(res.data)
+          userStore.setLoginUserJwt(res.data)
+          router.push('/home')
+        })
+        .catch(err => console.log(err)
+        )
+  }
+
+  function required(v) {
+    return !!v || "Field is required";
+  }
+
+
+</script>
+
+
+
+

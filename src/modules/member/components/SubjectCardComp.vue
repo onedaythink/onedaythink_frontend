@@ -36,14 +36,14 @@
 </template>
 
 <script>
-export default{
+export default {
     name : 'SubjectCardComp'
 }
 </script>
 
 <script setup>
 import { $getSubject } from '@/api/subject';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 
 const subjectText = ref("");
 
@@ -56,7 +56,8 @@ function getSubject() {
   })
 }
 
-onMounted(() => {
+onMounted( async () => {
+  await nextTick()
   getSubject();
 })
 

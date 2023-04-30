@@ -21,7 +21,7 @@
   </template>
 
 <script>
-import { $loginUser } from '@/api/member'
+import { $loginUser } from '@/api/user'
 
 export default{
     name : 'MyOpinionCardComp',
