@@ -1,5 +1,5 @@
 <template>
-  <v-app class="opinion-management-view">
+  <v-app class="subject-management-view">
     <v-container fluid>
       <v-row class="my-5 align-center justify-center">
         <v-col cols="12" md="6">
@@ -34,7 +34,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in opinion" :key="index">
+                <tr v-for="(item, index) in subject" :key="index">
                   <td>{{ item.id }}</td>
                   <td>{{ item.content }}</td>
                   <td>{{ item.image }}</td>
@@ -50,10 +50,10 @@
 
 <script>
 export default {
-  name: "OpinionManagementView",
+  name: "SubjectManagementView",
   data() {
     return {
-      opinion: [
+      subject: [
         {
           id: 1,
           content: "시대마다 가치관이 달라진다고 하자. 다른 시대의 가치관을 보여주는 어떤 작품을 현 시대의 가치관으로 비판하는 활동에는 어떤 의미가 있는가?",
@@ -82,7 +82,7 @@ export default {
 </script>
 
 <style scoped>
-.opinion-management-view .card-title {
+.subject-management-view .card-title {
   font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
@@ -94,7 +94,7 @@ export default {
   color: #000000;
 }
 
-.opinion-management-view .card-subtitle {
+.subject-management-view .card-subtitle {
   font-family: 'Inter';
   font-style: normal;
   font-weight: 400;

@@ -1,16 +1,16 @@
 <template>
   <div class="subject-card-wrapper">
-    <admin-opinion-comp></admin-opinion-comp>
+    <admin-subject-comp></admin-subject-comp>
   </div>
 </template>
 
 <script>
-import AdminOpinionComp from '@/modules/admin/components/AdminOpinionComp.vue';
+import AdminSubjectComp from '@/modules/admin/components/AdminSubjectComp.vue';
 
 export default {
-  name: 'AdminOpinionView',
+  name: 'AdminSubjectView',
   components: {
-    AdminOpinionComp
+    AdminSubjectComp
   },
 };
 </script>
