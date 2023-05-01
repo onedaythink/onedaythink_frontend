@@ -12,7 +12,8 @@ import MyOpinionCardComp from '@/modules/member/components/MyOpinionCardComp.vue
 export default {
     name: 'MemberMainView',
     components: {
-        SubjectCardComp, MyOpinionCardComp
+        SubjectCardComp, 
+        MyOpinionCardComp
     }
 }
 

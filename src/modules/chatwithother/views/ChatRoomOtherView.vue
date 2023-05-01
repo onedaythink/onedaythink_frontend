@@ -105,6 +105,7 @@
   import { ref, nextTick, onMounted, onBeforeUnmount } from "vue";
   import SockJS from 'sockjs-client';
   import Stomp from 'stompjs';
+  import { useUserStore } from "@/store/user";
 
   export default {
     name: "ChatRoom",
@@ -112,10 +113,10 @@
       const show = ref(false);
       const reportDialog = ref(false);
       const reportReasons = ref([]);
-      const otherName = ref("미라니");
-      const myName = ref("후니");
+      const otherName = ref("미라니"); // 상대방 닉네임
+      const myName = userStore.getLoginUser.nickname; // 나의 닉네임
       const messages = ref([]); // 채팅 메시지 배열
-      const userMessage = ref("");
+      const userMessage = ref(""); // 전송하려는 메세지 콘텐츠
   
       const getCurrentTime = () => {
         const now = new Date();
@@ -126,31 +127,14 @@
         const time = `${ampm} ${hour}:${minutes < 10 ? "0" + minutes : minutes}`;
         return time;
       };
-  
+      
+      const userStore = useUserStore()
+
       const scrollToLatestMessage = () => {
         nextTick(() => {
           const container = document.querySelector(".chat-card-wrapper");
           container.scrollTop = container.scrollHeight;
         });
-      };
-  
-      const sendMessage = () => {
-        // userMessage가 비어있으면 함수를 종료합니다.
-        if (!userMessage.value) {
-          return;
-        }
-        // messages 배열에 새로운 메시지를 추가합니다.
-        const currentTime = getCurrentTime();
-        messages.value.push({
-          sender: { nickname: myName.value, avatarUrl: "" },
-          content: userMessage.value,
-          time: currentTime,
-        });
-        // userMessage를 초기화합니다.
-        userMessage.value = "";
-  
-        // 스크롤을 최신 메시지로 이동시킵니다.
-        scrollToLatestMessage();
       };
   
       const sendMessageAndClear = () => {
@@ -187,18 +171,70 @@
     // 채팅방에 대한 구독(subscribe)을 담을 ref 변수
     const subscription = ref(null);
 
+    const socket = new SockJS('http://localhost:8080/onedaythink/ws');
+    const stomp = Stomp.over(socket);
+
     // WebSocket 연결 생성 함수
     function createWebSocketConnection() {
-      const socket = new SockJS('http://localhost:8080/onedaythink/ws');
-      const stomp = Stomp.over(socket);
       stomp.connect({}, () => {
         stompClient.value = stomp;
         // 채팅방 구독(subscribe) 요청
-        subscription.value = stomp.subscribe(`/sub/chat/${chatRoomNo.value}`, (message) => {
-          console.log(message);
+        subscription.value = stomp.subscribe(`/sub/chat/${chatRoomNo.value}`, (res) => {
+          console.log(res);
+          const chatMessage = res.body; // 구독하게 되면 받아오게 되는 메세지
+          const writer = chatMessage.writer;
+
+          if (myName.value == writer) {
+            const currentTime = getCurrentTime();
+            messages.value.push({
+              sender: { nickname: myName.value, avatarUrl: "" },
+              content: userMessage.value,
+              time: currentTime,
+            });
+            
+          } else {
+            const currentTime = getCurrentTime();
+            messages.value.push({
+              sender: { nickname: otherName.value, avatarUrl: "" },
+              content: "니가 뭘 잘못했는지 몰라서 그래??",
+                time: currentTime,
+            });
+          }
         });
+
+        //3. send(path, header, message)로 메세지를 보낼 수 있음
+        stomp.send('/pub/chat/enter', {}, 
+        JSON.stringify({chatRoomNo:chatRoomNo.value,
+                        chatSendUserNo:myName.value,
+                        chatMsgContent:userMessage.value}))
+
       });
     }
+
+    const sendMessage = () => {
+        // userMessage가 비어있으면 함수를 종료합니다.
+        if (!userMessage.value) {
+          return;
+        }
+        // messages 배열에 새로운 메시지를 추가합니다.
+        const currentTime = getCurrentTime();
+        console.log(myName.value + ":" + userMessage.value);
+        stomp.send('/pub/chat/message', {}, 
+        JSON.stringify({chatRoomNo:chatRoomNo.value,
+                        chatSendUserNo:userStore.getLoginUser.userNo.value,
+                        chatMsgContent:userMessage.value}))
+                    
+        messages.value.push({
+          sender: { nickname: myName.value, avatarUrl: "" },
+          content: userMessage.value,
+          time: currentTime,
+        });
+        // userMessage를 초기화합니다.
+        userMessage.value = "";
+  
+        // 스크롤을 최신 메시지로 이동시킵니다.
+        scrollToLatestMessage();
+      };
 
     onBeforeUnmount(() => {
       if (stompClient.value) {
