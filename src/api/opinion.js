@@ -21,6 +21,7 @@ async function $getOpinion(userNo, subDate){
 async function $addOpinion(currnet_opinion){
     try {
         const axios = createJsonAxiosInstance()
+        console.log(currnet_opinion.userNo)
         return await axios.post('opinions/'+currnet_opinion.userNo, currnet_opinion);        
     } catch (err) {
         console.log(err);
