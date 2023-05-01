@@ -33,6 +33,31 @@
 <script>
 </script>
 
+<script setup>
+import {$getOpinionsByCreateAt} from '@/api/opinion'
+import { useSubjectStore } from '@/store/subject'
+import { useUserStore } from '@/store/user'
+import { onMounted, ref } from 'vue'
+
+const userStore = useUserStore()
+const subjectStore = useSubjectStore()
+const opinion_list = ref({})
+
+async function getOpinionsByCreateAt() {
+    await $getOpinionsByCreateAt(subjectStore.getSubject.subNo, userStore.getLoginUser.userNo)
+    .then(res => {
+        console.log(res.data)
+        opinion_list.value = res.data
+    })
+    .catch(err => console.log(err))
+}
+
+onMounted( async () => {
+    getOpinionsByCreateAt()
+})
+
+</script>
+
 <style>
   .btn-bold {
     font-weight: bold;
