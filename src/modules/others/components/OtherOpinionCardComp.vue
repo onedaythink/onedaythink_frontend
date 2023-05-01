@@ -1,6 +1,7 @@
 <template>
-    <v-card class="mx-auto" >
-        <v-row>
+    <template v-if="opinion_list.length > 0">
+        <v-card v-for="(opinion, index) in opinion_list" :key="index">
+            <v-row>
         <v-col cols="3" >
         <v-img
             class="align-end text-white"
@@ -27,7 +28,13 @@
         </v-card-actions>
         </v-col>
         </v-row>
-    </v-card>
+        </v-card>
+    </template>
+    <template v-else>
+        <v-card>
+            
+        </v-card>
+    </template>
 </template>
 
 <script>
