@@ -50,15 +50,18 @@
 </template>
 
 <script>
-// api키를 import 한 뒤, openai 객체 생성
+import axios from "axios";
+
 const API_KEY = process.env.VUE_APP_GPT_API_KEY;
 const { Configuration, OpenAIApi } = require("openai");
-// const readlineSync = require("readline-sync");
-//1. 넘기고 싶은 값 확인
-// 2. api 객체 생성됐는지 확인
-// 3. 해당 객체에 사용하고자하는 함수확인
-// 4. 리턴값 확인
 
+function createJsonAxiosInstance() {
+  return axios.create({
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+}
 
 //2.api 키 
 export default {
@@ -90,44 +93,82 @@ export default {
     };
   },
   methods: {
-    test() {
+    async test() {
       console.log(this.test_text);
       const configuration = new Configuration({
-        apiKey: API_KEY, // 백앤드에서 관리하고 있는 db 숨길 수 있는법?
-
+        apiKey: API_KEY,
       });
       const openai = new OpenAIApi(configuration);
-      console.log(openai);
+
       const runPrompt = async () => {
         const response = await openai.createCompletion({
           model: "text-davinci-003",
-          prompt: this.test_text + "이 문장을 영어로 번역해주고, 키워드를 뽑아줘", 
+          prompt: this.test_text + "이 문장을 영어로 번역해주고, 키워드를 뽑아줘",
           max_tokens: 700, //응답값 길이값
           temperature: 0.2,
         });
-        console.log('- completion:\n' + response.data.choices[0].text);
+        console.log("- completion:\n" + response.data.choices[0].text);
         const completion = response.data.choices[0].text;
         const startIndex = completion.indexOf("Keywords: ");
         console.log("시작 인덱스" + startIndex);
-        const keywords = completion.substring(startIndex+ "Keywords:".length);
-        console.log('- 키워드 뽑아내기:\n' + keywords);
-        return keywords;
+
+        // 키워드 도출
+        return completion.slice(startIndex + 10).trim();
+      };
+
+      const keywords = await runPrompt();
+      console.log(keywords);
+
+      // Create axios instance with JSON configuration
+      const axiosInstance = createJsonAxiosInstance();
+
+      // DALL-E 2 image generation
+      try {
+        const imageResponse = await axiosInstance.post(
+          "http://localhost:4000/api/images/generations",
+        {
+          model: "image-alpha-001",
+          prompt: keywords,
+          num_images: 1,
+          size: "512x512",
+          response_format: "url",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${API_KEY}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+        const imageUrl = imageResponse.data.data[0].url;
+
+        // Download image
+        const downloadImageResponse = await axiosInstance.get(imageUrl, {
+          responseType: "blob",
+        });
+
+        const url = window.URL.createObjectURL(
+          new Blob([downloadImageResponse.data])
+        );
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "generated_image.png");
+        document.body.appendChild(link);
+        link.click();
+
+      } catch (error) {
+        if (error.response) {
+          console.log(error.response.status);
+          console.log(error.response.data);
+        } else {
+          console.log(error.message);
+        }
       }
-      runPrompt();  
-
-      // await keywords  = runPrompt();
-    }
-
-    // Promise 체이닝 
-    // 비동기 함수의 처리 결과를 가지고 다른 비동기 함수를 호출해야 하는 경우
-    //함수의 호출이 중첩되어 복잡도가 높아진다. 프로미스는 후속처리 메소드인
-    //then 이나 catch로 메소드를 체이닝하여 여러개의 프로미스를 연결하여 사용
-    //then 메소드가 
+    },
   }
-
-};
-
-
+}
+  
 </script>
 
 <style scoped>

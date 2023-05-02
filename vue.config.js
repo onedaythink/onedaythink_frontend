@@ -11,10 +11,15 @@ module.exports = defineConfig({
           '/v1/completions': {
             target: 'https://api.openai.com',
             changeOrigin: true,
-            pathRewrite: { '^/gpt/v1': '/v1' }
+            pathRewrite: { '^/gpt/v1': '/v1' },
+          },
+          '/api/images/generations': {
+            target: 'https://api.openai.com',
+            changeOrigin: true,
+            pathRewrite: { '^/api/images': '/v1/images' }
           }
-      }
-    },
+        },
+        
   pluginOptions: {
     vuetify: {
 			// https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vuetify-loader
