@@ -60,6 +60,8 @@ function save() {
       }).catch(err => {
         console.log(err)
       })
+
+
     }
 
 function share() {
@@ -71,6 +73,7 @@ function share() {
     }
 
 function getMyOpinion() {
+
   $getOpinion(opinion.value.userNo, opinion.value.subDate)
   .then(res => {
     if (res.data != null || res.data != '') {
@@ -78,6 +81,8 @@ function getMyOpinion() {
     }
     console.log(res.data)
   }).catch(err => console.log(err))
+
+  
 }
 
 onMounted( async () => {

@@ -58,7 +58,10 @@ const yyyymmdd = `${year}${month}${date}`;
 const show = ref(false)
 
 function postMainSubject() {
-  $postMainSubject(yyyymmdd).then(res => {
+  
+  $postMainSubject(yyyymmdd)
+  
+  .then(res => {
     subjectStore.setSubject(res.data)
     subjectText.value = subjectStore.getSubject.content
   }).catch(err => {
