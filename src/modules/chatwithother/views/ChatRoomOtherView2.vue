@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <v-container fluid>
     <v-row>
       <v-col cols="12" class="d-flex justify-start">
@@ -259,4 +259,4 @@ export default {
     color: #2C2C2C;
     border-radius: 5px;
   }
-</style>
+</style> -->

@@ -53,7 +53,6 @@
 // api키를 import 한 뒤, openai 객체 생성
 const API_KEY = process.env.VUE_APP_GPT_API_KEY;
 const { Configuration, OpenAIApi } = require("openai");
-
 // const readlineSync = require("readline-sync");
 //1. 넘기고 싶은 값 확인
 // 2. api 객체 생성됐는지 확인
@@ -62,8 +61,6 @@ const { Configuration, OpenAIApi } = require("openai");
 
 
 //2.api 키 
-
-
 export default {
   name: "SubjectManagementView",
   data() {
@@ -95,9 +92,9 @@ export default {
   methods: {
     test() {
       console.log(this.test_text);
-      console.log(API_KEY);
       const configuration = new Configuration({
-        apiKey: API_KEY,
+        apiKey: API_KEY, // 백앤드에서 관리하고 있는 db 숨길 수 있는법?
+
       });
       const openai = new OpenAIApi(configuration);
       console.log(openai);
@@ -120,6 +117,12 @@ export default {
 
       // await keywords  = runPrompt();
     }
+
+    // Promise 체이닝 
+    // 비동기 함수의 처리 결과를 가지고 다른 비동기 함수를 호출해야 하는 경우
+    //함수의 호출이 중첩되어 복잡도가 높아진다. 프로미스는 후속처리 메소드인
+    //then 이나 catch로 메소드를 체이닝하여 여러개의 프로미스를 연결하여 사용
+    //then 메소드가 
   }
 
 };
