@@ -1,10 +1,9 @@
-import axios from 'axios';
+import axios from 'axios'
 
 function createAxiosInstance() {
-    return axios.create({
-        withCredentials: true,
-        baseURL: 'http://127.0.0.1:8080/onedaythink/api/v1/'
-    })
+  return axios.create({
+    baseURL: 'http://127.0.0.1:8080/onedaythink/api/v1/'
+  })
 }
 
 function createJsonAxiosInstance (userInfo) {
@@ -28,4 +27,4 @@ function createJsonAxiosInstance (userInfo) {
     return instance
   }
   
-  export {createJsonAxiosInstance, createFormAxiosInstance }
+  export {createJsonAxiosInstance, createFormAxiosInstance}

@@ -1,5 +1,6 @@
 import { createJsonAxiosInstance } from "./index";
 
+
 async function $getSubjects(){
     try {
         const axios = createJsonAxiosInstance()
