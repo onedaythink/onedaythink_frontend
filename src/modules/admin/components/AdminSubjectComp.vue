@@ -50,24 +50,18 @@
 </template>
 
 <script>
-// api키를 import 한 뒤, openai 객체 생성
-const API_KEY = process.env.VUE_APP_GPT_API_KEY;
-const { Configuration, OpenAIApi } = require("openai");
-// const readlineSync = require("readline-sync");
-//1. 넘기고 싶은 값 확인
-// 2. api 객체 생성됐는지 확인
-// 3. 해당 객체에 사용하고자하는 함수확인
-// 4. 리턴값 확인
-
-
-//2.api 키 
-
 
 export default {
-  name: "SubjectManagementView",
-  data() {
-    return {
-      subject: [
+  name: "SubjectManagementView"
+}
+</script>
+
+<script setup>
+import { ref } from 'vue'
+const API_KEY = process.env.VUE_APP_GPT_API_KEY;
+const { Configuration, OpenAIApi } = require("openai");
+const test_text = ref('')
+const subject = [
         {
           id: 1,
           content: "시대마다 가치관이 달라진다고 하자. 다른 시대의 가치관을 보여주는 어떤 작품을 현 시대의 가치관으로 비판하는 활동에는 어떤 의미가 있는가?",
@@ -89,44 +83,44 @@ export default {
         //   image: "image4.jpg"
         // },
       ]
-    };
-  },
-  methods: {
-    test() {
-      console.log(this.test_text);
+      const keywordList = ref(null)
+
+async function test() {
+      console.log(test_text.value);
       const configuration = new Configuration({
-        apiKey: API_KEY, // 백앤드에서 관리하고 있는 db 숨길 수 있는법?
+        apiKey: API_KEY,
       });
       const openai = new OpenAIApi(configuration);
       console.log(openai);
-      const runPrompt = async () => {
-        const response = await openai.createCompletion({
-          model: "text-davinci-003",
-          prompt: this.test_text + "이 문장을 영어로 번역해주고, 키워드를 뽑아줘", 
-          max_tokens: 700, //응답값 길이값
-          temperature: 0.2,
-        });
-        console.log('- completion:\n' + response.data.choices[0].text);
-        const completion = response.data.choices[0].text;
-        const startIndex = completion.indexOf("Keywords: ");
-        console.log("시작 인덱스" + startIndex);
-        const keywords = completion.substring(startIndex+ "Keywords:".length);
-        console.log('- 키워드 뽑아내기:\n' + keywords);
-        return keywords;
-      }
-      runPrompt();  
+    async function runPrompt() {
+                      const response = await openai.createCompletion({
+                        model: "text-davinci-003",
+                        prompt: test_text.value + "이 문장을 영어로 번역해주고, 키워드를 뽑아줘", 
+                        max_tokens: 700, //응답값 길이값
+                        temperature: 0.2,
+                      });
+                      console.log('- completion:\n' + response.data.choices[0].text);
+                      const completion = response.data.choices[0].text;
+                      const startIndex = completion.indexOf("Keywords: ");
+                      console.log("시작 인덱스" + startIndex);
+                      const keywords = completion.substring(startIndex+ "Keywords:".length);
+                      console.log('- 키워드 뽑아내기:\n' + keywords);
+                      keywordList.value = keywords; 
+    }
+    await runPrompt();
 
-      // await keywords  = runPrompt();
+
+
+
+    function dallePrompt() {
+      console.log(keywordList.value)
     }
 
-    // Promise 체이닝 
-    // 비동기 함수의 처리 결과를 가지고 다른 비동기 함수를 호출해야 하는 경우
-    //함수의 호출이 중첩되어 복잡도가 높아진다. 프로미스는 후속처리 메소드인
-    //then 이나 catch로 메소드를 체이닝하여 여러개의 프로미스를 연결하여 사용
-    //then 메소드가 
-  }
+    await dallePrompt();
 
-};
+      // 달리가 키뤄드 가지고 이미지 생성
+
+    }
 
 
 </script>
