@@ -18,4 +18,19 @@ async function $postMainSubject(yyyymmdd){
     }
 }
 
-export { $getSubjects, $postMainSubject }
+async function $postAdminSubject(test_text,newVal){
+    try{
+        const axios = createJsonAxiosInstance()
+        const data = {
+            content: test_text,
+            subImgPath: newVal
+        }
+        console.log(data)
+        return await axios.post('subjects', data);        
+    } catch(err){
+        console.log(err);
+    }
+
+}
+
+export { $getSubjects, $postMainSubject, $postAdminSubject }
