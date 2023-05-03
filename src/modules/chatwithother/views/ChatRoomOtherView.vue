@@ -197,7 +197,7 @@
 
     const sendMessage = () => {
         // userMessage가 비어있으면 함수를 종료합니다.
-        if (userMessage.value == null || userMessage.value == "") {
+        if (userMessage.value == null || userMessage.value.trim() == "") {
           console.log(userMessage.value)
           return;
           
