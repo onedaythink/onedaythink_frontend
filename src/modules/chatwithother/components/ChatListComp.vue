@@ -1,6 +1,7 @@
 <template>
-    <v-card class="mx-auto" >
-        <v-row>
+    <template v-if="chatRooms.length > 0">
+    <v-card class="mx-auto" v-for="(chatRoom, index) in chatRooms" :key="index">
+        <v-row v-if="chatRoom.chatStatus == 'w'">
         <v-col cols="3">
         <v-img
             class="align-end text-white"
@@ -11,12 +12,12 @@
         >
         </v-img>
         <v-card-text>
-            silver
+            {{chatRoom.toNickname}}
         </v-card-text>
         </v-col>
         <v-col cols="9">
         <v-card-text>
-            <div>"silver님이 회원님과 대화하고싶어해요!"</div>
+            <div>"{{chatRoom.toNickname}}님이 회원님과 대화하고싶어해요!"</div>
         </v-card-text>
         
         <v-card-actions class="button">
@@ -25,10 +26,8 @@
         </v-card-actions>
         </v-col>
         </v-row>
-    </v-card>
-    <br>
-    <v-card class="mx-auto" >
-        <v-row>
+
+        <v-row v-else>
         <v-col cols="3" >
         <v-img
             class="align-end text-white"
@@ -39,12 +38,12 @@
         >
         </v-img>
         <v-card-text>
-            huni
+            {{chatRoom.toNickname}}
         </v-card-text>
         </v-col>
         <v-col cols="9">
         <v-card-text>
-            <div>huni : "난 그렇게 생각하지 않.아.요."</div>
+            <div>{{chatRoom.toNickname}} : "난 그렇게 생각하지 않.아.요."</div>
         </v-card-text>
         
         <v-card-actions class="button">
@@ -54,8 +53,11 @@
         </v-col>
         </v-row>
     </v-card>
-    <!-- <div @click="sendMessage"></div>
-    <div>{{last_Message}}</div> -->
+    <br>
+    </template>
+    <template v-else>
+        <div>활성화된 채팅방이 존재하지 않습니다.</div>
+    </template>
 </template>
 
 <script>
@@ -65,12 +67,35 @@ export default {
 </script>
 
 <script setup>
+import { useUserStore } from '@/store/user';
 import { useRouter } from 'vue-router';
-    const router = useRouter()
+import {$getChatRooms} from '@/api/chat'
+import { ref, nextTick, onMounted } from 'vue'
+
+const router = useRouter()
+const chatRooms = ref([])
+
+function goToChatRoomOther() {
+    // 채팅방 연결
     
-    function goToChatRoomOther() {
-      router.push('/chatroomother');
-    }
+    router.push('/chatroomother');
+}
+
+const userStore = useUserStore()
+
+function getChatRooms() {
+    $getChatRooms(userStore.getLoginUser.userNo)
+    .then(res => {
+        console.log(res.data)
+        chatRooms.value = res.data
+    })
+    .catch(err => console.log(err))
+}
+
+onMounted( async () => {
+    await nextTick()
+    getChatRooms()
+})
 
 </script>
 

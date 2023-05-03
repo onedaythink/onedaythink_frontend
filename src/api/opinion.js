@@ -38,4 +38,18 @@ async function $addOpinion(currnet_opinion){
     }
 }
 
-export { $getOpinions, $addOpinion, $getOpinion, $getOpinionsByCreateAt }
+async function $likeControll(userNo, userOpiNo){
+    try {
+        const axios = createJsonAxiosInstance()
+        const data = {
+            userNo : userNo,
+            userOpiNo : userOpiNo
+        }
+        return await axios.post('opinions/like', data);        
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export { $getOpinions, $addOpinion, $getOpinion,
+     $getOpinionsByCreateAt, $likeControll }
