@@ -60,12 +60,14 @@ const routes = [
       {
         path: '/chatwithother',
         name: 'chatWithOtherView',
-        component: ChatWithOtherView
+        component: ChatWithOtherView,
+        props: true
       },
       {
         path: '/chatroomother',
         name: 'chatRoomOtherView',
-        component: ChatRoomOtherView
+        component: ChatRoomOtherView,
+        props: true
       },
       {
         path: '/mypage',

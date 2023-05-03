@@ -22,5 +22,13 @@ async function $getChatRooms(userNo){
     }
 }
 
+async function $getChatMessages(chatRoomNo){
+    try {
+        const axios = createJsonAxiosInstance()
+        return await axios.get('chat/rooms/messages/'+chatRoomNo);        
+    } catch (err) {
+        console.log(err);
+    }
+}
 
-export { $createChatRoom, $getChatRooms }
+export { $createChatRoom, $getChatRooms, $getChatMessages }

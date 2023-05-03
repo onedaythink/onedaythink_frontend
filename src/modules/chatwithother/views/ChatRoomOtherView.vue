@@ -43,7 +43,7 @@
       <div v-show="show">
         <v-divider></v-divider>
         <v-card-text>
-           I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape.
+          {{ todaySubjectContent }}   
         </v-card-text>
       </div>
     </v-expand-transition>
@@ -102,162 +102,181 @@
 </template>
   
   <script>
+    export default {
+    name: "ChatRoom"
+    }
+  </script>
+
+
+  <script setup>
   import { ref, nextTick, onMounted, onBeforeUnmount } from "vue";
   import SockJS from 'sockjs-client';
   import Stomp from 'stompjs';
   import { useUserStore } from "@/store/user";
+  import { useChatStore } from "@/store/chat";
+  import { $getChatMessages } from '@/api/chat';
+import { useSubjectStore } from "@/store/subject";
 
-  export default {
-    name: "ChatRoom",
-    setup() {
+    const userStore = useUserStore()
+    const subjectStore = useSubjectStore()
+    const todaySubjectContent = subjectStore.getSubject.content
 
-      const userStore = useUserStore()
+    const show = ref(false);
+    const reportDialog = ref(false);
+    const reportReasons = ref([]);
+    const otherName = ref(""); // 상대방 닉네임
+    const myName = userStore.getLoginUser.nickname; // 나의 닉네임
+    const messages = ref([]); // 채팅 메시지 배열
+    const userMessage = ref(""); // 전송하려는 메세지 콘텐츠
 
-      const show = ref(false);
-      const reportDialog = ref(false);
-      const reportReasons = ref([]);
-      const otherName = ref("미라니"); // 상대방 닉네임
-      const myName = userStore.getLoginUser.nickname; // 나의 닉네임
-      const messages = ref([]); // 채팅 메시지 배열
-      const userMessage = ref(""); // 전송하려는 메세지 콘텐츠
-  
-      const getCurrentTime = () => {
-        const now = new Date();
-        const hours = now.getHours();
-        const minutes = now.getMinutes();
-        const ampm = hours >= 12 ? "pm" : "am";
-        const hour = hours % 12;
-        const time = `${ampm} ${hour}:${minutes < 10 ? "0" + minutes : minutes}`;
-        return time;
-      };
-
-
-      async function scrollToLatestMessage() {
-        await nextTick()
-        const container = document.querySelector(".chat-card-wrapper");
-          container.scrollTop = container.scrollHeight;
-      }
-
-    function openReportModal() {
-        reportDialog.value = true;
-    }   
-    function submitReport() {
-        console.log("Report submitted with reasons:", reportReasons.value);
-        reportDialog.value = false;
-    }
-
-    const chatRoomNo = ref(1); // 채팅방 이름을 저장할 ref 변수
-
-    // WebSocket 연결을 담을 ref 변수
-    const stompClient = ref(null);
-
-    // 채팅방에 대한 구독(subscribe)을 담을 ref 변수
-    const subscription = ref(null);
-
-    const socket = new SockJS('http://localhost:8080/onedaythink/stomp/ws');
-    const stomp = Stomp.over(socket);
-
-    // WebSocket 연결 생성 함수
-    function createWebSocketConnection() {
-      stomp.connect({}, () => {
-        stompClient.value = stomp;
-        // 채팅방 구독(subscribe) 요청
-        subscription.value = stomp.subscribe(`/sub/chat/room/${chatRoomNo.value}`, (res) => {
-          console.log(res);
-          const chatMsg = JSON.parse(res.body); // 구독하게 되면 받아오게 되는 메세지
-          console.log(chatMsg);
-          const writer = chatMsg.sendNickname;
-          console.log(chatMsg.sendNickname)
-
-          if (myName == writer) {
-            const currentTime = getCurrentTime();
-            messages.value.push({
-              sender: { nickname: myName, avatarUrl: "" },
-              content: chatMsg.chatMsgContent,
-              time: currentTime,
-            });
-          } else {
-            const currentTime = getCurrentTime();
-            messages.value.push({
-              sender: { nickname: writer, avatarUrl: ""},
-              content: chatMsg.chatMsgContent,
-                time: currentTime,
-            });
-          }
-          scrollToLatestMessage();
-        });
-
-        //3. send(path, header, message)로 메세지를 보낼 수 있음
-        const sendData = JSON.stringify({chatRoomNo:chatRoomNo.value,
-                                          chatSendUserNo:userStore.getLoginUser.userNo,
-                                          sendNickname: myName})
-        stomp.send('/pub/chat/enter', {}, sendData)
-      });
-    }
-
-    const sendMessage = () => {
-        // userMessage가 비어있으면 함수를 종료합니다.
-        if (userMessage.value == null || userMessage.value.trim() == "") {
-          console.log(userMessage.value)
-          return;
-          
-        } else {
-          console.log(userMessage.value)
-        // messages 배열에 새로운 메시지를 추가합니다.
-        // const currentTime = getCurrentTime();
-        console.log(myName + ":" + userMessage.value);
-        const sendData = JSON.stringify({chatRoomNo:chatRoomNo.value,
-                                          chatSendUserNo:userStore.getLoginUser.userNo,
-                                          sendNickname: myName,
-                                          chatMsgContent:userMessage.value})
-        console.log(sendData)
-        stomp.send('/pub/chat/message', {}, sendData)
-                    
-        // messages.value.push({
-        //   sender: { nickname: myName.value, avatarUrl: "" },
-        //   content: userMessage.value,
-        //   time: currentTime,
-        // });
-        // userMessage를 초기화합니다.
-        userMessage.value = "";
-      }
-        // 스크롤을 최신 메시지로 이동시킵니다.
-        scrollToLatestMessage();
-      };
-
-    onBeforeUnmount(() => {
-      if (stompClient.value) {
-        stompClient.value.disconnect();
-      }
-    })
-
-    // 컴포넌트가 마운트되면 WebSocket 연결 생성 함수 실행
-    onMounted(() => {
-      createWebSocketConnection();
-    });
-
-    return {
-      // 채팅쪽 변수
-      chatRoomNo,
-      stompClient,
-      subscription,
-      // 일반
-      show,
-      reportDialog,
-      reportReasons,
-      otherName,
-      myName,
-      messages,
-      userMessage,
-      openReportModal,
-      submitReport,
-      sendMessage,
-      getCurrentTime,
-      // receiveMessage,
-      scrollToLatestMessage,
+    const getCurrentTime = () => {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const ampm = hours >= 12 ? "pm" : "am";
+      const hour = hours % 12;
+      const time = `${ampm} ${hour}:${minutes < 10 ? "0" + minutes : minutes}`;
+      return time;
     };
-  },
-};
+
+
+    async function scrollToLatestMessage() {
+      await nextTick()
+      const container = document.querySelector(".chat-card-wrapper");
+        container.scrollTop = container.scrollHeight;
+    }
+
+  function openReportModal() {
+      reportDialog.value = true;
+  }   
+  function submitReport() {
+      console.log("Report submitted with reasons:", reportReasons.value);
+      reportDialog.value = false;
+  }
+
+  const chatStore = useChatStore()
+
+  const chatRoomNo = ref(chatStore.getChatRoom.chatRoomNo); // 채팅방 이름을 저장할 ref 변수
+
+  const chatHistory = ref(null)
+
+  function loadChatHistory() {
+    $getChatMessages(chatRoomNo.value)
+    .then(res => {
+      chatHistory.value = res.data
+      console.log(res.data)
+      // for문을 돌면서 해당 메세지의 sendUserNo 이 `나` 일 경우 오른쪽,
+      // 상대방일 경우 왼쪽에 추가
+      chatHistory.value.forEach(chatMsg => {
+        if (myName == chatMsg.sendNickname) {
+          messages.value.push({
+            sender: { nickname: myName, avatarUrl: "" },
+            content: chatMsg.chatMsgContent,
+            time: chatMsg.chatCreateAt,
+          });
+        } else {
+          otherName.value = chatMsg.sendNickname
+          messages.value.push({
+            sender: { nickname: chatMsg.sendNickname, avatarUrl: ""},
+            content: chatMsg.chatMsgContent,
+              time: chatMsg.chatCreateAt,
+          });
+        }
+      });
+      scrollToLatestMessage();
+    })
+    .catch(err => console.log(err))
+  }
+
+
+  // WebSocket 연결을 담을 ref 변수
+  const stompClient = ref(null);
+
+  // 채팅방에 대한 구독(subscribe)을 담을 ref 변수
+  const subscription = ref(null);
+
+  const socket = new SockJS('http://localhost:8080/onedaythink/stomp/ws');
+  const stomp = Stomp.over(socket);
+
+  // WebSocket 연결 생성 함수
+  function createWebSocketConnection() {
+    console.log(chatStore.getChatRoom)
+    stomp.connect({}, () => {
+      stompClient.value = stomp;
+
+      // 과거의 채팅 기록 조회
+      loadChatHistory()
+
+
+      // 채팅방 구독(subscribe) 요청
+      subscription.value = stomp.subscribe(`/sub/chat/room/${chatRoomNo.value}`, (res) => {
+        console.log(res);
+        const chatMsg = JSON.parse(res.body); // 구독하게 되면 받아오게 되는 메세지
+        console.log(chatMsg);
+        const writer = chatMsg.sendNickname;
+        console.log(chatMsg.sendNickname)
+
+        if (myName == writer) {
+          const currentTime = getCurrentTime();
+          messages.value.push({
+            sender: { nickname: myName, avatarUrl: "" },
+            content: chatMsg.chatMsgContent,
+            time: currentTime,
+          });
+        } else {
+          otherName.value = chatMsg.sendNickname
+          const currentTime = getCurrentTime();
+          messages.value.push({
+            sender: { nickname: writer, avatarUrl: ""},
+            content: chatMsg.chatMsgContent,
+              time: currentTime,
+          });
+        }
+        scrollToLatestMessage();
+      });
+
+      //3. send(path, header, message)로 메세지를 보낼 수 있음
+      const sendData = JSON.stringify({chatRoomNo:chatRoomNo.value,
+                                        chatSendUserNo:userStore.getLoginUser.userNo,
+                                        sendNickname: myName})
+      stomp.send('/pub/chat/enter', {}, sendData)
+    });
+  }
+
+  const sendMessage = () => {
+      // userMessage가 비어있으면 함수를 종료합니다.
+      if (userMessage.value == null || userMessage.value.trim() == "") {
+        console.log(userMessage.value)
+        return;
+        
+      } else {
+        console.log(userMessage.value)
+      // messages 배열에 새로운 메시지를 추가합니다.
+      // const currentTime = getCurrentTime();
+      console.log(myName + ":" + userMessage.value);
+      const sendData = JSON.stringify({chatRoomNo:chatRoomNo.value,
+                                        chatSendUserNo:userStore.getLoginUser.userNo,
+                                        sendNickname: myName,
+                                        chatMsgContent:userMessage.value})
+      console.log(sendData)
+      stomp.send('/pub/chat/message', {}, sendData)
+
+      userMessage.value = "";
+    }
+      // 스크롤을 최신 메시지로 이동시킵니다.
+      scrollToLatestMessage();
+    };
+
+  onBeforeUnmount(() => {
+    if (stompClient.value) {
+      stompClient.value.disconnect();
+    }
+  })
+
+  // 컴포넌트가 마운트되면 WebSocket 연결 생성 함수 실행
+  onMounted(async () => {
+    await createWebSocketConnection();
+  });
 
 </script>
 
