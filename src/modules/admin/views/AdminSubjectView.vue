@@ -1,5 +1,5 @@
 <template>
-  <div class="subject-card-wrapper">
+  <div class="subject-card">
     <admin-subject-comp></admin-subject-comp>
   </div>
 </template>
@@ -15,17 +15,17 @@ export default {
 };
 </script>
 
-<style>
+<!-- <style>
 /* 스크롤바 관련 설정 */
-.subject-card-wrapper {
-  max-height: 500px;
+ .subject-card {
+  max-height: 1500px;
   overflow-y: auto;
   margin-top: 60px;
   margin-bottom: 60px;
-}
+} 
 
 /* 스크롤바 숨기기 */
-.subject-card-wrapper::-webkit-scrollbar {
+ .subject-card ::-webkit-scrollbar {
   display: none;
-}
-</style>
+} 
+</style> -->

@@ -60,12 +60,14 @@ const routes = [
       {
         path: '/chatwithother',
         name: 'chatWithOtherView',
-        component: ChatWithOtherView
+        component: ChatWithOtherView,
+        props: true
       },
       {
         path: '/chatroomother',
         name: 'chatRoomOtherView',
-        component: ChatRoomOtherView
+        component: ChatRoomOtherView,
+        props: true
       },
       {
         path: '/mypage',
@@ -101,7 +103,7 @@ const routes = [
     component: AdminLayout,
     children: [
       {
-        path: '/admin/statistics',
+        path: '/admin',
         name: 'statisticsView',
         component: AdminStatisticsView
       },

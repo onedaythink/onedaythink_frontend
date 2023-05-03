@@ -2,37 +2,57 @@
     <template v-if="opinion_list.length > 0">
         <v-card v-for="(opinion, index) in opinion_list" :key="index">
             <v-row>
-        <v-col cols="3" >
-        <v-img
-            class="align-end text-white"
-            src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-            cover
-            rounded
-            style="border-radius: 50%; width: 70px; height: 70px;"  
-        >
-        </v-img>
-        <v-card-text>
-            {{opinion.nickname}}
-            <br>
-            ♥ {{ opinion.likeCount }}
-        </v-card-text>
-        </v-col>
-        <v-col cols="9">
-        <v-card-text>
-            <div>{{ opinion.opinion }}</div>
-        </v-card-text>
-        
-        <v-card-actions>
-        <v-btn @click="likeControll(opinion.userOpiNo)" variant="outlined" color="yellow-accent-4" class="btn-bold">"좋아요"</v-btn>
-        <v-btn @click="createChatRoom(opinion.userOpiNo)" variant="outlined" color="blue-lighten-4" class="btn-bold">"대화하고싶어요"</v-btn>
-        </v-card-actions>
-        </v-col>
-        </v-row>
+                <v-col cols="3" >
+                    <v-img
+                        class="align-end text-white"
+                        src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+                        cover
+                        rounded
+                        style="border-radius: 50%; width: 70px; height: 70px;"  
+                    >
+                    </v-img>
+                    <v-card-text>
+                        {{opinion.nickname}}
+                        <br>
+                        ♥ {{ opinion.likeCount }}
+                    </v-card-text>
+                </v-col>
+                <v-col cols="9">
+                    <v-card-text>
+                        <div>{{ opinion.opinion }}</div>
+                    </v-card-text>
+                    <v-card-actions>
+                        <v-btn @click="likeControll(opinion.userOpiNo)" variant="outlined" color="yellow-accent-4" class="btn-bold">"좋아요"</v-btn>
+                        <v-btn @click="createChatRoom(opinion.userOpiNo)" variant="outlined" color="blue-lighten-4" class="btn-bold">"대화하고싶어요"</v-btn>
+                    </v-card-actions>
+                </v-col>
+            </v-row>
         </v-card>
     </template>
     <template v-else>
         <v-card>
-
+            <v-row>
+                <v-col cols="3" >
+                    <v-img
+                        class="align-end text-white"
+                        src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+                        cover
+                        rounded
+                        style="border-radius: 50%; width: 70px; height: 70px;"  
+                    >
+                    </v-img>
+                    <v-card-text>
+                        하루봇
+                        <br>
+                        ♥
+                    </v-card-text>
+                </v-col>
+                <v-col cols="9">
+                    <v-card-text>
+                        <div>당신의 의견을 작성해주세요!</div>
+                    </v-card-text>
+                </v-col>
+            </v-row>
         </v-card>
     </template>
 </template>
