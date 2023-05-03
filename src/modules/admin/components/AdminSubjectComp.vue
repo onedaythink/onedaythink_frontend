@@ -21,32 +21,38 @@
               </v-row>
             </template>
             <div class = "btn-containor">
-              <!-- <v-col cols="12" md="6" class="d-flex justify-center align-center"> -->
                 <v-btn color="#E692BC" dark rounded @click="makeImg">이미지 생성</v-btn>
-              <!-- <v-col class="d-flex justify-center align-center"> -->
-                <v-btn class="mt-3 mb-3" color="#FFE486" dark rounded @click="addSubject">논제 넣기</v-btn>
+                <v-btn class="mt-3 mb-3" color="#FFE486" dark rounded @click="addSubject">논제 완료</v-btn>
           </div>
           </v-card>
         </v-col>
         <v-col cols="12" md="6">
+          
           <v-card class="mb-5 pa-3 flat tile" style="margin-top: 50px">
             <v-card-title>논제 관리</v-card-title>
-            <table>
+            <v-table fixed-header height="300px">
               <thead>
                 <tr>
-                  <th>순번</th>
-                  <th>논제내용</th>
-                  <th>이미지</th>
+                  <th class="tesx-left">선택</th> 
+                  <th class="tesx-left">순번</th>
+                  <th class="tesx-left">논제내용</th>
+                  <th class="tesx-left">이미지</th>
+                  <th class="tesx-left">논제 사용 일자</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in subject" :key="index">
-                  <td>{{ item.id }}</td>
-                  <td>{{ item.content }}</td>
-                  <td>{{ item.image }}</td>
+                <tr v-for="(subject, index) in subjectList" :key="index">
+                  <v-checkbox :value="subject" v-model="selectOne" @change="selectedSubject = $event" ></v-checkbox>
+                  <td class="text-left">{{ subject.subNo }}</td>
+                  <td class="text-left">{{ subject.content }}</td>
+                  <td class="text-left">{{ subject.subOriginImg }}</td>
+                  <td class="text-left">{{ subject.subDate }}</td>
+
                 </tr>
               </tbody>
-            </table>
+            </v-table>
+            <v-btn color="red" @click="deleteSubject">논제 삭제</v-btn>
+            <v-btn color="blue" @click="updateSubject">논제 수정</v-btn>
           </v-card>
         </v-col>
       </v-row>
@@ -54,43 +60,52 @@
   </v-app>
 </div>
 </template>
-
+            
 <script>
 export default {
   name: "SubjectManagementView"
-  // ,
-  // data() {
-  //   return {
-  //     selectedImage: null,
-  //   }
-  // },
-  // watch: {
-  //   selectedImage(newVal) {
-  //     console.log(newVal);
-  //   }
-  // }
 }
 </script>
 
 <script setup>
-import { $postAdminSubject } from '@/api/subject';
+import { $postAdminSubject, $getSubjects } from '@/api/subject';
 import { ref, onMounted, nextTick } from 'vue';
+
+//gpt 관련 변수 선언
 const API_KEY = process.env.VUE_APP_GPT_API_KEY;
 const { Configuration, OpenAIApi } = require("openai");
-const test_text = ref('')
-const subject = [
-  {
-    id: 1,
-    content: "시대마다 가치관이 달라진다고 하자. 다른 시대의 가치관을 보여주는 어떤 작품을 현 시대의 가치관으로 비판하는 활동에는 어떤 의미가 있는가?",
-    image: "image1.jpg"
-  }
-]
-
-//이미지 리스트 생성?
 const imageUrl = ref([])
-
 const keywordList = ref(null)
+const test_text = ref('')
+const selectedImage = ref(null)
 
+
+
+//논제 관련 변수 선언
+const subjectList = ref([])
+ const selectOne = ref('');
+const selectedSubject = ref('');
+
+// ref : 반응성을 편하게 부여하는 함수
+const sj = ref('')
+
+
+
+
+//논제 조회기능
+async function getSubjects() {
+  await $getSubjects()
+  .then(res => {
+    if (res.data != null || res.data != '') {
+      subjectList.value = res.data
+      console.log(subjectList.value);
+    }
+    sj.value = subjectList.value.subject
+    console.log(sj.value);
+  }).catch(err => console.log(err))
+}
+
+//이미지 생성 버튼
 async function makeImg() {
     console.log(test_text.value);
     const configuration = new Configuration({
@@ -117,7 +132,7 @@ async function makeImg() {
 
 
 
-
+//이미지 생성 dallePrompt
     function dallePrompt() {
       console.log(keywordList.value);
       const apiKey = API_KEY;
@@ -149,23 +164,13 @@ async function makeImg() {
       })
         .then(response => response.json())
         .then(data => {
-          // const imageUrl = data.data[0].url;
           const imgList = []
           for (let i = 0; i < 4; i++) {
             imageUrl.value.push(data.data[i].url);
           }
-
-
-          for (let i = 0; i < 4; i++) {
-            console.log("이미지 url 리스트 " + imageUrl.value[i]);
-          }
-
-
         })
         .catch(error => console.error(error));
     }
-
-    // 달리가 키워드 가지고 이미지 생성
     await dallePrompt();
 
 }
@@ -179,12 +184,6 @@ function postAdminSubject(test_text, imgUrl) {
     })
   }
 
-const selectedImage = ref(null)
-
-// function insertSub(){
-//   console.log("test0312" + selectedImage.value);
-//   postAdminSubject()
-// }
 
 onMounted( async () => {
   await nextTick()
@@ -192,8 +191,21 @@ onMounted( async () => {
 
 function addSubject() {
   console.log("test0312" + selectedImage.value);
-  postAdminSubject(test_text.value , selectedImage.value)
+  postAdminSubject(test_text.value, selectedImage.value);
+
+
+  if (confirm("논제를 정말 넣으시겠습니까?")) {
+    location.reload();
+  }
 }
+
+
+
+onMounted( async () => {
+  await nextTick()
+  getSubjects()
+})
+
 
 </script>
 
@@ -213,5 +225,6 @@ function addSubject() {
   overflow-y: auto;
   margin-top: 60px;
   margin-bottom: 60px;
+
 }
 </style>
