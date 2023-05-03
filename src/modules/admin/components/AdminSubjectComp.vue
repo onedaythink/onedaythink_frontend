@@ -18,33 +18,47 @@
             </v-row>
             <v-row>
               <v-col class="d-flex justify-center align-center">
-                <v-btn color="#FFE486" dark rounded @click="save">논제 저장</v-btn>
+                <v-btn color="#FFE486" @click="save">논제 저장</v-btn>
               </v-col>
             </v-row>
           </v-card>
         </v-col>
         <v-col cols="12" md="6">
+          
           <v-card class="mb-5 pa-3 flat tile" style="margin-top: 50px">
             <v-card-title>논제 관리</v-card-title>
-              <v-data-table
-              :headers="subjectHeaders"
-              :items="subjects"
-              :items-per-page="5"
-              class="elevation-1"
-              item-key="subNo"
-              show-select
-              v-model="selectedSubjects"
-            >
-              </v-data-table>
-              <v-btn color="red" @click="deleteSubject">논제 삭제</v-btn>
-              <v-btn color="blue" @click="updateSubject">논제 수정</v-btn>
+            <v-table fixed-header height="300px">
+              <thead>
+                <tr>
+                  <th class="tesx-left">선택</th> 
+                  <th class="tesx-left">순번</th>
+                  <th class="tesx-left">논제내용</th>
+                  <th class="tesx-left">이미지</th>
+                  <th class="tesx-left">논제 사용 일자</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(subject, index) in subjectList" :key="index">
+                  <v-checkbox :value="subject" v-model="selectOne" @change="selectedSubject = $event" ></v-checkbox>
+                  <td class="text-left">{{ subject.subNo }}</td>
+                  <td class="text-left">{{ subject.content }}</td>
+                  <td class="text-left">{{ subject.subOriginImg }}</td>
+                  <td class="text-left">{{ subject.subDate }}</td>
+                  <!-- <td class="text-left">{{ subject.subImgPath }}</td> -->
+                  <!-- <td class="text-left">{{ subject.withdraw }}</td> -->
+
+                </tr>
+              </tbody>
+            </v-table>
+            <v-btn color="red" @click="deleteSubject">논제 삭제</v-btn>
+            <v-btn color="blue" @click="updateSubject">논제 수정</v-btn>
           </v-card>
         </v-col>
       </v-row>
     </v-container>
   </v-app>
 </template>
-
+            
 <script>
 export default {
   name: "SubjectManagementView"
@@ -65,17 +79,25 @@ const subjectStore = useSubjectStore()
   const yyyymmdd = `${year}${month}${date}`;
 
 const subject = {
+    // value: '',
+    content: '',
     subject : '',
     subNo : '',
     withdraw : 'n',
-    subDate : yyyymmdd
+    subDate : yyyymmdd,
+    subImagPath : '',
+    subOriginImg : '',
+
   }
 
+// ref : 반응성을 편하게 부여하는 함수
 const sj = ref('')
 
-const mysubject = ref({
-     subject : ''
-  })
+const subjectList = ref([])
+// <setup> 안에서 사용하실 떄에는 .value . 값을 뽑아서 쓰거나, 해당 값을 바꾸려고 할 떄
+
+const selectOne = ref('');
+const selectedSubject = ref('');
 
 function save() {
     subject.subject = sj.value
@@ -83,7 +105,7 @@ function save() {
     // 논제 저장 버튼을 클릭 했을 때의 동작
     $addSubject(subject)
     .then(res => {
-      getSubjects(subject.subNo, subject.createAt)
+      getSubjects(subject.subNo, subject.subDate)
     }).catch(err => {
       console.log(err)
     })
@@ -91,12 +113,14 @@ function save() {
 }
 
 async function getSubjects() {
-  await $getSubjects(subjectStore.getSubject.subNo, yyyymmdd)
+  await $getSubjects()
   .then(res => {
     if (res.data != null || res.data != '') {
-      mysubject.value = res.data
+      subjectList.value = res.data
+      console.log(subjectList.value);
     }
-    sj.value = mysubject.value.subject
+    sj.value = subjectList.value.subject
+    console.log(sj.value);
   }).catch(err => console.log(err))
 }
 
@@ -109,16 +133,6 @@ const API_KEY = process.env.VUE_APP_GPT_API_KEY;
 const { Configuration, OpenAIApi } = require("openai");
 const test_text = ref('')
 
-const subjectHeaders = [
-  { text: '논제 순번', value: 'subNo' },
-  { text: '논제 내용', value: 'content' },
-  { text: '논제 원본이미지 이름', value: 'subOriginImg' },
-  { text: '논제 수정 이미지 경로', value: 'subImgPath' },
-  { text: '논제 채택 날짜', value: 'subDate' },
-  { text: '삭제여부', value: 'withdraw' }
-];
-
-const selectedSubjects = ref([]);
 
 const keywordList = ref(null)
 async function test() {
