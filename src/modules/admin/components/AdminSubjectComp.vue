@@ -18,73 +18,123 @@
             </v-row>
             <v-row>
               <v-col class="d-flex justify-center align-center">
-                <v-btn color="#FFE486" dark rounded>논제 넣기</v-btn>
+                <v-btn color="#FFE486" @click="save">논제 저장</v-btn>
               </v-col>
             </v-row>
           </v-card>
         </v-col>
         <v-col cols="12" md="6">
+          
           <v-card class="mb-5 pa-3 flat tile" style="margin-top: 50px">
             <v-card-title>논제 관리</v-card-title>
-            <table>
+            <v-table fixed-header height="300px">
               <thead>
                 <tr>
-                  <th>순번</th>
-                  <th>논제내용</th>
-                  <th>이미지</th>
+                  <th class="tesx-left">선택</th> 
+                  <th class="tesx-left">순번</th>
+                  <th class="tesx-left">논제내용</th>
+                  <th class="tesx-left">이미지</th>
+                  <th class="tesx-left">논제 사용 일자</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in subject" :key="index">
-                  <td>{{ item.id }}</td>
-                  <td>{{ item.content }}</td>
-                  <td>{{ item.image }}</td>
+                <tr v-for="(subject, index) in subjectList" :key="index">
+                  <v-checkbox :value="subject" v-model="selectOne" @change="selectedSubject = $event" ></v-checkbox>
+                  <td class="text-left">{{ subject.subNo }}</td>
+                  <td class="text-left">{{ subject.content }}</td>
+                  <td class="text-left">{{ subject.subOriginImg }}</td>
+                  <td class="text-left">{{ subject.subDate }}</td>
+                  <!-- <td class="text-left">{{ subject.subImgPath }}</td> -->
+                  <!-- <td class="text-left">{{ subject.withdraw }}</td> -->
+
                 </tr>
               </tbody>
-            </table>
+            </v-table>
+            <v-btn color="red" @click="deleteSubject">논제 삭제</v-btn>
+            <v-btn color="blue" @click="updateSubject">논제 수정</v-btn>
           </v-card>
         </v-col>
       </v-row>
     </v-container>
   </v-app>
 </template>
-
+            
 <script>
-
 export default {
   name: "SubjectManagementView"
 }
 </script>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
+import { $getSubjects, $addSubject } from '@/api/subject';
+import { useSubjectStore } from '@/store/subject'
+
+const subjectStore = useSubjectStore()
+
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = (today.getMonth() + 1).toString().padStart(2, '0');
+  const date = today.getDate().toString().padStart(2, '0');
+  const yyyymmdd = `${year}${month}${date}`;
+
+const subject = {
+    // value: '',
+    content: '',
+    subject : '',
+    subNo : '',
+    withdraw : 'n',
+    subDate : yyyymmdd,
+    subImagPath : '',
+    subOriginImg : '',
+
+  }
+
+// ref : 반응성을 편하게 부여하는 함수
+const sj = ref('')
+
+const subjectList = ref([])
+// <setup> 안에서 사용하실 떄에는 .value . 값을 뽑아서 쓰거나, 해당 값을 바꾸려고 할 떄
+
+const selectOne = ref('');
+const selectedSubject = ref('');
+
+function save() {
+    subject.subject = sj.value
+    subject.subNo = subjectStore.getSubject.subNo
+    // 논제 저장 버튼을 클릭 했을 때의 동작
+    $addSubject(subject)
+    .then(res => {
+      getSubjects(subject.subNo, subject.subDate)
+    }).catch(err => {
+      console.log(err)
+    })
+
+}
+
+async function getSubjects() {
+  await $getSubjects()
+  .then(res => {
+    if (res.data != null || res.data != '') {
+      subjectList.value = res.data
+      console.log(subjectList.value);
+    }
+    sj.value = subjectList.value.subject
+    console.log(sj.value);
+  }).catch(err => console.log(err))
+}
+
+onMounted( async () => {
+  await nextTick()
+  getSubjects()
+})
+
 const API_KEY = process.env.VUE_APP_GPT_API_KEY;
 const { Configuration, OpenAIApi } = require("openai");
 const test_text = ref('')
-const subject = [
-  {
-    id: 1,
-    content: "시대마다 가치관이 달라진다고 하자. 다른 시대의 가치관을 보여주는 어떤 작품을 현 시대의 가치관으로 비판하는 활동에는 어떤 의미가 있는가?",
-    image: "image1.jpg"
-  }
-  // {
-  //   id: 2,
-  //   content: "행성의 겉보기 역행 운동은 천동설로도 설명 가능하고, 지동설로도 설명 가능하다. 같은 현상을 설명하는 두 개 이상의 이론이 있을 때 그 중 하나를 다른 하나보다 낫게 보게 하는 기준은 무엇인가?",
-  //   image: "image2.jpg"
-  // },
-  // {
-  //   id: 3,
-  //   content: "과학자가 실험을 다섯 차례 진행했다고 하자. 그 중 내 차례는 A 라는 결과를 산출했고, 한 차례는 B 라는 결과를 산출했다. 과학자가 A를 실험의 결과로 택한다고 할 때, 혹시 A가 오류이고 B가 제대로 된 결과일 가능성은 없는가?",
-  //   image: "image3.jpg"
-  // },
-  // {
-  //   id: 4,
-  //   content: "카이사르는 브루투스에 의해 살해되었다' 를 참으로 만드는 근거가 있다. '1+1=2' 를 참으로 만드는 근거로 있다. 이 두 근거는 어떤 점에서 같고 다른가?",
-  //   image: "image4.jpg"
-  // },
-]
-const keywordList = ref(null)
 
+
+const keywordList = ref(null)
 async function test() {
   console.log(test_text.value);
   const configuration = new Configuration({
@@ -95,7 +145,7 @@ async function test() {
   async function runPrompt() {
     const response = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: test_text.value + "이 문장을 영어로 번역해주고, 키워드를 뽑아줘",
+      prompt: test_text.value + "Please translate this sentence into English and analyze the key keywords that complete the sentence with only keywords",
       max_tokens: 700, //응답값 길이값
       temperature: 0.2,
     });
@@ -108,36 +158,27 @@ async function test() {
     keywordList.value = keywords;
   }
   await runPrompt();
-
-
-
-
   function dallePrompt() {
-    console.log("ㅎㅇ dall2" + keywordList.value)
+    console.log(keywordList.value)
     //ㅎㅎ
     // OpenAI API key
     const apiKey = API_KEY;
-
     // Input text
     const inputText = keywordList.value;
-
     // DALL-E2 API endpoint
     const url = "https://api.openai.com/v1/images/generations";
-
     // API request data
     const data = {
       "model": "image-alpha-001",
-      "prompt": inputText,
+      "prompt": "high-quality, human, illustration" + inputText,
       "num_images": 4,
-      "size": "512x512"
+      "size": "256x256"
     };
-
     // API request headers
     const headers = {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${apiKey}`
     };
-
     // Send API request
     fetch(url, {
       method: "POST",
@@ -151,7 +192,6 @@ async function test() {
         const imageUrl2 = data.data[1].url;
         const imageUrl3 = data.data[2].url;
         const imageUrl4 = data.data[3].url;
-
         // Do something with the generated image URL
         console.log(imageUrl);
         console.log(imageUrl2);
@@ -160,15 +200,9 @@ async function test() {
       })
       .catch(error => console.error(error));
   }
-
   await dallePrompt();
-
   // 달리가 키뤄드 가지고 이미지 생성
-
-
 }
-
-
 </script>
 
 <style scoped>
@@ -183,7 +217,6 @@ async function test() {
   text-align: center;
   color: #000000;
 }
-
 .subject-management-view .card-subtitle {
   font-family: 'Inter';
   font-style: normal;
