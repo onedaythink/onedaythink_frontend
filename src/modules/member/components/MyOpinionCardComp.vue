@@ -54,6 +54,7 @@ import { onMounted, nextTick, ref } from 'vue'
   })
 
 function save() {
+      opinion.userOpiNo = myOpinion.value.userOpiNo
       opinion.opinion = op.value
       opinion.userNo = userStore.getLoginUser.userNo
       opinion.subNo = subjectStore.getSubject.subNo

@@ -12,19 +12,19 @@
         >
         </v-img>
         <v-card-text>
-            silver
+            {{opinion.nickname}}
             <br>
-            ♥ 21
+            ♥ {{ opinion.likeCount }}
         </v-card-text>
         </v-col>
         <v-col cols="9">
         <v-card-text>
-            <div>"Whitsunday Island, Whitsunday Islands"</div>
+            <div>{{ opinion.opinion }}</div>
         </v-card-text>
         
         <v-card-actions>
-        <v-btn variant="outlined" color="yellow-accent-4" class="btn-bold">"좋아요"</v-btn>
-        <v-btn variant="outlined" color="blue-lighten-4" class="btn-bold">"대화하고싶어요"</v-btn>
+        <v-btn @click="likeControll(opinion.userOpiNo)" variant="outlined" color="yellow-accent-4" class="btn-bold">"좋아요"</v-btn>
+        <v-btn @click="createChatRoom(opinion.userOpiNo)" variant="outlined" color="blue-lighten-4" class="btn-bold">"대화하고싶어요"</v-btn>
         </v-card-actions>
         </v-col>
         </v-row>
@@ -32,7 +32,7 @@
     </template>
     <template v-else>
         <v-card>
-            
+
         </v-card>
     </template>
 </template>
@@ -41,7 +41,8 @@
 </script>
 
 <script setup>
-import {$getOpinionsByCreateAt} from '@/api/opinion'
+import { $getOpinionsByCreateAt, $likeControll } from '@/api/opinion'
+import { $createChatRoom } from '@/api/chat'
 import { useSubjectStore } from '@/store/subject'
 import { useUserStore } from '@/store/user'
 import { onMounted, ref } from 'vue'
@@ -55,6 +56,25 @@ async function getOpinionsByCreateAt() {
     .then(res => {
         console.log(res.data)
         opinion_list.value = res.data
+    })
+    .catch(err => console.log(err))
+}
+
+async function likeControll(userOpiNo) {
+    await $likeControll(userStore.getLoginUser.userNo, userOpiNo)
+    .then(async res => {
+        if (res.data == 1) {
+            await getOpinionsByCreateAt()
+        }
+    })
+    .catch(err => console.log(err))
+}
+
+async function createChatRoom(userOpiNo) {
+    await $createChatRoom(userOpiNo, userStore.getLoginUser.userNo)
+    .then(res => {
+        console.log(res.data)
+        window.alert('채팅 요청을 전송하였습니다.')
     })
     .catch(err => console.log(err))
 }
