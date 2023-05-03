@@ -39,7 +39,12 @@
               </thead>
               <tbody>
                 <tr v-for="(subject, index) in subjectList" :key="index">
-                  <v-checkbox :value="subject" v-model="selectOne" @change="selectedSubject = $event" ></v-checkbox>
+                  <td>
+                  <v-checkbox :value="subject" v-model="selectedSubject" @change="getSubjectOne(subject.subNo)"></v-checkbox>
+                  <!-- <v-checkbox :input-value="subject" :checked="selectedSubject.includes(subject)" @change="toggleSubjectSelection(subject)"></v-checkbox> -->
+                  <!-- <v-checkbox :input-value="subject" :model-value="selectedSubject.includes(subject)" @update:model-value="toggleSubjectSelection(subject)"></v-checkbox> -->
+                  <!-- <v-checkbox :input-value="subject" v-model="selectedSubject" @update:model-value="getSubjectOne(subject.value)"></v-checkbox> -->
+                  </td>
                   <td class="text-left">{{ subject.subNo }}</td>
                   <td class="text-left">{{ subject.content }}</td>
                   <td class="text-left">{{ subject.subOriginImg }}</td>
@@ -50,8 +55,7 @@
                 </tr>
               </tbody>
             </v-table>
-            <v-btn color="red" @click="deleteSubject">논제 삭제</v-btn>
-            <v-btn color="blue" @click="updateSubject">논제 수정</v-btn>
+            <v-btn :value="subject" v-model="deleteSubject" color="red" @click="deleteSubject(subject.subNo)">논제 삭제</v-btn>
           </v-card>
         </v-col>
       </v-row>
@@ -67,7 +71,7 @@ export default {
 
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
-import { $getSubjects, $addSubject } from '@/api/subject';
+import { $getSubjects, $getSubject, $deleteSubject, $addSubject } from '@/api/subject';
 import { useSubjectStore } from '@/store/subject'
 
 const subjectStore = useSubjectStore()
@@ -96,8 +100,7 @@ const sj = ref('')
 const subjectList = ref([])
 // <setup> 안에서 사용하실 떄에는 .value . 값을 뽑아서 쓰거나, 해당 값을 바꾸려고 할 떄
 
-const selectOne = ref('');
-const selectedSubject = ref('');
+const selectedSubject = ref([]);
 
 function save() {
     subject.subject = sj.value
@@ -120,11 +123,48 @@ async function getSubjects() {
       console.log(subjectList.value);
     }
     sj.value = subjectList.value.subject
-    console.log(sj.value);
+    // console.log(sj.value);
   }).catch(err => console.log(err))
 }
 
-onMounted( async () => {
+// const toggleSubjectSelection = (subject) => {
+//   const index = selectedSubject.value.findIndex(item => item.subNo === subject.subNo);
+
+//   if (index === -1) {
+//     selectedSubject.value.push(subject);
+//   } else {
+//     selectedSubject.value.splice(index, 1);
+//   }
+
+//   getSubjectOne(subject.subNo);
+// };
+
+async function getSubjectOne(subjectStore) {
+  await $getSubject(subjectStore.getSubject.subNo)
+  .then(res => {
+    if (res.data != null || res.data != '') {
+      console.log(subject.value);
+      subject.value = res.data
+      console.log(subject.value);
+    }
+    sj.value = subject.value.subject
+    // console.log(sj.value);
+  }).catch(err => console.log(err))
+}
+
+async function deleteSubject(subjectStore){
+  await $deleteSubject(subjectStore.removeSubject.getSubject.subNo)
+  .then(res => {
+    if (res.data != null || res.data != ''){
+      subject.value = res.data
+      console.log(subject.value);
+    }
+    sj.value = subject.value.subject
+    // console.log(sj.value);
+  }).catch(err => console.log(err))
+}
+
+onMounted(async () => {
   await nextTick()
   getSubjects()
 })

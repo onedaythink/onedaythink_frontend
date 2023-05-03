@@ -20,7 +20,7 @@ async function $getSubject(subNo){
     }
 }
 
-// 논제 메인에 사용된 날짜 추가 ? 랜덤 조회는 아닌가?
+// 논제 메인에 사용된 날짜 추가
 async function $postMainSubject(yyyymmdd){
     try {
         const axios = createJsonAxiosInstance()
