@@ -31,15 +31,23 @@ async function $postMainSubject(yyyymmdd){
 }
 
 // 논제 추가
-async function $addSubject(currnet_subject){
-    try {
+async function $postAdminSubject(test_text,newVal){
+    try{
         const axios = createJsonAxiosInstance()
-        console.log(currnet_subject.subNo)
-        return await axios.post('subjects/'+currnet_subject.subNo, currnet_subject);        
-    } catch (err) {
+        const data = {
+            content: test_text,
+            subImgPath: newVal
+        }
+        console.log(data)
+        return await axios.post('subjects', data);        
+    } catch(err){
         console.log(err);
     }
+
 }
+
+
+
 
 // 논제 삭제
 async function $deleteSubject(subNo){
@@ -61,5 +69,6 @@ async function $updateSubject(subNo){
     }
 }
 
-export { $getSubjects, $getSubject, $postMainSubject, $addSubject, 
-    $deleteSubject, $updateSubject }
+export { $getSubjects, $getSubject, $postMainSubject, 
+    $deleteSubject, $updateSubject ,$postAdminSubject }
+
