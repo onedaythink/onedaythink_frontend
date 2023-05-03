@@ -1,6 +1,7 @@
 <template>
-    <v-card class="mx-auto" >
-        <v-row>
+    <template v-if="opinion_list.length > 0">
+        <v-card v-for="(opinion, index) in opinion_list" :key="index">
+            <v-row>
         <v-col cols="3" >
         <v-img
             class="align-end text-white"
@@ -27,10 +28,41 @@
         </v-card-actions>
         </v-col>
         </v-row>
-    </v-card>
+        </v-card>
+    </template>
+    <template v-else>
+        <v-card>
+            
+        </v-card>
+    </template>
 </template>
 
 <script>
+</script>
+
+<script setup>
+import {$getOpinionsByCreateAt} from '@/api/opinion'
+import { useSubjectStore } from '@/store/subject'
+import { useUserStore } from '@/store/user'
+import { onMounted, ref } from 'vue'
+
+const userStore = useUserStore()
+const subjectStore = useSubjectStore()
+const opinion_list = ref({})
+
+async function getOpinionsByCreateAt() {
+    await $getOpinionsByCreateAt(subjectStore.getSubject.subNo, userStore.getLoginUser.userNo)
+    .then(res => {
+        console.log(res.data)
+        opinion_list.value = res.data
+    })
+    .catch(err => console.log(err))
+}
+
+onMounted( async () => {
+    getOpinionsByCreateAt()
+})
+
 </script>
 
 <style>
