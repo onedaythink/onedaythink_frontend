@@ -6,7 +6,7 @@
           <img class="logo-image" :src="require('@/assets/onedaythink.png')" alt="Logo">
         </v-col>
         <v-col cols="auto" class="menu-item">
-          <router-link to="/admin/statistics" class="text">통계</router-link>
+          <router-link to="/admin" class="text">통계</router-link>
         </v-col>
         <v-col cols="auto" class="menu-item">
           <router-link to="/admin/report" class="text">신고관리</router-link>

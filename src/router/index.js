@@ -103,7 +103,7 @@ const routes = [
     component: AdminLayout,
     children: [
       {
-        path: '/admin/statistics',
+        path: '/admin',
         name: 'statisticsView',
         component: AdminStatisticsView
       },

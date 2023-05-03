@@ -20,7 +20,7 @@ async function $getSubject(subNo){
     }
 }
 
-// 논제 메인에 사용된 날짜 추가 ? 랜덤 조회는 아닌가?
+// 논제 메인에 사용된 날짜 추가
 async function $postMainSubject(yyyymmdd){
     try {
         const axios = createJsonAxiosInstance()
@@ -50,10 +50,10 @@ async function $postAdminSubject(test_text,newVal){
 
 
 // 논제 삭제
-async function $deleteSubject(subNo){
+async function $deleteSubject(subNoList){
     try {
         const axios = createJsonAxiosInstance()
-        return await axios.post('subjects/delete/'+ subNo);             
+        return await axios.post('subjects/delete', subNoList);             
     } catch (err) {
         console.log(err);
     }
