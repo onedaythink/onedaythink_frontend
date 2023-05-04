@@ -42,17 +42,17 @@
               </thead>
               <tbody>
                 <tr v-for="(subject, index) in subjectList" :key="index">
-                  <v-checkbox :value="subject" v-model="selectOne" @change="selectedSubject = $event" ></v-checkbox>
+                  <td>
+                  <v-checkbox :value="subject.subNo" v-model="selectedSubject"></v-checkbox>
+                   </td>
                   <td class="text-left">{{ subject.subNo }}</td>
                   <td class="text-left">{{ subject.content }}</td>
                   <td class="text-left">{{ subject.subOriginImg }}</td>
                   <td class="text-left">{{ subject.subDate }}</td>
-
                 </tr>
               </tbody>
             </v-table>
-            <v-btn color="red" @click="deleteSubject">논제 삭제</v-btn>
-            <v-btn color="blue" @click="updateSubject">논제 수정</v-btn>
+            <v-btn :value="subject" v-model="deleteSubject" color="red" @click="deleteSubject(subject.subNo)">논제 삭제</v-btn>
           </v-card>
         </v-col>
       </v-row>
@@ -68,28 +68,29 @@ export default {
 </script>
 
 <script setup>
-import { $postAdminSubject, $getSubjects } from '@/api/subject';
-import { ref, onMounted, nextTick } from 'vue';
 
-//gpt 관련 변수 선언
-const API_KEY = process.env.VUE_APP_GPT_API_KEY;
-const { Configuration, OpenAIApi } = require("openai");
-const imageUrl = ref([])
-const keywordList = ref(null)
-const test_text = ref('')
-const selectedImage = ref(null)
+import { ref, onMounted, nextTick } from 'vue'
+import { $getSubjects, $deleteSubject, $postAdminSubject } from '@/api/subject';
 
+const subject = {
+    // value: '',
+    content: '',
+    subject : '',
+    subNo : '',
+    withdraw : 'n',
+    // subDate : yyyymmdd,
+    subImagPath : '',
+    subOriginImg : '',
+  }
 
 
 //논제 관련 변수 선언
 const subjectList = ref([])
- const selectOne = ref('');
-const selectedSubject = ref('');
 
 // ref : 반응성을 편하게 부여하는 함수
-const sj = ref('')
+const sj = ref('');
 
-
+const selectedSubject = ref([]);
 
 
 //논제 조회기능
@@ -101,9 +102,38 @@ async function getSubjects() {
       console.log(subjectList.value);
     }
     sj.value = subjectList.value.subject
-    console.log(sj.value);
+    // console.log(sj.value);
   }).catch(err => console.log(err))
 }
+
+// 논제 선택 삭제
+async function deleteSubject(){
+  console.log(selectedSubject.value)
+  await $deleteSubject(selectedSubject.value)
+  .then(res => {
+    if (res.data != null || res.data != ''){
+      subject.value = res.data
+      console.log(subject.value);
+      getSubjects()
+    }
+    sj.value = subject.value.subject
+    // console.log(sj.value);
+  }).catch(err => console.log(err))
+}
+
+// 데이터 갱신
+onMounted(async () => {
+  await nextTick()
+  getSubjects()
+})
+
+//gpt 관련 변수 선언
+const API_KEY = process.env.VUE_APP_GPT_API_KEY;
+const { Configuration, OpenAIApi } = require("openai");
+const imageUrl = ref([])
+const keywordList = ref(null)
+const test_text = ref('')
+const selectedImage = ref(null)
 
 //이미지 생성 버튼
 async function makeImg() {
@@ -131,50 +161,50 @@ async function makeImg() {
     await runPrompt();
 
 
+  //이미지 생성 dallePrompt
+  function dallePrompt() {
+    console.log(keywordList.value);
+    const apiKey = API_KEY;
 
-//이미지 생성 dallePrompt
-    function dallePrompt() {
-      console.log(keywordList.value);
-      const apiKey = API_KEY;
+    const inputText = keywordList.value;
 
-      const inputText = keywordList.value;
+    // DALL-E2 API endpoint
+    const url = "https://api.openai.com/v1/images/generations";
 
-      // DALL-E2 API endpoint
-      const url = "https://api.openai.com/v1/images/generations";
+    // API request data
+    const data = {
+      "model": "image-alpha-001",
+      "prompt": inputText,
+      "num_images": 4,
+      "size": "256x256"
+    };
 
-      // API request data
-      const data = {
-        "model": "image-alpha-001",
-        "prompt": inputText,
-        "num_images": 4,
-        "size": "256x256"
-      };
+    // API request headers
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`
+    };
 
-      // API request headers
-      const headers = {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
-      };
-
-      // Send API request
-      fetch(url, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(data)
+    // Send API request
+    fetch(url, {
+      method: "POST",
+      headers: headers,
+      body: JSON.stringify(data)
+    })
+      .then(response => response.json())
+      .then(data => {
+        const imgList = []
+        for (let i = 0; i < 4; i++) {
+          imageUrl.value.push(data.data[i].url);
+        }
       })
-        .then(response => response.json())
-        .then(data => {
-          const imgList = []
-          for (let i = 0; i < 4; i++) {
-            imageUrl.value.push(data.data[i].url);
-          }
-        })
-        .catch(error => console.error(error));
-    }
-    await dallePrompt();
+      .catch(error => console.error(error));
+  }
+  await dallePrompt();
 
 }
 
+// 논제 생성
 function postAdminSubject(test_text, imgUrl) {
       $postAdminSubject(test_text, imgUrl)
       .then(res => {
@@ -184,11 +214,12 @@ function postAdminSubject(test_text, imgUrl) {
     })
   }
 
-
+// 갱신 
 onMounted( async () => {
   await nextTick()
 })
 
+// 논제 저장
 function addSubject() {
   console.log("test0312" + selectedImage.value);
   postAdminSubject(test_text.value, selectedImage.value);
@@ -198,33 +229,25 @@ function addSubject() {
     location.reload();
   }
 }
-
-
-
-onMounted( async () => {
-  await nextTick()
-  getSubjects()
-})
-
-
 </script>
 
 <style scoped>
+
+.subject-contain {
+  max-width: 2000px;
+  height: 2000px;
+  /* 또는 원하는 값으로 변경 */
+}
 .btn-containor {
   display: flex;
     float: right;
     flex-direction: column;
-    margin: 22px;
+    margin: 50px;
 }
 .sub-btn {
  float: right;
 }
 
-.scrollbox{
-  max-height: 1500px;
-  overflow-y: auto;
-  margin-top: 60px;
-  margin-bottom: 60px;
 
-}
+
 </style>
