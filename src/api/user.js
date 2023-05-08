@@ -10,4 +10,44 @@ async function $loginUser(loginData){
     }
 }
 
-export { $loginUser }
+async function $registerUser(userData){
+    try {
+    const axios = createJsonAxiosInstance()
+    return await axios.post('auth/signup', userData)
+    }
+    catch (err) {
+        console.log('error msg : ', err)
+    }
+}
+
+async function $checkUserId(userData){
+    try {
+    const axios = createJsonAxiosInstance()
+        return await axios.post('auth/signup/id-check', userData)
+    }
+    catch (err) {
+        console.log('error msg : ', err)
+    }
+}
+
+async function $checkNickname(userData){
+    try {
+    const axios = createJsonAxiosInstance()
+        return await axios.post('auth/signup/nickname-check', userData)
+    }
+    catch (err) {
+        console.log('error msg : ', err)
+    }
+}
+
+// 전체 회원 조회
+async function $getUsers(){
+    try {
+        const axios = createJsonAxiosInstance()
+        return await axios.get('admin/usersAdmin');        
+    } catch (err) {
+        console.log('error msg : ', err);
+    }
+}
+
+export { $loginUser, $registerUser, $checkUserId, $checkNickname, $getUsers}
