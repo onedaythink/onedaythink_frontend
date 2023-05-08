@@ -1,8 +1,9 @@
 <template>
     <template v-if="chatRooms.length > 0">
     <v-card class="mx-auto" v-for="(chatRoom, index) in chatRooms" :key="index">
-        <v-row v-if="chatRoom.chatStatus == 'w'">
-        <v-col cols="3">
+        <v-row>
+        <template v-if="chatRoom.lastMessage != null && chatRoom.lastMessage != ''">
+            <v-col cols="3">
         <v-img
             class="align-end text-white"
             src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
@@ -11,24 +12,22 @@
             style="border-radius: 50%; width: 70px; height: 70px;"  
         >
         </v-img>
-        <v-card-text>
-            {{chatRoom.toNickname}}
-        </v-card-text>
-        </v-col>
-        <v-col cols="9">
-        <v-card-text>
-            <div>"{{chatRoom.toNickname}}님이 회원님과 대화하고싶어해요!"</div>
-        </v-card-text>
-        
-        <v-card-actions class="button">
-        <v-btn @click="goToChatRoomOther" variant="outlined" color="yellow-accent-4" class="btn-bold" >수락</v-btn>
+            <v-card-text>
+                {{chatRoom.toNickname}}
+            </v-card-text>
+            </v-col>
+            <v-col cols="9">
+            <v-card-text>
+                <div>{{chatRoom.sendNickname}} : {{ chatRoom.lastMessage }} </div>
+            </v-card-text>
+            <v-card-actions class="button">
+        <v-btn @click="goToChatRoomOther(chatRoom)" variant="outlined" color="yellow-accent-4" class="btn-bold" >수락</v-btn>
         <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold">거절</v-btn>
         </v-card-actions>
         </v-col>
-        </v-row>
-
-        <v-row v-else>
-        <v-col cols="3" >
+        </template>
+        <template v-else>
+            <v-col cols="3">
         <v-img
             class="align-end text-white"
             src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
@@ -37,20 +36,20 @@
             style="border-radius: 50%; width: 70px; height: 70px;"  
         >
         </v-img>
-        <v-card-text>
+            <v-card-text>
             {{chatRoom.toNickname}}
-        </v-card-text>
-        </v-col>
-        <v-col cols="9">
-        <v-card-text>
-            <div>{{chatRoom.toNickname}} : "난 그렇게 생각하지 않.아.요."</div>
-        </v-card-text>
-        
-        <v-card-actions class="button">
-        <v-btn @click="goToChatRoomOther" variant="outlined" color="yellow-accent-4" class="btn-bold">입장</v-btn>
-        <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold">종료</v-btn>
+            </v-card-text>
+            </v-col>
+            <v-col cols="9">
+            <v-card-text>
+                <div>"{{chatRoom.toNickname}} 님이 회원님과 대화하고싶어해요!" </div>
+            </v-card-text>
+            <v-card-actions class="button">
+        <v-btn @click="goToChatRoomOther(chatRoom)" variant="outlined" color="yellow-accent-4" class="btn-bold" >수락</v-btn>
+        <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold">거절</v-btn>
         </v-card-actions>
         </v-col>
+        </template>
         </v-row>
     </v-card>
     <br>
@@ -71,14 +70,16 @@ import { useUserStore } from '@/store/user';
 import { useRouter } from 'vue-router';
 import {$getChatRooms} from '@/api/chat'
 import { ref, nextTick, onMounted } from 'vue'
+import { useChatStore } from '@/store/chat';
 
 const router = useRouter()
 const chatRooms = ref([])
 
-function goToChatRoomOther() {
+function goToChatRoomOther(chatRoom) {
     // 채팅방 연결
-    
-    router.push('/chatroomother');
+    const chatStore = useChatStore()
+    chatStore.setChatRoom(chatRoom)
+    router.push({path:'/chatroomother'});
 }
 
 const userStore = useUserStore()

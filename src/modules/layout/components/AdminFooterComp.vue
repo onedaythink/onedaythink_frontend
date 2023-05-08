@@ -13,6 +13,7 @@ export default {
 </script>
 
 <style scoped>
+
 .footer-text {
   font-family: 'IBM Plex Sans';
   font-style: normal;
@@ -22,4 +23,5 @@ export default {
   text-align: center;
   color: #FFFCFC;
 }
+
 </style>
