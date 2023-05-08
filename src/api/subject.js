@@ -47,9 +47,6 @@ async function $postAdminSubject(test_text,newVal){
 
 }
 
-
-
-
 // 논제 삭제
 async function $deleteSubject(subNoList){
     try {

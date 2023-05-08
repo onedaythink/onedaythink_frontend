@@ -40,5 +40,14 @@ async function $checkNickname(userData){
     }
 }
 
+// 전체 회원 조회
+async function $getUsers(){
+    try {
+        const axios = createJsonAxiosInstance()
+        return await axios.get('admin/usersAdmin');        
+    } catch (err) {
+        console.log('error msg : ', err);
+    }
+}
 
-export { $loginUser, $registerUser, $checkUserId, $checkNickname}
+export { $loginUser, $registerUser, $checkUserId, $checkNickname, $getUsers}
