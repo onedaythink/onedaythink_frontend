@@ -31,4 +31,14 @@ async function $getChatMessages(chatRoomNo){
     }
 }
 
-export { $createChatRoom, $getChatRooms, $getChatMessages }
+// 전체 채팅방 조회 (관리자용)
+async function $getChatRoomsAll(){
+    try {
+        const axios = createJsonAxiosInstance()
+        return await axios.get('admin/chatRoomsAdmin');        
+    } catch (err) {
+        console.log('error msg : ', err);
+    }
+}
+
+export { $createChatRoom, $getChatRooms, $getChatMessages, $getChatRoomsAll }
