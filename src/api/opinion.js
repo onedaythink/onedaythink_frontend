@@ -28,6 +28,15 @@ async function $getOpinion(userNo, subDate){
     }
 }
 
+async function $getMyOpinions(userNo){
+    try {
+        const axios = createJsonAxiosInstance()
+        return await axios.get('opinions/mypage/'+userNo);        
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 async function $addOpinion(currnet_opinion){
     try {
         const axios = createJsonAxiosInstance()
@@ -52,4 +61,4 @@ async function $likeControll(userNo, userOpiNo){
 }
 
 export { $getOpinions, $addOpinion, $getOpinion,
-     $getOpinionsByCreateAt, $likeControll }
+     $getOpinionsByCreateAt, $likeControll, $getMyOpinions }
