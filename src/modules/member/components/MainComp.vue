@@ -23,6 +23,7 @@
       >
     </v-col>
   </v-row>
+  <button @click="test">테스트</button>
 </template>
 
 <script>
@@ -31,6 +32,18 @@ export default {
 };
 </script>
 
+<script setup>
+import { $flaskTest } from '@/api/flask';
+
+function test() {
+  $flaskTest()
+  .then(res => {
+    console.log(res.data)
+  })
+  .catch(err => console.log(err))
+}
+
+</script>
 
 <style scoped>
 @font-face {

@@ -2,11 +2,10 @@
   <v-card
   >
     <v-img
-      src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+      :src=subImgPath
       height="200px"
       cover
     ></v-img>
-
     <v-card-title>
       2023.04.23 Sunday
     </v-card-title>
@@ -48,6 +47,7 @@ import {useSubjectStore} from '@/store/subject';
 
 const subjectStore = useSubjectStore()
 const subjectText = ref('')
+const subImgPath = ref('')
 
 const today = new Date();
 const year = today.getFullYear();
@@ -61,6 +61,7 @@ function postMainSubject() {
   $postMainSubject(yyyymmdd).then(res => {
     subjectStore.setSubject(res.data)
     subjectText.value = subjectStore.getSubject.content
+    subImgPath.value = subjectStore.getSubject.subImgPath
   }).catch(err => {
     console.log(err)
   })
