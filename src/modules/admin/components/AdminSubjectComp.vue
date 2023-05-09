@@ -155,11 +155,8 @@ async function makeImg() {
     console.log("testaslkdjasldj/" + completion);
     sentence.value = completion;
 
-
   }
   await runPrompt();
-
-
 
   //이미지 생성 dallePrompt
   function dallePrompt() {
