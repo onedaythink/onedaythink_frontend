@@ -7,7 +7,6 @@
       height="256px"
       cover
     ></v-img>
-
     <v-card-title>
       2023.04.23 Sunday
     </v-card-title>
@@ -51,6 +50,7 @@ import {useSubjectStore} from '@/store/subject';
 const subjectStore = useSubjectStore()
 const subjectText = ref('')
 const subjectImg = ref('')
+
 const today = new Date();
 const year = today.getFullYear();
 const month = (today.getMonth() + 1).toString().padStart(2, '0');
@@ -63,9 +63,9 @@ function postMainSubject() {
   $postMainSubject(yyyymmdd).then(res => {
     subjectStore.setSubject(res.data)
     subjectText.value = subjectStore.getSubject.content
-
     // 이미지경로값:C://사용자/test.png
     subjectImg.value = subjectStore.getSubject.subImgPath
+
   }).catch(err => {
     console.log(err)
   })

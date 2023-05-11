@@ -13,7 +13,7 @@
             <v-avatar color="brown" size="large">
               <span class="text-h5">{{ user.initials }}</span>
             </v-avatar>
-          </v-btn> <span>{{ user.fullName }}</span><br>
+          </v-btn> <span>{{ user.nickname }}</span><br>
         </template>
         <v-card>
           <v-card-text class="small">
@@ -21,7 +21,7 @@
               <v-avatar color="brown">
                 <span class="text-h5">{{ user.initials }}</span>
               </v-avatar>
-              <h3>{{ user.fullName }}</h3>
+              <h3>{{ user.nickname }}</h3>
               <p class="text-caption mt-1">
                 {{ user.email }}
               </p>
@@ -35,53 +35,82 @@
       </v-menu>
     </v-row>
     <!-- div 카드시작점 -->
-    <div class="mypage-card mt-10">
-      <v-card class="mx-auto" max-width="344">
-        <v-img
-          src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-          height="200px"
-          cover
-        ></v-img>
+    <template v-if="myOpinionList.length > 0">
+      <div class="mypage-card mt-10" v-for="opinion, idx in myOpinionList" :key="idx">
+        <v-card class="mx-auto" max-width="344">
+          <v-img
+            src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+            height="200px"
+            cover
+          ></v-img>
 
-        <v-card-title> 2023.04.25</v-card-title>
+          <v-card-title>{{ opinion.subDate }}</v-card-title>
 
-        <v-card-subtitle> 내가 썼던 사유주제 </v-card-subtitle>
+          <v-card-subtitle> {{opinion.content}} </v-card-subtitle>
 
-        <v-card-actions>
-      
-          <v-spacer></v-spacer>
+          <v-card-actions>
+        
+            <v-spacer></v-spacer>
 
-          <v-btn
-            :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-            @click="show = !show"
-          ></v-btn>
-        </v-card-actions>
+            <v-btn
+              :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+              @click="show = !show"
+            ></v-btn>
+          </v-card-actions>
 
-        <v-expand-transition>
-          <div v-show="show">
-            <v-divider></v-divider>
+          <v-expand-transition>
+            <div v-show="show">
+              <v-divider></v-divider>
 
-            <v-card-text >
-              <v-textarea v-model="myText" :value="'사용자가 적었던 기본 텍스트'"></v-textarea>
-              <v-btn type="submit" class="mr-2">수정하기</v-btn>
-               <v-btn type="submit">삭제하기</v-btn>
-            </v-card-text>
-          </div>
-        </v-expand-transition>
-      </v-card>
-    </div>
+              <v-card-text >
+                <v-textarea v-model="myText" :value="opinion.opinion"></v-textarea>
+                <v-btn type="submit" class="mr-2">수정하기</v-btn>
+                <v-btn type="submit">삭제하기</v-btn>
+              </v-card-text>
+            </div>
+          </v-expand-transition>
+        </v-card>
+      </div>
+    </template>
+    <template v-else>
+      <div>작성한 의견이 존재하지 않습니다.</div>
+    </template>
   </v-container>
 </template>
 
 <script>
 export default {
-  data: () => ({
-    user: {
-      initials: "JD",
-      fullName: "John Doe",
-      email: "john.doe@doe.com",
-    },
-    show: false,
-  }),
-};
+  name:"MyPageComp"
+}
+</script>
+
+<script setup>
+import { useUserStore } from '@/store/user';
+import { $getMyOpinions } from '@/api/opinion';
+import { onMounted, nextTick, ref } from 'vue';
+
+const user = {}
+
+const show = false
+
+const userStore = useUserStore()
+
+const myOpinionList = ref({})
+
+function getMyOpinionList() {
+    $getMyOpinions(user.value.userNo)
+    .then(res => {
+      console.log(res.data)
+      myOpinionList.value = res.data
+    })
+    .catch(err => console.log(err))
+}
+
+onMounted( async () => {
+  await nextTick()
+  user.value = userStore.getLoginUser
+  getMyOpinionList()
+})
+
+
 </script>
