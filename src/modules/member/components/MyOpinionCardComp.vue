@@ -11,10 +11,22 @@
           ></v-textarea>
         </v-col>
       </v-row>
-      <v-row >
-        <v-col cols="8" class="button" justify="start">
-          <v-btn color="light-blue-lighten-5" class="mr-auto" @click="save">저장</v-btn>
-          <v-btn color="light-blue-lighten-5" class="mr-auto" @click="share">타인과 공유</v-btn>
+      <v-row class="d-flex justify-center">
+        <v-col cols="8" class="button" :style="{ 'margin-left': '-100px' }">
+          <v-btn color="light-blue-lighten-5" class="mx-auto mr-2" @click="helper">생각 도우미</v-btn>
+          <v-btn color="light-blue-lighten-5" class="mx-auto mr-2" @click="save">저장</v-btn>
+          <v-btn color="light-blue-lighten-5" class="mx-auto mr-2" @click="share">타인과 공유</v-btn>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12" class="textarea">
+          <v-textarea
+            name="helper-7-1"
+            bg-color="blue-lighten-5"      
+            label="생각 도우미"
+            auto-grow
+            v-model=opHelper
+          ></v-textarea>
         </v-col>
       </v-row>
     </v-container>
@@ -34,7 +46,8 @@ import { onMounted, nextTick, ref } from 'vue'
 
   const userStore = useUserStore()
   const subjectStore = useSubjectStore()
-
+  const subjectContent = ref('');
+  
   const today = new Date();
   const year = today.getFullYear();
   const month = (today.getMonth() + 1).toString().padStart(2, '0');
@@ -52,6 +65,11 @@ import { onMounted, nextTick, ref } from 'vue'
   const myOpinion = ref({
     opinion : ''
   })
+
+  //gpt 관련 변수 선언
+  const API_KEY = process.env.VUE_APP_GPT_API_KEY;
+  const { Configuration, OpenAIApi } = require("openai");
+  const opHelper = ref('');
 
 function save() {
       opinion.userOpiNo = myOpinion.value.userOpiNo
@@ -85,12 +103,44 @@ async function getMyOpinion() {
   }).catch(err => console.log(err))
 }
 
+
+// 생각 도우미
+async function helper() {
+  console.log(op.value);
+  const configuration = new Configuration({
+    apiKey: API_KEY,
+  });
+  const openai = new OpenAIApi(configuration);
+  console.log(openai);
+  console.log(subjectContent);
+  subjectContent.value = subjectStore.getSubject.content;
+async function runPrompt() {
+    const prompt = `[${subjectContent.value}] 이 내용을 참고해서 작성한 나의 생각을 보충해줘 [나의 생각:${op.value}]`;
+    const response = await openai.createCompletion({
+      model: "text-davinci-003",
+      prompt: prompt,
+      max_tokens: 700,
+      temperature: 0.2,
+    });
+
+    console.log('- completion:\n' + response.data.choices[0].text);
+    const completion = response.data.choices[0].text;
+    console.log("testaslkdjasldj/" + completion);
+    opHelper.value = completion;
+}
+  await runPrompt();
+}
+
+
+
+
 onMounted( async () => {
   await nextTick()
   getMyOpinion()
-})
+});
 
 </script>
+
 
 
 <style>

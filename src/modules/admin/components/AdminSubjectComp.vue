@@ -47,7 +47,7 @@
                    </td>
                   <td class="text-left">{{ subject.subNo }}</td>
                   <td class="text-left">{{ subject.content }}</td>
-                  <td class="text-left">{{ subject.subOriginImg }}</td>
+                  <td class="text-left">{{ subject.subImagPath }}</td>
                   <td class="text-left">{{ subject.subDate }}</td>
                 </tr>
               </tbody>
@@ -143,7 +143,7 @@ async function makeImg() {
   });
   const openai = new OpenAIApi(configuration);
   console.log(openai);
-  async function runPrompt() {
+async function runPrompt() {
     const response = await openai.createCompletion({
       model: "text-davinci-003",
       prompt: "다음 주제에 어울리는 그림을 그리고 싶은데, 그 그림에 어울리는 아이디어를 한문장으로 된 영어로 답변해줘. 주제:" + test_text.value,
