@@ -23,7 +23,12 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-btn @click="likeControll(opinion.userOpiNo)" variant="outlined" color="yellow-accent-4" class="btn-bold">"좋아요"</v-btn>
-                        <v-btn @click="createChatRoom(opinion.userOpiNo)" variant="outlined" color="blue-lighten-4" class="btn-bold">"대화하고싶어요"</v-btn>
+                        <template v-if=False>
+                            <v-btn @click="goToChatRoomOther(opinion.chatRoom)" variant="outlined" color="blue-lighten-4" class="btn-bold">채팅방 입장</v-btn>
+                        </template>
+                        <template v-else>
+                            <v-btn @click="createChatRoom(opinion.userOpiNo)" variant="outlined" color="blue-lighten-4" class="btn-bold">"대화하고싶어요"</v-btn>
+                        </template>
                     </v-card-actions>
                 </v-col>
             </v-row>
@@ -64,8 +69,10 @@
 import { $getOpinionsByCreateAt, $likeControll } from '@/api/opinion'
 import { $createChatRoom } from '@/api/chat'
 import { useSubjectStore } from '@/store/subject'
+import { useChatStore } from '@/store/chat'
 import { useUserStore } from '@/store/user'
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const userStore = useUserStore()
 const subjectStore = useSubjectStore()
@@ -97,6 +104,14 @@ async function createChatRoom(userOpiNo) {
         window.alert('채팅 요청을 전송하였습니다.')
     })
     .catch(err => console.log(err))
+}
+
+function goToChatRoomOther(chatRoom) {
+    // 채팅방 연결
+    const router = useRouter()
+    const chatStore = useChatStore()
+    chatStore.setChatRoom(chatRoom)
+    router.push({path:'/chatroomother'});
 }
 
 onMounted( async () => {
