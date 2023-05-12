@@ -5,23 +5,19 @@
       <v-item-group v-model="selection" multiple>
         <v-row>
           <v-col v-for="(item, i) in haruList" :key="i" cols="12" md="6">
-            <v-item v-slot="{ isSelected, toggle }">
+            <v-item>
               <v-img
                 :src="item.haruImgPath"
                 :alt="item.haruNo"
                 cover
                 height="150"
                 class="d-flex justify-end pa-2"
-                @click="toggleOverlay(item)"
+                @click="toggleItem(item)"
               >
-                <div class="overlay" v-if="!isSelected">
+                <div class="overlay" v-if="!isSelected(item)">
                   {{ item.haruName }}
                 </div>
-                <v-btn
-                  :icon="isSelected ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"
-                  class="icon-btn"
-                  @click="toggleOverlay(item)"
-                ></v-btn>
+                <v-btn :icon="isSelected(item) ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'" class="icon-btn"></v-btn>
               </v-img>
             </v-item>
           </v-col>
@@ -50,7 +46,7 @@ export default {
     const haruList = ref([]);
     const selection = ref([]);
 
-    async function getHaruChar() {
+    const getHaruChar = async () => {
       try {
         const res = await $getHaruChar();
         if (res.data != null || res.data != '') {
@@ -59,28 +55,32 @@ export default {
       } catch (err) {
         console.log(err);
       }
-    }
+    };
 
-    function startTalk() {
-      console.log('TALK START:', selection.value);
-    }
+    const isSelected = (item) => {
+      return selection.value.includes(item);
+    };
 
-    function toggleOverlay(item) {
-      const index = selection.value.indexOf(item);
-      if (index === -1) {
-        selection.value.push(item);
+    const toggleItem = (item) => {
+      if (isSelected(item)) {
+        selection.value = selection.value.filter((selectedItem) => selectedItem !== item);
       } else {
-        selection.value.splice(index, 1);
+        selection.value.push(item);
       }
-    }
+    };
+
+    const startTalk = () => {
+      console.log('TALK START:', selection.value);
+    };
 
     onMounted(getHaruChar);
 
     return {
       haruList,
       selection,
+      isSelected,
+      toggleItem,
       startTalk,
-      toggleOverlay,
     };
   },
 };
@@ -108,8 +108,5 @@ export default {
   font-weight: bold;
   opacity: 0;
   transition: opacity 0.2s ease-in-out;
-}
-.overlay:hover {
-  opacity: 1;
 }
 </style>
