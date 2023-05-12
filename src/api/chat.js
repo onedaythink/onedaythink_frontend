@@ -41,4 +41,14 @@ async function $getChatRoomsAll(){
     }
 }
 
-export { $createChatRoom, $getChatRooms, $getChatMessages, $getChatRoomsAll }
+// 하루 캐릭터 조회
+async function $getHaruChar(){
+    try {
+        const axios = createJsonAxiosInstance()
+        return await axios.get('haruchat');        
+    } catch (err) {
+        console.log('error msg : ', err);
+    }
+}
+
+export { $createChatRoom, $getChatRooms, $getChatMessages, $getChatRoomsAll, $getHaruChar }

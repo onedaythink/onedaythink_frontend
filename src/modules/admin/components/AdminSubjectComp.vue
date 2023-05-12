@@ -47,7 +47,7 @@
                    </td>
                   <td class="text-left">{{ subject.subNo }}</td>
                   <td class="text-left">{{ subject.content }}</td>
-                  <td class="text-left">{{ subject.subOriginImg }}</td>
+                  <td class="text-left">{{ subject.subImagPath }}</td>
                   <td class="text-left">{{ subject.subDate }}</td>
                 </tr>
               </tbody>
@@ -219,7 +219,7 @@ function addSubject() {
 
 
   if (confirm("논제를 정말 넣으시겠습니까?")) {
-    location.reload();
+ //   location.reload();
   }
 }
 </script>

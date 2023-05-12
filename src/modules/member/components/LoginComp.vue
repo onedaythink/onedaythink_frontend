@@ -43,7 +43,7 @@
           로그인
         </v-btn>
 
-        <v-btn
+        <!-- <v-btn
           :disabled="!form"
           :loading="loading"
           block
@@ -53,7 +53,7 @@
           variant="elevated"
         >
           아이디/비밀번호 찾기
-        </v-btn>
+        </v-btn> -->
     </div>
   </v-form>
 </template>

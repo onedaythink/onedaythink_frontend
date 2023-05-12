@@ -2,8 +2,9 @@
   <v-card
   >
     <v-img
-      :src=subImgPath
-      height="200px"
+     :src= findImage(subjectImg)
+      width="256px"
+      height="256px"
       cover
     ></v-img>
     <v-card-title>
@@ -25,7 +26,6 @@
     <v-expand-transition>
       <div v-show="show">
         <v-divider></v-divider>
-
         <v-card-text>
           {{ subjectText }}  
         </v-card-text>
@@ -66,7 +66,7 @@ function formattedDate() {
 
 const subjectStore = useSubjectStore()
 const subjectText = ref('')
-const subImgPath = ref('')
+const subjectImg = ref('')
 
 const today = new Date();
 const year = today.getFullYear();
@@ -80,10 +80,17 @@ function postMainSubject() {
   $postMainSubject(yyyymmdd).then(res => {
     subjectStore.setSubject(res.data)
     subjectText.value = subjectStore.getSubject.content
-    subImgPath.value = subjectStore.getSubject.subImgPath
+    // 이미지경로값:C://사용자/test.png
+    subjectImg.value = subjectStore.getSubject.subImgPath
+
   }).catch(err => {
     console.log(err)
   })
+}
+
+function findImage(subjectImg) {
+  const convertedPath = subjectImg.replace(/\\/g, '/');
+  return `http://localhost:8080/onedaythink/api/v1/imgfind/subjectImg?subjectImgPath=${convertedPath}`;
 }
 
 onMounted( async () => {

@@ -6,11 +6,11 @@
         <v-main>
           <br><br><br>
           <v-img
-            :width="353"
+            :width="250"
             aspect-ratio="1/1"
             cover
 
-            src="@/assets/onedaythink_haru0.png"
+            src="@/assets/onedaythink.png"
 
           ></v-img>
           <router-view></router-view>

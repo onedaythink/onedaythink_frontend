@@ -8,7 +8,8 @@
   >
 
   <v-app-bar-title>
-    <v-img class="logo" src="@/assets/onedaythink_haru0.png" alt="하루생각">
+    <v-img width="50%" class="logo" src="@/assets/onedaythink.png" alt="하루생각">
+      
     </v-img>
   </v-app-bar-title>
 
