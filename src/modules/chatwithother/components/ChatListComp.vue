@@ -37,7 +37,7 @@
             >
             </v-img>
                 <v-card-text>
-                {{chatRoom.toNickname}}
+                {{chatRoom.fromNickname}}
                 </v-card-text>
                 </v-col>
                 <v-col cols="9">

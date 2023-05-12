@@ -91,9 +91,12 @@ import { useRouter } from 'vue-router';
     // setTimeout(() => (loading.value = false), 2000);
     console.log(loginInfo.value)
     $loginUser(loginInfo.value).then(res => {
-          console.log(res.data)
+          if(res.data != '' && res.data != null) {
           userStore.setLoginUser(res.data)
           router.push('/home')
+          } else {
+            window.alert('로그인에 실패했습니다.')
+          }
         })
         .catch(err => console.log(err)
         )
