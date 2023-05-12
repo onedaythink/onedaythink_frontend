@@ -7,6 +7,20 @@ function createAxiosInstance() {
     })
 }
 
+function createFlaskAxiosInstance() {
+  return axios.create({
+      withCredentials: true,
+      baseURL: 'http://127.0.0.1:5000/'
+  })
+}
+
+function createJsonFlaskAxiosInstance () {
+  const instance = createFlaskAxiosInstance()
+  instance.defaults.headers.post['Content-Type'] = 'application/json; charset-8'
+  return instance
+}
+
+
 function createJsonAxiosInstance (userInfo) {
     const instance = createAxiosInstance()
     instance.defaults.headers.post['Content-Type'] = 'application/json; charset-8'
@@ -28,4 +42,4 @@ function createJsonAxiosInstance (userInfo) {
     return instance
   }
   
-  export {createJsonAxiosInstance, createFormAxiosInstance }
+  export {createJsonAxiosInstance, createFormAxiosInstance, createJsonFlaskAxiosInstance }

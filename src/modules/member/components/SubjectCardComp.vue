@@ -2,11 +2,11 @@
   <v-card
   >
     <v-img
-      src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-      height="200px"
+     :src= findImage(subjectImg)
+      width="256px"
+      height="256px"
       cover
     ></v-img>
-
     <v-card-title>
       2023.04.23 Sunday
     </v-card-title>
@@ -26,7 +26,6 @@
     <v-expand-transition>
       <div v-show="show">
         <v-divider></v-divider>
-
         <v-card-text>
           {{ subjectText }}  
         </v-card-text>
@@ -46,8 +45,11 @@ import { $postMainSubject } from '@/api/subject';
 import { ref, onMounted, nextTick } from 'vue';
 import {useSubjectStore} from '@/store/subject';
 
+
+
 const subjectStore = useSubjectStore()
 const subjectText = ref('')
+const subjectImg = ref('')
 
 const today = new Date();
 const year = today.getFullYear();
@@ -64,9 +66,17 @@ function postMainSubject() {
   .then(res => {
     subjectStore.setSubject(res.data)
     subjectText.value = subjectStore.getSubject.content
+    // 이미지경로값:C://사용자/test.png
+    subjectImg.value = subjectStore.getSubject.subImgPath
+
   }).catch(err => {
     console.log(err)
   })
+}
+
+function findImage(subjectImg) {
+  const convertedPath = subjectImg.replace(/\\/g, '/');
+  return `http://localhost:8080/onedaythink/api/v1/imgfind/subjectImg?subjectImgPath=${convertedPath}`;
 }
 
 onMounted( async () => {

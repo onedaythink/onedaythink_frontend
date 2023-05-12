@@ -1,4 +1,5 @@
 <template>
+  <v-container fluid>
     <v-row class="mt-5">
       <v-col cols="12" md="6">
         <v-card class="mb-5 pa-3" flat tile style="margin-top: 50px">
@@ -21,9 +22,11 @@
             </div>
           </v-card>
         </v-col> 
-  
+      </v-row>
+
+      <v-row class="mt-5">
         <v-col cols="12" md="6">
-          <v-card class="mb-5 pa-3" flat tile style="margin-top: 50px">
+          <v-card class="pa-3" flat tile>
             <v-card-title>채팅방 관리</v-card-title>
             <div class="chart-section">
               <v-list>
@@ -43,7 +46,6 @@
             </div>
           </v-card>
         </v-col>
-      </v-row>
 
       <v-col cols="12" md="6">
         <v-card class="pa-3" flat tile>
@@ -67,6 +69,8 @@
         </v-card>
 
       </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
