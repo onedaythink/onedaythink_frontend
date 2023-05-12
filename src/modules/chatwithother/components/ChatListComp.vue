@@ -4,51 +4,58 @@
         <v-row>
         <template v-if="chatRoom.lastMessage != null && chatRoom.lastMessage != ''">
             <v-col cols="3">
-        <v-img
-            class="align-end text-white"
-            src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-            cover
-            rounded
-            style="border-radius: 50%; width: 70px; height: 70px;"  
-        >
-        </v-img>
-            <v-card-text>
-                {{chatRoom.toNickname}}
-            </v-card-text>
+            <v-img
+                class="align-end text-white"
+                src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+                cover
+                rounded
+                style="border-radius: 50%; width: 70px; height: 70px;"  
+            >
+            </v-img>
+                <v-card-text>
+                    {{chatRoom.toNickname}}
+                </v-card-text>
+                </v-col>
+                <v-col cols="9">
+                <v-card-text>
+                    <div>{{chatRoom.sendNickname}} : {{ chatRoom.lastMessage }} </div>
+                </v-card-text>
+                <v-card-actions class="button">
+            <v-btn @click="goToChatRoomOther(chatRoom)" variant="outlined" color="yellow-accent-4" class="btn-bold" >입장</v-btn>
+            <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold">종료</v-btn>
+            </v-card-actions>
             </v-col>
-            <v-col cols="9">
-            <v-card-text>
-                <div>{{chatRoom.sendNickname}} : {{ chatRoom.lastMessage }} </div>
-            </v-card-text>
-            <v-card-actions class="button">
-        <v-btn @click="goToChatRoomOther(chatRoom)" variant="outlined" color="yellow-accent-4" class="btn-bold" >수락</v-btn>
-        <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold">거절</v-btn>
-        </v-card-actions>
-        </v-col>
         </template>
         <template v-else>
             <v-col cols="3">
-        <v-img
-            class="align-end text-white"
-            src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-            cover
-            rounded
-            style="border-radius: 50%; width: 70px; height: 70px;"  
-        >
-        </v-img>
-            <v-card-text>
-            {{chatRoom.toNickname}}
-            </v-card-text>
+            <v-img
+                class="align-end text-white"
+                src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+                cover
+                rounded
+                style="border-radius: 50%; width: 70px; height: 70px;"  
+            >
+            </v-img>
+                <v-card-text>
+                {{chatRoom.fromNickname}}
+                </v-card-text>
+                </v-col>
+                <v-col cols="9">
+                <template v-if="chatRoom.fromUserNo == userStore.getLoginUser.userNo">
+                    <v-card-text>
+                        <div>"{{chatRoom.toNickname}} 에게 초대 메세지를 보냈습니다!" </div>
+                    </v-card-text>
+                </template>
+                <template v-else>
+                    <v-card-text>
+                        <div>"{{chatRoom.toNickname}} 님이 회원님과 대화하고싶어해요!" </div>
+                    </v-card-text>
+                </template>
+                <v-card-actions class="button">
+            <v-btn @click="goToChatRoomOther(chatRoom)" variant="outlined" color="yellow-accent-4" class="btn-bold" >입장</v-btn>
+            <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold">종료</v-btn>
+            </v-card-actions>
             </v-col>
-            <v-col cols="9">
-            <v-card-text>
-                <div>"{{chatRoom.toNickname}} 님이 회원님과 대화하고싶어해요!" </div>
-            </v-card-text>
-            <v-card-actions class="button">
-        <v-btn @click="goToChatRoomOther(chatRoom)" variant="outlined" color="yellow-accent-4" class="btn-bold" >수락</v-btn>
-        <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold">거절</v-btn>
-        </v-card-actions>
-        </v-col>
         </template>
         </v-row>
     </v-card>
@@ -79,6 +86,7 @@ function goToChatRoomOther(chatRoom) {
     // 채팅방 연결
     const chatStore = useChatStore()
     chatStore.setChatRoom(chatRoom)
+    console.log(chatRoom.value)
     router.push({path:'/chatroomother'});
 }
 
