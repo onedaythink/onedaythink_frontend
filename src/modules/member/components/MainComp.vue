@@ -12,17 +12,18 @@
 
   <v-row justify="center" align="center" style="margin-bottom: 6px">
     <v-col cols="auto">
-      <v-btn density="compact">
+      <v-btn color= "#FBF0A0" density="compact">
         <router-link to="/signup">회원가입</router-link></v-btn
       >
     </v-col>
 
     <v-col cols="auto">
-      <v-btn density="comfortable">
+      <v-btn color= "#FBF0A0" density="comfortable">
         <router-link to="/login">로그인</router-link></v-btn
       >
     </v-col>
   </v-row>
+  <button @click="test"></button>
 </template>
 
 <script>
@@ -31,21 +32,41 @@ export default {
 };
 </script>
 
+<script setup>
+import { $flaskTest } from '@/api/flask';
+
+function test() {
+  $flaskTest()
+  .then(res => {
+    console.log(res.data)
+  })
+  .catch(err => console.log(err))
+}
+
+</script>
 
 <style scoped>
+
 @font-face {
-    font-family: 'Middleschool_student';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/naverfont_08@1.0/Middleschool_student.woff') format('woff');
-    font-weight: normal;
+    font-family: 'TheJamsil5Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302_01@1.0/TheJamsil5Bold.woff2') format('woff2');
+    font-weight: 700;
     font-style: normal;
 }
+@font-face {
+font-family: 'UhBeeMiMi';
+src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_five@.2.0/UhBeeMiMi.woff') format('woff');
+font-weight: normal;
+font-style: normal;
+}
+
 .text-body-5{
-   font-family: 'Middleschool_student';
-   font-size: 135%;
+   font-family: 'TheJamsil5';
+
 
 }
 .double-quotes{
-  font-weight: 900;
+  font-family: 'UhBeeMiMi';
   font-size: 30px;
 }
 </style>

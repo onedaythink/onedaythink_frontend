@@ -219,7 +219,7 @@ function addSubject() {
 
 
   if (confirm("논제를 정말 넣으시겠습니까?")) {
-    location.reload();
+ //   location.reload();
   }
 }
 </script>
