@@ -60,7 +60,7 @@
 </template>
 <script>
 export default {
-  name: "ChatRoom"
+  name: "ChatRoomHaruView"
 }
 </script>
 
