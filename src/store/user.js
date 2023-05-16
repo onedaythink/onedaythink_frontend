@@ -14,6 +14,7 @@ export const useUserStore = defineStore('user', () => {
 
   const logout = () => {
     setLoginUser(null)
+    console.log(user.value)
     router.push('/')
   }
   function setLoginUser (current_user) {
