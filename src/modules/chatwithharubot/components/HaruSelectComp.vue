@@ -6,18 +6,16 @@
         <v-row>
           <v-col v-for="(item, i) in haruList" :key="i" cols="12" md="6">
             <v-item>
-              <v-img
-                :src="item.haruImgPath"
-                :alt="item.haruNo"
-                cover
-                height="150"
-                class="d-flex justify-end pa-2"
-                @click="toggleItem(item)"
-              >
-                <div class="overlay" v-if="!isSelected(item)">
-                  {{ item.haruName }}
+
+              <v-img :src="item.haruImgPath" :alt="item.haruNo" cover height="150" class="d-flex justify-end pa-2"
+                @click="toggleItem(item)">
+                <div class="image-overlay">
+                  <span class="image-text">{{ item.haruName }}</span>
                 </div>
-                <v-btn :icon="isSelected(item) ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'" class="icon-btn"></v-btn>
+                <div class="overlay" v-if="!isSelected(item)"></div>
+                <v-btn :icon="isSelected(item) ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"
+                  class="icon-btn"></v-btn>
+
               </v-img>
             </v-item>
           </v-col>
@@ -25,11 +23,7 @@
       </v-item-group>
     </v-container>
     <v-card-actions>
-      <v-btn
-        v-if="selection.length > 0"
-        @click="startTalk"
-        color="deep-purple accent-4"
-      >
+      <v-btn v-if="selection.length > 0" @click="startTalk" color="deep-purple accent-4">
         하루봇 TALK START({{ selection.length }})
       </v-btn>
     </v-card-actions>
@@ -86,13 +80,14 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .icon-btn {
   position: absolute;
   bottom: 10px;
   right: 10px;
   z-index: 1;
 }
+
 .overlay {
   position: absolute;
   top: 0;
@@ -109,4 +104,23 @@ export default {
   opacity: 0;
   transition: opacity 0.2s ease-in-out;
 }
+
+
+.image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 8px;
+}
+
+.image-text {
+  color: mintcream;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
 </style>
+

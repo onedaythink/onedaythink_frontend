@@ -12,28 +12,9 @@
 
   <v-card>
     <v-card-actions class="topic-btn">
-      <v-spacer>생각주제</v-spacer>
-      <v-btn
-        :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-        @click="show = !show"
-      ></v-btn>
+      <v-spacer>하루에게 궁금한 것을 물어보세요</v-spacer>
     </v-card-actions>
-
-    <v-expand-transition>
-      <div v-show="show">
-        <v-divider></v-divider>
-        <v-card-text>
-           I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape.
-        </v-card-text>
-      </div>
-    </v-expand-transition>
   </v-card>
-
-    <v-row>
-      <v-col cols="12" class="text-center">
-        <h3 class="grey--text">{{ otherName }}님과의 대화</h3>
-      </v-col>
-    </v-row>
 
   <!-- Chat messages -->
 <v-row>
@@ -54,7 +35,7 @@
               </div>
             </div>
             <div> 
-                <span class="grey--text">{{ message.sender.nickname }} {{ message.time }}</span>
+                <div class="d-flex grey--text" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">{{ message.sender.nickname }} {{ message.time }}</div>
             </div>
           </v-col>
         </v-row>
@@ -66,7 +47,7 @@
 <!-- Message input -->
 <v-row>
   <v-col cols="12">
-    <v-textarea v-model="userMessage" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup.enter="sendMessageAndClear"></v-textarea>
+    <v-textarea v-model="userMessage" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup.enter="sendMessage"></v-textarea>
   </v-col>
 </v-row>
 <v-row>
@@ -75,85 +56,81 @@
   </v-col>
 </v-row>
 
-<!-- Add this button after the '전송' button -->
-<v-btn color="#FBF0A0" dark @click="receiveMessage">Receive</v-btn>
-
   </v-container>
 </template>
 <script>
 export default {
-  name: "ChatRoom",
-  data: () => ({
-    show: false,
-    otherName: "하루",
-    myName: "후니",
-    messages: [], // 채팅 메시지 배열
-    userMessage: '',
-  }),
-  watch: {
-    messages() {
-      this.$nextTick(() => {
-      const container = this.$el.querySelector(".chat-card-wrapper");
-      container.scrollTop = container.scrollHeight;
-    });
-    },
-  },
-  methods: {
-    // 사용자가 새로운 메시지를 입력하면 호출되는 함수
-    sendMessage() {
-      // userMessage가 비어있으면 함수를 종료합니다.
-      if (!this.userMessage) {
-        return;
-      }
-      // messages 배열에 새로운 메시지를 추가합니다.
-      const currentTime = this.getCurrentTime();
-      this.messages.push({
-        sender: { nickname: this.myName, avatarUrl: '' },
-        content: this.userMessage,
-        time: currentTime,
-      });
-      // userMessage를 초기화합니다.
-      this.userMessage = "";
+  name: "ChatRoom"
+}
+</script>
 
-      // 스크롤을 최신 메시지로 이동시킵니다.
-      this.scrollToLatestMessage();
-    },
-    // sendMessage 메소드를 호출하고 userMessage를 초기화하는 함수
-    sendMessageAndClear() {
-      this.sendMessage();
-      this.userMessage = "";
-    },
-    getCurrentTime() {
-      const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-      const ampm = hours >= 12 ? "pm" : "am";
-      const hour = hours % 12;
-      const time = `${ampm} ${hour}:${minutes < 10 ? "0" + minutes : minutes}`;
-      return time;
-    },
-    receiveMessage() {
-    const currentTime = this.getCurrentTime();
-    this.messages.push({
-      sender: { nickname: this.otherName, avatarUrl: '' },
-      content: "미라니가 뭘 바라고 있는지 몰라서 그래??",
-      time: currentTime,
-    });
-        // 스크롤을 최신 메시지로 이동시킵니다.
-        this.scrollToLatestMessage();
-  },
+<script setup>
+import { useUserStore } from '@/store/user';
+import { ref, nextTick } from "vue";
+import { $questionForHaru } from '@/api/flask';
   
-    scrollToLatestMessage() {
-      this.$nextTick(() => {
-        const container = this.$el.querySelector(".chat-card-wrapper");
+
+const userStore = useUserStore()
+const myName = userStore.getLoginUser.nickname
+const otherName = ref('하루')
+const messages = ref([])
+const userMessage = ref("")
+
+async function scrollToLatestMessage() {
+      await nextTick(() => {
+        const container = document.querySelector(".chat-card-wrapper");
         container.scrollTop = container.scrollHeight;
       });
-    },
-    goToChatWithHaru() {
-      this.$router.push('/chatwithharubot');
-    },
-  },
-};
+  }
+
+const getCurrentTime = () => {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const ampm = hours >= 12 ? "pm" : "am";
+    const hour = hours % 12;
+    const time = `${ampm} ${hour}:${minutes < 10 ? "0" + minutes : minutes}`;
+    return time;
+  };
+
+const sendMessage = () => {
+      // userMessage가 비어있으면 함수를 종료합니다.
+      if (userMessage.value == null || userMessage.value.trim() == "") {
+        console.log(userMessage.value)
+        return;
+        
+      }
+      // messages 배열에 새로운 메시지를 추가합니다.
+      const currentTime = getCurrentTime();
+      messages.value.push({
+        sender: { nickname: userStore.getLoginUser.nickname, avatarUrl: '' },
+        content: userMessage.value,
+        time: currentTime
+      });
+      receiveMessage()
+      // userMessage를 초기화합니다.
+      userMessage.value = "";
+
+      // 스크롤을 최신 메시지로 이동시킵니다.
+      scrollToLatestMessage();
+    }
+
+
+async function receiveMessage() {
+  await $questionForHaru(userMessage.value)
+  .then(res => {
+    const answer = res.data
+    messages.value.push({
+      sender: { nickname: otherName.value, avatarUrl: '' },
+      content: answer.content
+    });
+  })
+  .catch(err => console.log(err))
+      // 스크롤을 최신 메시지로 이동시킵니다.
+      scrollToLatestMessage();
+}
+
+
 </script>
 
 <style scoped>

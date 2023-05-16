@@ -74,7 +74,7 @@
               </div>
             </div>
             <div> 
-                <span class="grey--text">{{ message.sender.nickname }} {{ message.time }}</span>
+              <div class="d-flex grey--text" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">{{ message.sender.nickname }} {{ message.time }}</div>
             </div>
           </v-col>
         </v-row>
@@ -115,7 +115,7 @@
   import { useUserStore } from "@/store/user";
   import { useChatStore } from "@/store/chat";
   import { $getChatMessages } from '@/api/chat';
-import { useSubjectStore } from "@/store/subject";
+  import { useSubjectStore } from "@/store/subject";
 
     const userStore = useUserStore()
     const subjectStore = useSubjectStore()
