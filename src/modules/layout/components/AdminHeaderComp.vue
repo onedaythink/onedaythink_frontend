@@ -16,7 +16,8 @@
         </v-col>
         <v-spacer></v-spacer>
         <v-col cols="auto" class="menu-item">
-          <router-link to="/" class="text">로그아웃</router-link>
+          <!-- CSS class="text"를 적용하기 위해 router -to 대신 @click 이벤트 적용 -->
+          <router-link to="/login" class="text" @click.prevent="logout()">로그아웃</router-link>
         </v-col>
       </v-row>
     </v-container>
@@ -24,8 +25,17 @@
 </template>
 
 <script>
+import { useUserStore } from '@/store/user'
+
 export default {
-  name: "AdminHeaderComp"
+  name: "AdminHeaderComp",
+  setup() {
+    const { logout } = useUserStore()
+
+    return {
+      logout
+    }
+  }
 };
 </script>
 

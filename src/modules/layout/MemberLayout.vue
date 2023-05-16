@@ -1,5 +1,5 @@
 <template>
-  <div class="v-app">
+   <div class="v-app">
     <v-card>
       <v-layout>
         <v-app-bar color="white">
@@ -32,12 +32,14 @@
       </v-layout>
     </v-card>
     <footer-comp></footer-comp>
+
   </div>
 </template>
 
 <script>
 import FooterComp from '@/modules/layout/components/FooterComp.vue';
 import StickyHaruComp from '@/modules/layout/components/StickyHaruComp.vue';
+import { useUserStore } from '@/store/user'
 
 export default {
   name:'MemberLayout',
@@ -52,6 +54,13 @@ export default {
     group () {
       this.drawer = false
     },
+  },
+  setup() {
+    const { logout } = useUserStore()
+
+    return {
+      logout
+    }
   }
 }
 </script>
