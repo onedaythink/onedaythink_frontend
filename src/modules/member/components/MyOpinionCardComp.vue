@@ -108,7 +108,6 @@ async function getMyOpinion() {
   
 }
 
-
 // 생각 도우미
 async function helper() {
   console.log(op.value);
@@ -116,11 +115,10 @@ async function helper() {
     apiKey: API_KEY,
   });
   const openai = new OpenAIApi(configuration);
-  console.log(openai);
   console.log(subjectContent);
   subjectContent.value = subjectStore.getSubject.content;
 async function runPrompt() {
-    const prompt = `[${subjectContent.value}] 이 내용을 참고해서 작성한 나의 생각을 보충해줘 [나의 생각:${op.value}]`;
+    const prompt = `[${subjectContent.value}] 이 내용을 참고해서 작성한 나의 생각을 보충해줘 [나의 생각:${op.value}] 제한 시간은 15초 이내야. 그 시간 내에 답변해줘`;
     const response = await openai.createCompletion({
       model: "text-davinci-003",
       prompt: prompt,
