@@ -1,91 +1,71 @@
 <template>
-  <v-container fluid>
-    <v-row>
-      <v-col cols="12" class="d-flex justify-start">
-        <v-img @click="$router.go(-1)"
-          src="@/assets/back_arrow.png"
-          class="back-arrow"
-        ></v-img>
-        <v-spacer></v-spacer>
-      </v-col>
-    </v-row>
-
-  <v-card>
-    <v-card-actions class="topic-btn">
-      <v-spacer>하루에게 궁금한 것을 물어보세요</v-spacer>
-    </v-card-actions>
-  </v-card>
-
-  <!-- Chat messages -->
-<v-row>
-  <v-col cols="12" class="d-flex justify-center">
-    <v-card class="chat-card-wrapper" style="overflow-y: auto;">
-      <v-card-text>
-        <!-- message -->
-        <v-row v-for="message in messages" :key="message.id">
-          <v-col cols="12">
-            <!-- Removed the v-divider element -->
-            <div class="d-flex" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">
-              <div>
-                <v-card class="mx-2" :class="message.sender.nickname === myName ? 'chat-message-yellow' : 'chat-message-mint'" tile>
-                  <v-card-text>
-                    {{ message.content }}
-                  </v-card-text>
-                </v-card>
-              </div>
-            </div>
-            <div> 
-                <div class="d-flex grey--text" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">{{ message.sender.nickname }} {{ message.time }}</div>
-            </div>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
-  </v-col>
-</v-row>
-
-<!-- Message input -->
-<v-row>
-  <v-col cols="12">
-    
-    <!-- 하루봇 선택을 위한 모달 -->
-    <v-dialog v-model="showModal" persistent max-width="500px">
-      <v-card>
-        <v-card-title>
-
-          <input ref="searchBox" type="text" :value="searchTerm" @input="filteredList">
+    <v-container fluid>
+      <v-row>
+        <v-col cols="12" class="d-flex justify-start">
+          <v-img @click="$router.go(-1)"
+            src="@/assets/back_arrow.png"
+            class="back-arrow"
+          ></v-img>
           <v-spacer></v-spacer>
-        </v-card-title>
+        </v-col>
+      </v-row>
+  
+    <v-card>
+      <v-card-actions class="topic-btn">
+        <v-spacer>하루에게 궁금한 것을 물어보세요</v-spacer>
+      </v-card-actions>
+    </v-card>
+  
+    <!-- Chat messages -->
+  <v-row>
+    <v-col cols="12" class="d-flex justify-center">
+      <v-card class="chat-card-wrapper" style="overflow-y: auto;">
         <v-card-text>
-          <ul>
-            <li v-for="(item, index) in filteredList" :key="index">{{ item }}</li>
-          </ul>
-          </v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" text @click="closeModal">Close</v-btn>
-        </v-card-actions>
+          <!-- message -->
+          <v-row v-for="message in messages" :key="message.id">
+            <v-col cols="12">
+              <!-- Removed the v-divider element -->
+              <div class="d-flex" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">
+                <div>
+                  <v-card class="mx-2" :class="message.sender.nickname === myName ? 'chat-message-yellow' : 'chat-message-mint'" tile>
+                    <v-card-text>
+                      {{ message.content }}
+                    </v-card-text>
+                  </v-card>
+                </div>
+              </div>
+              <div> 
+                  <div class="d-flex grey--text" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">{{ message.sender.nickname }} {{ message.time }}</div>
+              </div>
+            </v-col>
+          </v-row>
+        </v-card-text>
       </v-card>
-    </v-dialog>
+    </v-col>
+  </v-row>
+  
+  <!-- Message input -->
+  <v-row>
+    <v-col cols="12">
+      <v-textarea v-model="userMessage" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup.enter="sendMessage"></v-textarea>
+    </v-col>
+  </v-row>
+  <v-row>
+    <v-col cols="12" class="d-flex justify-end">
+      <v-btn color="#FBF0A0" dark @click="sendMessage" class="send-btn">전송</v-btn>
+    </v-col>
+  </v-row>
+  
+    </v-container>
+  </template>
 
-    <v-textarea v-model="userMessage" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup="sentenceCompeletion" @keyup.enter="sendMessage"></v-textarea>
-  </v-col>
-</v-row>
-<v-row>
-  <v-col cols="12" class="d-flex justify-end">
-    <v-btn color="#FBF0A0" dark @click="sendMessage" class="send-btn">전송</v-btn>
-  </v-col>
-</v-row>
-
-  </v-container>
-</template>
 <script>
 export default {
-  name: "ChatRoomHaruView"
+    name: "ChatRoomHaruAskComp"
 }
 </script>
-
 <script setup>
-import { ref, nextTick, onMounted, onBeforeUnmount, watch} from "vue";
+import { ref, nextTick, onMounted, onBeforeUnmount } from "vue";
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useUserStore } from '@/store/user';
@@ -171,51 +151,6 @@ function createWebSocketConnection() {
     });
 }
 
-const haruList = ref([
-  'hello',
-  'world',
-  'myname',
-  'is',
-  'haru',
-  'nice',
-  'to',
-  'meet',
-  'you'
-])
-const searchTerm = ref('');
-const showModal = ref(false)
-const searchBox = ref('')
-
-async function sentenceCompeletion(event) {
-      const input = event.target.value;
-      const lastCharacter = input[input.length - 1];
-      if (lastCharacter === '@') {
-        // '@' 문자가 입력되었을 때 처리할 로직을 작성합니다.
-        console.log('자동 완성 기능을 실행합니다.');
-        showModal.value = true
-        await nextTick(() => {
-          searchBox.value.focus();
-        });
-      }
-    }
-
-function closeModal() {
-      showModal.value = false;
-} 
-function filteredList(){
-  if (searchTerm.value === '') {
-    return haruList.value;
-  }
-  return haruList.value.filter(haru => {
-    if (haru.includes(searchTerm.value)) {
-      return haru;
-    }
-  });
-}
-
-watch(searchTerm, () => {
-  const filteredList = filteredList()
-})
 
 const sendMessage = () => {
       // userMessage가 비어있으면 함수를 종료합니다.
@@ -266,7 +201,6 @@ onMounted(async () => {
 });
 
 </script>
-
 <style scoped>
 .nickname {
   font-family: "IBM Plex Sans", sans-serif;
@@ -342,4 +276,4 @@ onMounted(async () => {
     color: #2C2C2C;
     border-radius: 5px;
   }
-</style>
+  </style>

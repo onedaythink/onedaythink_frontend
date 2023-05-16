@@ -77,7 +77,10 @@ const yyyymmdd = `${year}${month}${date}`;
 const show = ref(false)
 
 function postMainSubject() {
-  $postMainSubject(yyyymmdd).then(res => {
+  
+  $postMainSubject(yyyymmdd)
+  
+  .then(res => {
     subjectStore.setSubject(res.data)
     subjectText.value = subjectStore.getSubject.content
     // 이미지경로값:C://사용자/test.png

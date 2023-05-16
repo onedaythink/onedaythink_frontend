@@ -16,7 +16,10 @@ import HaruSelectView from '@/modules/chatwithharubot/views/HaruSelectView'
 import ChatWithOtherView from '@/modules/chatwithother/views/ChatWithOtherView'
 import ChatWithHaruView from '@/modules/chatwithharubot/views/ChatWithHaruView'
 import ChatRoomOtherView from '@/modules/chatwithother/views/ChatRoomOtherView'
-import ChatRoomHaruView from '@/modules/chatwithharubot/views/ChatRoomHaruView'
+// import ChatRoomHaruView from '@/modules/chatwithharubot/views/ChatRoomHaruView'
+import ChatRoomPersonaView from '@/modules/chatwithharubot/views/ChatRoomPersonaView'
+import ChatRoomHaruAskView from '@/modules/chatwithharubot/views/ChatRoomHaruAskView'
+
 
 const routes = [
   {
@@ -86,13 +89,18 @@ const routes = [
       },
       {
         path: '/chatwithharubot',
-        name: 'chatWithHaruView',
+        name: 'ChatWithHaruView',
         component: ChatWithHaruView
       },
       {
         path: '/chatroomharu',
-        name: 'chatRoomHaruView',
-        component: ChatRoomHaruView
+        name: 'ChatRoomHaruAskView',
+        component: ChatRoomHaruAskView
+      },
+      {
+        path: '/chatroompersona',
+        name: 'ChatRoomPersonaView',
+        component: ChatRoomPersonaView
       },
     ]
   },
