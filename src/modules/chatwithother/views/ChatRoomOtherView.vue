@@ -143,7 +143,7 @@
     async function scrollToLatestMessage() {
       await nextTick()
       const container = document.querySelector(".chat-card-wrapper");
-        container.scrollTop = container.scrollHeight;
+      container.scrollTop = container.scrollHeight;
     }
 
   function openReportModal() {
