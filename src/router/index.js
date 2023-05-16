@@ -17,6 +17,8 @@ import ChatWithOtherView from '@/modules/chatwithother/views/ChatWithOtherView'
 import ChatWithHaruView from '@/modules/chatwithharubot/views/ChatWithHaruView'
 import ChatRoomOtherView from '@/modules/chatwithother/views/ChatRoomOtherView'
 import ChatRoomHaruView from '@/modules/chatwithharubot/views/ChatRoomHaruView'
+import ChatRoomPersonaView from '@/modules/chatwithharubot/views/ChatRoomPersonaView'
+
 
 const routes = [
   {
@@ -86,13 +88,18 @@ const routes = [
       },
       {
         path: '/chatwithharubot',
-        name: 'chatWithHaruView',
+        name: 'ChatWithHaruView',
         component: ChatWithHaruView
       },
       {
         path: '/chatroomharu',
         name: 'chatRoomHaruView',
         component: ChatRoomHaruView
+      },
+      {
+        path: '/chatroompersona',
+        name: 'ChatRoomPersonaView',
+        component: ChatRoomPersonaView
       },
     ]
   },

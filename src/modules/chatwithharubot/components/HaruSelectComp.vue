@@ -65,7 +65,7 @@ function startTalk() {
 
   const haruchatchar = selection.value;
   haruStore.setHaruchatChar(haruchatchar);
-  router.push('/chatroomharu');
+  router.push('/chatroompersona');
 }
 
 onMounted(getHaruChar);
