@@ -28,54 +28,49 @@
   </v-card>
 </template>
 
-<script>
+<script setup>
 import { ref, onMounted } from 'vue';
 import { $getHaruChar } from '@/api/chat';
+import { useRouter } from 'vue-router';
+import { useHaruChatStore } from '@/store/haruchat';
 
-export default {
-  name: 'HaruSelectComp',
-  setup() {
-    const haruList = ref([]);
-    const selection = ref([]);
+const router = useRouter();
+const haruList = ref([]);
+const selection = ref([]);
+const haruStore = useHaruChatStore();
+async function getHaruChar() {
+  try {
+    const res = await $getHaruChar();
+    if (res.data != null || res.data != '') {
+      haruList.value = res.data;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
 
-    const getHaruChar = async () => {
-      try {
-        const res = await $getHaruChar();
-        if (res.data != null || res.data != '') {
-          haruList.value = res.data;
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
+function isSelected(item) {
+  return selection.value.includes(item);
+}
 
-    const isSelected = (item) => {
-      return selection.value.includes(item);
-    };
+function toggleItem(item) {
+  if (isSelected(item)) {
+    selection.value = selection.value.filter((selectedItem) => selectedItem !== item);
+  } else {
+    selection.value.push(item);
+  }
+}
 
-    const toggleItem = (item) => {
-      if (isSelected(item)) {
-        selection.value = selection.value.filter((selectedItem) => selectedItem !== item);
-      } else {
-        selection.value.push(item);
-      }
-    };
+function startTalk() {
 
-    const startTalk = () => {
-      console.log('TALK START:', selection.value);
-    };
+  const haruchatchar = selection.value;
+  haruStore.setHaruchatChar(haruchatchar);
+  router.push('/chatroomharu');
+}
 
-    onMounted(getHaruChar);
+onMounted(getHaruChar);
 
-    return {
-      haruList,
-      selection,
-      isSelected,
-      toggleItem,
-      startTalk,
-    };
-  },
-};
+
 </script>
 
 <style scoped>
@@ -119,5 +114,4 @@ export default {
   font-weight: bold;
   text-align: center;
 }
-
 </style>

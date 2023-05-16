@@ -1,68 +1,40 @@
 <template>
-  <v-card
-  >
-    <v-img
-     :src= findImage(subjectImg)
-      width="256px"
-      height="256px"
-      cover
-    ></v-img>
-    <v-card-title>
-      {{ foramtDate }}
-    </v-card-title>
+  <div> <v-img :src=findImage(subjectImg) width="256px" height="256px" cover></v-img>
 
-    <v-card-subtitle>
-      오늘의 사유
-    </v-card-subtitle>
-
-    <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn
-        :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
-        @click="show = !show"
-      ></v-btn>
-    </v-card-actions>
-
-    <v-expand-transition>
-      <div v-show="show">
-        <v-divider></v-divider>
-        <v-card-text>
-          {{ subjectText }}  
-        </v-card-text>
-      </div>
-    </v-expand-transition>
-  </v-card>
+    <span> {{ foramtDate }}</span>
+    <h3> {{ subjectText }} </h3>
+  </div>
 </template>
 
 <script>
 export default {
-    name : 'SubjectCardComp'
+  name: 'SubjectCardComp'
 }
 </script>
 
 <script setup>
 import { $postMainSubject } from '@/api/subject';
 import { ref, onMounted, nextTick } from 'vue';
-import {useSubjectStore} from '@/store/subject';
+import { useSubjectStore } from '@/store/subject';
 
 const foramtDate = ref('')
 function formattedDate() {
-      const d = new Date()
-      const options = {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        weekday: 'long',
-      };
-      const dateParts = d.toLocaleDateString('ko-KR', options).split('.');
-      const year = dateParts[0];
-      const month = dateParts[1];
-      const day = dateParts[2].slice(0);
-      const weekday = dateParts[2].slice(-1);
-      const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
-      const weekdayKor = weekdays[Number(weekday)];
-      foramtDate.value = `${year}년 ${month}월 ${day}일 ${weekdayKor}요일`;
-    }
+  const d = new Date()
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    weekday: 'long',
+  };
+  const dateParts = d.toLocaleDateString('ko-KR', options).split('.');
+  const year = dateParts[0];
+  const month = dateParts[1];
+  const day = dateParts[2].slice(0);
+  const weekday = dateParts[2].slice(-1);
+  const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+  const weekdayKor = weekdays[Number(weekday)];
+  foramtDate.value = `${year}년 ${month}월 ${day}일 ${weekdayKor}요일`;
+}
 
 const subjectStore = useSubjectStore()
 const subjectText = ref('')
@@ -74,7 +46,7 @@ const month = (today.getMonth() + 1).toString().padStart(2, '0');
 const date = today.getDate().toString().padStart(2, '0');
 const yyyymmdd = `${year}${month}${date}`;
 
-const show = ref(false)
+
 
 function postMainSubject() {
   $postMainSubject(yyyymmdd).then(res => {
@@ -93,7 +65,7 @@ function findImage(subjectImg) {
   return `http://localhost:8080/onedaythink/api/v1/imgfind/subjectImg?subjectImgPath=${convertedPath}`;
 }
 
-onMounted( async () => {
+onMounted(async () => {
   await nextTick()
   formattedDate()
   postMainSubject();
@@ -101,6 +73,4 @@ onMounted( async () => {
 
 </script>
 
-<style>
-
-</style>
+<style></style>
