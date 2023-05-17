@@ -48,7 +48,7 @@
                 </template>
                 <template v-else>
                     <v-card-text>
-                        <div>"{{chatRoom.toNickname}} 님이 회원님과 대화하고싶어해요!" </div>
+                        <div>"{{chatRoom.fromNickname }} 님이 회원님과 대화하고싶어해요!" </div>
                     </v-card-text>
                 </template>
                 <v-card-actions class="button">
@@ -86,7 +86,7 @@ function goToChatRoomOther(chatRoom) {
     // 채팅방 연결
     const chatStore = useChatStore()
     chatStore.setChatRoom(chatRoom)
-    console.log(chatRoom.value)
+    console.log(chatRoom)
     router.push({path:'/chatroomother'});
 }
 

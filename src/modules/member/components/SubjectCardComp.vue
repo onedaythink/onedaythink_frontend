@@ -47,22 +47,22 @@ import {useSubjectStore} from '@/store/subject';
 
 const foramtDate = ref('')
 function formattedDate() {
-      const d = new Date()
-      const options = {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        weekday: 'long',
-      };
-      const dateParts = d.toLocaleDateString('ko-KR', options).split('.');
-      const year = dateParts[0];
-      const month = dateParts[1];
-      const day = dateParts[2].slice(0);
-      const weekday = dateParts[2].slice(-1);
-      const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
-      const weekdayKor = weekdays[Number(weekday)];
-      foramtDate.value = `${year}년 ${month}월 ${day}일 ${weekdayKor}요일`;
-    }
+  const d = new Date();
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    weekday: 'long',
+  };
+  const dateParts = d.toLocaleDateString('ko-KR', options).split('.');
+  const year = dateParts[0];
+  const month = dateParts[1];
+  const day = dateParts[2];
+  const weekday = dateParts[3];
+  const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+  const weekdayKor = weekdays[Number(weekday)]
+  foramtDate.value = `${year}년 ${month}월 ${day}일 ${weekdayKor}요일`;
+}
 
 const subjectStore = useSubjectStore()
 const subjectText = ref('')
