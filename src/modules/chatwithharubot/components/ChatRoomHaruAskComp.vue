@@ -65,9 +65,7 @@ export default {
 }
 </script>
 <script setup>
-import { ref, nextTick, onMounted, onBeforeUnmount } from "vue";
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
+import { ref, nextTick } from "vue";
 import { useUserStore } from '@/store/user';
 import { $questionForHaru } from '@/api/flask';
   
@@ -93,64 +91,6 @@ const getCurrentTime = () => {
     const time = `${ampm} ${hour}:${minutes < 10 ? "0" + minutes : minutes}`;
     return time;
   };
-
-  // db에 저장되어 있는 대화목록을 불러오는 부분
-  // 하루챗에 맞춰서 수정이 필요함
-  // function loadChatHistory() {
-  //   $getChatMessages(chatRoomNo.value)
-  //   .then(res => {
-  //     chatHistory.value = res.data
-  //     console.log(res.data)
-  //     // for문을 돌면서 해당 메세지의 sendUserNo 이 `나` 일 경우 오른쪽,
-  //     // 상대방일 경우 왼쪽에 추가
-  //     chatHistory.value.forEach(chatMsg => {
-  //       if (myName == chatMsg.sendNickname) {
-  //         messages.value.push({
-  //           sender: { nickname: myName, avatarUrl: "" },
-  //           content: chatMsg.chatMsgContent,
-  //           time: chatMsg.chatCreateAt,
-  //         });
-  //       } else {
-  //         otherName.value = chatMsg.sendNickname
-  //         messages.value.push({
-  //           sender: { nickname: chatMsg.sendNickname, avatarUrl: ""},
-  //           content: chatMsg.chatMsgContent,
-  //             time: chatMsg.chatCreateAt,
-  //         });
-  //       }
-  //     });
-  //     scrollToLatestMessage();
-  //   })
-  //   .catch(err => console.log(err))
-  // }
-
-// WebSocket 연결을 담을 ref 변수
-const stompClient = ref(null);
-const socket = new SockJS('http://localhost:8080/onedaythink/stomp/ws');
-const stomp = Stomp.over(socket);
-
-// WebSocket 연결 생성 함수
-function createWebSocketConnection() {
-  console.log('test')
-  stomp.connect({}, () => {
-    stompClient.value = stomp;
-
-      // 과거의 채팅 기록 조회
-      // loadChatHistory()
-
-      // api 테스트
-      // 지금은 테스트를 위해서 여기에 axios 를 만들었지만
-      // 실제로 하실 때에는 api/ 폴더에 하루챗.js 만들어서 해주세요!
-      // const axios = createJsonAxiosInstance()
-      // axios.get('haruchat/test')
-      // .then(res => {console.log(res.data)})
-      // .catch(err => console.log(err))
-
-      // 스크롤을 가장 아랫부분으로 내리기
-      scrollToLatestMessage();
-    });
-}
-
 
 const sendMessage = () => {
       // userMessage가 비어있으면 함수를 종료합니다.
@@ -188,17 +128,6 @@ async function receiveMessage() {
       // 스크롤을 최신 메시지로 이동시킵니다.
       scrollToLatestMessage();
 }
-
-onBeforeUnmount(() => {
-  if (stompClient.value) {
-    stompClient.value.disconnect();
-  }
-})
-
-// 컴포넌트가 마운트되면 WebSocket 연결 생성 함수 실행
-onMounted(async () => {
-  await createWebSocketConnection();
-});
 
 </script>
 <style scoped>
