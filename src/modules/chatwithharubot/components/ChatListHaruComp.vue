@@ -32,7 +32,7 @@
 export default {
   methods: {
     goToChatRoomHaru() {
-      this.$router.push('/chatroomharu');
+      this.$router.push('/chatroompersona');
     },
   },
 };
