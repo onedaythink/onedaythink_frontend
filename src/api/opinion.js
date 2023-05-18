@@ -60,5 +60,27 @@ async function $likeControll(userNo, userOpiNo){
     }
 }
 
-export { $getOpinions, $addOpinion, $getOpinion,
-     $getOpinionsByCreateAt, $likeControll, $getMyOpinions }
+// Mypage에서 opinion 수정
+async function $updateOpinion(currnet_opinion){
+    try {
+        const axios = createJsonAxiosInstance()
+        console.log(currnet_opinion.userNo)
+        return await axios.post('opinions/'+currnet_opinion.userNo, currnet_opinion);
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+// Mypage에서 opinion 삭제
+async function $deleteOpinion(currnet_opinion){
+    try {
+        const axios = createJsonAxiosInstance()
+        console.log(currnet_opinion.userNo)
+        return await axios.post('opinions/deleteopinion/'+currnet_opinion.userNo, currnet_opinion);
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+export { $getOpinions, $addOpinion, $getOpinion, $updateOpinion, $deleteOpinion,
+         $getOpinionsByCreateAt, $likeControll, $getMyOpinions }
