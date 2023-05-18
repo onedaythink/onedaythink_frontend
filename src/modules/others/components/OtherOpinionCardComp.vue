@@ -101,7 +101,7 @@ async function createChatRoom(userOpiNo) {
     await $createChatRoom(userOpiNo, userStore.getLoginUser.userNo)
     .then(res => {
         console.log(res.data)
-        window.alert('채팅 요청을 전송하였습니다.')
+        window.alert(res.data.msg)
     })
     .catch(err => console.log(err))
 }

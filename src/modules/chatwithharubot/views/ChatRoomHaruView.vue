@@ -47,7 +47,27 @@
 <!-- Message input -->
 <v-row>
   <v-col cols="12">
-    <v-textarea v-model="userMessage" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup.enter="sendMessage"></v-textarea>
+    
+    <!-- 하루봇 선택을 위한 모달 -->
+    <v-dialog v-model="showModal" persistent max-width="500px">
+      <v-card>
+        <v-card-title>
+
+          <input ref="searchBox" type="text" :value="searchTerm" @input="filteredList">
+          <v-spacer></v-spacer>
+        </v-card-title>
+        <v-card-text>
+          <ul>
+            <li v-for="(item, index) in filteredList" :key="index">{{ item }}</li>
+          </ul>
+          </v-card-text>
+        <v-card-actions>
+          <v-btn color="primary" text @click="closeModal">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-textarea v-model="userMessage" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup="sentenceCompeletion" @keyup.enter="sendMessage"></v-textarea>
   </v-col>
 </v-row>
 <v-row>
@@ -65,7 +85,7 @@ export default {
 </script>
 
 <script setup>
-import { ref, nextTick, onMounted, onBeforeUnmount } from "vue";
+import { ref, nextTick, onMounted, onBeforeUnmount, watch} from "vue";
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useUserStore } from '@/store/user';
@@ -151,6 +171,51 @@ function createWebSocketConnection() {
     });
 }
 
+const haruList = ref([
+  'hello',
+  'world',
+  'myname',
+  'is',
+  'haru',
+  'nice',
+  'to',
+  'meet',
+  'you'
+])
+const searchTerm = ref('');
+const showModal = ref(false)
+const searchBox = ref('')
+
+async function sentenceCompeletion(event) {
+      const input = event.target.value;
+      const lastCharacter = input[input.length - 1];
+      if (lastCharacter === '@') {
+        // '@' 문자가 입력되었을 때 처리할 로직을 작성합니다.
+        console.log('자동 완성 기능을 실행합니다.');
+        showModal.value = true
+        await nextTick(() => {
+          searchBox.value.focus();
+        });
+      }
+    }
+
+function closeModal() {
+      showModal.value = false;
+} 
+function filteredList(){
+  if (searchTerm.value === '') {
+    return haruList.value;
+  }
+  return haruList.value.filter(haru => {
+    if (haru.includes(searchTerm.value)) {
+      return haru;
+    }
+  });
+}
+
+watch(searchTerm, () => {
+  const filteredList = filteredList()
+})
 
 const sendMessage = () => {
       // userMessage가 비어있으면 함수를 종료합니다.
