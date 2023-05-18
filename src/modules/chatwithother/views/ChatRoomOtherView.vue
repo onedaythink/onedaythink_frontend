@@ -119,12 +119,13 @@
 
     const userStore = useUserStore()
     const subjectStore = useSubjectStore()
+    const chatStore = useChatStore()
     const todaySubjectContent = subjectStore.getSubject.content
 
     const show = ref(false);
     const reportDialog = ref(false);
     const reportReasons = ref([]);
-    const otherName = ref(""); // 상대방 닉네임
+    const otherName = ref(''); // 상대방 닉네임
     const myName = userStore.getLoginUser.nickname; // 나의 닉네임
     const messages = ref([]); // 채팅 메시지 배열
     const userMessage = ref(""); // 전송하려는 메세지 콘텐츠
@@ -139,11 +140,18 @@
       return time;
     };
 
+    function findOtherName() {
+      if (myName == chatStore.getChatRoom.fromNickname) {
+        otherName.value = chatStore.getChatRoom.toNickname
+      } else {
+        otherName.value = chatStore.getChatRoom.fromNickname
+      }
+    }
 
     async function scrollToLatestMessage() {
       await nextTick()
       const container = document.querySelector(".chat-card-wrapper");
-        container.scrollTop = container.scrollHeight;
+      container.scrollTop = container.scrollHeight;
     }
 
   function openReportModal() {
@@ -153,8 +161,6 @@
       console.log("Report submitted with reasons:", reportReasons.value);
       reportDialog.value = false;
   }
-
-  const chatStore = useChatStore()
 
   const chatRoomNo = ref(chatStore.getChatRoom.chatRoomNo); // 채팅방 이름을 저장할 ref 변수
 
@@ -175,7 +181,8 @@
             time: chatMsg.chatCreateAt,
           });
         } else {
-          otherName.value = chatMsg.sendNickname
+          console.log(otherName)
+          // otherName.value = chatMsg.sendNickname
           messages.value.push({
             sender: { nickname: chatMsg.sendNickname, avatarUrl: ""},
             content: chatMsg.chatMsgContent,
@@ -232,6 +239,9 @@
               time: currentTime,
           });
         }
+
+        findOtherName()
+
         scrollToLatestMessage();
       });
 
