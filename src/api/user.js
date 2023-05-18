@@ -40,7 +40,19 @@ async function $checkNickname(userData){
     }
 }
 
-// 전체 회원 조회
+// 회원탈퇴
+async function $deleteUser(userData){
+    try {
+        const axios = createJsonAxiosInstance()
+        return await axios.post(`users/${userData.userNo}`, userData)
+    }
+    catch (err) {
+        console.log('error msg : ', err)
+    }
+}
+
+
+// 전체 회원 조회(관리자)
 async function $getUsers(){
     try {
         const axios = createJsonAxiosInstance()
@@ -50,4 +62,4 @@ async function $getUsers(){
     }
 }
 
-export { $loginUser, $registerUser, $checkUserId, $checkNickname, $getUsers}
+export { $loginUser, $registerUser, $checkUserId, $checkNickname, $getUsers, $deleteUser}

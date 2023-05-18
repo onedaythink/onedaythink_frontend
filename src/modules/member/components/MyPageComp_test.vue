@@ -6,7 +6,7 @@
       class="d-flex flex-column align-content-center"
     >
       <h5>나의 공간</h5>
-      <!-- <br /> -->
+      <br />
       <v-menu min-width="200px" rounded>
         <template v-slot:activator="{ props }">
           <v-btn icon v-bind="props">
@@ -51,16 +51,22 @@
     <!-- div 카드시작점 -->
     <template v-if="myOpinionList.length > 0">
       <div class="mypage-card mt-10" v-for="opinion, idx in paginatedOpinions" :key="idx">
-        <v-card class="mx-auto" max-width="344">
+        <v-card
+        >
           <v-img
-              :src="findImage(opinion.subjectImg)"
-              width="200px"
-              height="160px"
-              cover
+          :src= findImage(subjectImg)
+            width="256px"
+            height="256px"
+            cover
           ></v-img>
+          <v-card-title>
+            {{ foramtDate }}
+          </v-card-title>
 
-          <v-card-title>{{ formatDate(opinion.subDate) }}</v-card-title>
-          <v-card-subtitle>{{ opinion.content }}</v-card-subtitle>
+          <v-card-subtitle>
+            오늘의 사유
+          </v-card-subtitle>
+          
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
@@ -69,17 +75,17 @@
             ></v-btn>
           </v-card-actions>
 
-          <v-expand-transition>
-            <div v-show="show">
-              <v-divider></v-divider>
-              <v-card-text >
-                <v-textarea v-model="opinion.opinion"></v-textarea>
+            <v-expand-transition>
+              <div v-show="show">
+                <v-divider></v-divider>
+                <v-card-text>
+                  {{ subjectText }}  
                 <v-btn type="submit" class="mr-2" @click="updateOpinion">수정하기</v-btn>
                 <v-btn type="submit" @click="deleteOpinion(opinion)">삭제하기</v-btn>
-              </v-card-text>
-            </div>
-          </v-expand-transition>
-        </v-card>
+                </v-card-text>
+              </div>
+            </v-expand-transition>
+          </v-card>
       </div>
       <v-pagination
         v-model="currentPage"
@@ -103,8 +109,11 @@ export default {
 
 <script setup>
 import { useUserStore } from '@/store/user';
-import { $getMyOpinions, $addOpinion, $deleteOpinion, $getOpinion } from '@/api/opinion';
+import { $postMainSubject } from '@/api/subject';
+// import { $getMyOpinions, $addOpinion, $deleteOpinion, $getOpinion } from '@/api/opinion';
+import { $addOpinion, $deleteOpinion, $getOpinion } from '@/api/opinion';
 import { onMounted, nextTick, ref, computed } from 'vue';
+import { useSubjectStore } from '@/store/subject';
 
 
 // 회원탈퇴 관련 import
@@ -112,20 +121,45 @@ import { $deleteUser } from '@/api/user';
 import { useRouter } from 'vue-router';
 
 const user = ref({})
-const show = ref(false)
 
-const userStore = useUserStore() // 회원탈퇴 관련
+// const userStore = useUserStore() // 회원탈퇴 관련
 const router = useRouter() // 회원탈퇴 알림창 관련
 
 const myOpinionList = ref([])
 const dialog = ref(false) // 회원탈퇴 알림창 관련
 
-// subjectImg를 가져오기 위한 처리
+const foramtDate = ref('')
+function formattedDate() {
+      const d = new Date()
+      const options = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        weekday: 'long',
+      };
+      const dateParts = d.toLocaleDateString('ko-KR', options).split('.');
+      const year = dateParts[0];
+      const month = dateParts[1];
+      const day = dateParts[2].slice(0);
+      const weekday = dateParts[2].slice(-1);
+      const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+      const weekdayKor = weekdays[Number(weekday)];
+      foramtDate.value = `${year}년 ${month}월 ${day}일 ${weekdayKor}요일`;
+    }
+
+    const show = ref(false)
+
+const subjectText = ref('')
+const subjectImg = ref('')
+
 const today = new Date();
-  const year = today.getFullYear();
-  const month = (today.getMonth() + 1).toString().padStart(2, '0');
-  const date = today.getDate().toString().padStart(2, '0');
-  const yyyymmdd = `${year}${month}${date}`;
+const year = today.getFullYear();
+const month = (today.getMonth() + 1).toString().padStart(2, '0');
+const date = today.getDate().toString().padStart(2, '0');
+const yyyymmdd = `${year}${month}${date}`;
+
+const userStore = useUserStore()
+const subjectStore = useSubjectStore()
 
   const opinion = {
     opinion : '',
@@ -134,12 +168,30 @@ const today = new Date();
   }
 
   const op = ref('')
-
+  
   const myOpinion = ref({
     opinion : ''
   })
 
-  const subjectImg = ref('')
+function postMainSubject() {
+  
+  $postMainSubject(yyyymmdd)
+  
+  .then(res => {
+    subjectStore.setSubject(res.data)
+    subjectText.value = subjectStore.getSubject.content
+    // 이미지경로값:C://사용자/test.png
+    subjectImg.value = subjectStore.getSubject.subImgPath
+
+  }).catch(err => {
+    console.log(err)
+  })
+}
+
+function findImage(subjectImg) {
+  const convertedPath = subjectImg.replace(/\\/g, '/');
+  return `http://localhost:8080/onedaythink/api/v1/imgfind/subjectImg?subjectImgPath=${convertedPath}`;
+}
 
   // 페이지네이션 관련 변수
   const currentPage = ref(1); // 현재 페이지 상태
@@ -156,51 +208,19 @@ const today = new Date();
   const totalPages = computed(() => {
   return Math.ceil(myOpinionList.value.length / itemsPerPage);
 });
+   
 
-  // v-card 생성날짜 표기 관련 변수
-  const formatDate = (date) => {
-      const formattedDate = new Date(date);
-      const year = formattedDate.getFullYear();
-      const month = (formattedDate.getMonth() + 1).toString().padStart(2, '0');
-      const day = formattedDate.getDate().toString().padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    };
-
-    
-
-  // opinion 데이터 가져오기
-  async function getMyOpinionList() {
-  const res = await $getMyOpinions(user.value.userNo);
-  myOpinionList.value = res.data.reverse(); // 의견의 순서를 역순으로 변경
-  subjectImg.value = myOpinionList.value[0].subjectImg;
-}
-
-  // subject 이미지 가져오기
-  console.log(opinion.subjectImg)
-  function findImage(subjectImg) {
-    if (!subjectImg) {
-      return '';
-    }
-    const convertedPath = subjectImg.replace(/\\/g, '/');
-    return `http://localhost:8080/onedaythink/api/v1/imgfind/subjectImg?subjectImgPath=${convertedPath}`;
-  }
-  console.log(findImage(opinion.subjectImg))
+//   // opinion 데이터 가져오기
+//   async function getMyOpinionList() {
+//   const res = await $getMyOpinions(user.value.userNo);
+//   myOpinionList.value = res.data.reverse(); // 의견의 순서를 역순으로 변경
+//   subjectImg.value = myOpinionList.value[0].subjectImg;
+// }
 
   // 회원 탈퇴 알림창
   async function deleteUser() {
     dialog.value = true;
   }
-
-
-async function getMyOpinion() {
-  await $getOpinion(userStore.getLoginUser.userNo, yyyymmdd)
-  .then(res => {
-    if (res.data != null || res.data != '') {
-      myOpinion.value = res.data
-    }
-    op.value = myOpinion.value.opinion
-  }).catch(err => console.log(err))
-}
 
 // 나의 의견 수정
 function updateOpinion() {
@@ -215,6 +235,16 @@ function updateOpinion() {
         console.log(err)
       })
     }
+
+async function getMyOpinion() {
+  await $getOpinion(userStore.getLoginUser.userNo, yyyymmdd)
+  .then(res => {
+    if (res.data != null || res.data != '') {
+      myOpinion.value = res.data
+    }
+    op.value = myOpinion.value.opinion
+  }).catch(err => console.log(err))
+}
 
 
 // 회원 탈퇴
@@ -236,7 +266,7 @@ async function deleteOpinion(opinion) {
     try {
         await $deleteOpinion(opinion);
         alert('의견이 성공적으로 삭제되었습니다.');
-        getMyOpinionList();
+        // getMyOpinionList();
     } catch (err) {
         console.error(err);
         alert('의견 삭제에 실패하였습니다. 다시 시도해주세요.');
@@ -247,9 +277,10 @@ async function deleteOpinion(opinion) {
 onMounted(async () => {
   await nextTick();
   user.value = userStore.getLoginUser;
-  await getMyOpinionList(); // 
-  console.log(findImage(myOpinionList.value[0].subjectImg)); // 배열의 첫 번째 요소의 이미지를 테스트로 출력해봅니다.
-});
+  await getMyOpinion()
+  formattedDate()
+  postMainSubject();
+ });
 
 
 </script>
