@@ -4,7 +4,7 @@
       <v-layout>
         <v-app-bar color="white">
           <v-app-bar-title>
-            <v-img width="50%" class="logo" src="@/assets/onedaythink.png" alt="하루생각"></v-img>
+            <v-img class="logo" src="@/assets/headerlogo.png" alt="하루생각"></v-img>
           </v-app-bar-title>
           <v-spacer></v-spacer>
           <v-btn icon>
