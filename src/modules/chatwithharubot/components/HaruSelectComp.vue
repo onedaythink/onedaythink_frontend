@@ -32,7 +32,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { $getHaruChar } from '@/api/chat';
+import { $getHaruChar, $receiveFirstMsgFromChatGPT } from '@/api/personachat'
 import { useRouter } from 'vue-router';
 import { useHaruChatStore } from '@/store/haruchat';
 
@@ -63,10 +63,15 @@ function toggleItem(item) {
   }
 }
 
-function startTalk() {
-
+async function startTalk() {
+  
   const haruchatchar = selection.value;
   haruStore.setHaruchatChar(haruchatchar);
+  await $receiveFirstMsgFromChatGPT(haruchatchar)
+  .then(res=>{
+    console.log(res)
+  })
+  .catch(err => console.log(err))
   router.push('/chatroompersona');
 }
 
