@@ -58,7 +58,7 @@
         </v-card-title>
         <v-card-text>
           <ul>
-            <li v-for="(item, index) in filteredItems" :key="index" @click="personaCheck">{{ item }}</li>
+            <li v-for="(item, index) in filteredItems" :key="index" @click="personaCheck(item)">{{ item }}</li>
           </ul>
           </v-card-text>
         <v-card-actions>
@@ -68,7 +68,7 @@
     </v-dialog>
 
 
-    <v-textarea v-model="userMessage" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup="sentenceCompeletion" @keyup.enter="sendMessage"></v-textarea>
+    <v-textarea v-model="userMessage" ref="userMessageInput" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup="sentenceCompeletion" @keyup.enter="sendMessage"></v-textarea>
   </v-col>
 </v-row>
 <v-row>
@@ -118,9 +118,11 @@ const getCurrentTime = () => {
     return time;
   };
 
-  const stompClient = ref(null);
+const stompClient = ref(null);
 const socket = new SockJS('http://localhost:8080/onedaythink/stomp/ws');
 const stomp = Stomp.over(socket);
+
+
 
 // WebSocket 연결 생성 함수
 function createWebSocketConnection() {
@@ -144,28 +146,23 @@ function createWebSocketConnection() {
     });
 }
 
+
+const haruList = ref([])
+
 function getSelectedChar() {
   selectedChar.value = haruChatStore.getSelectedChar;
-  // console.log("페르소나챗룸", selectedChar.value[0].haruNo);
-  // console.log("페르소나챗룸", selectedChar.value[0].haruPrompt);
+  const l = []
+  for (let char in selectedChar.value) {
+      l.push(selectedChar.value[char].haruName)
+    }
+    haruList.value = l
+    console.log(haruList.value)
 }
-
-// 샘플 페르소나 리스트 => 나중에는 직전 selected 나 db 에서 가지고 와야 함
-const haruList = ref([
-  'hello',
-  'world',
-  'myname',
-  'is',
-  'haru',
-  'nice',
-  'to',
-  'meet',
-  'you'
-])
 
 const searchTerm = ref('');
 const showModal = ref(false)
 const searchBox = ref('')
+const userMessageInput = ref('')
 
 async function sentenceCompeletion(event) {
       const input = event.target.value;
@@ -181,7 +178,8 @@ async function sentenceCompeletion(event) {
     }
 
 function closeModal() {
-      showModal.value = false;
+    showModal.value = false;
+    userMessageInput.value.focus();
 } 
 const filteredItems = computed(() => {
   if (searchTerm.value === '') {
@@ -189,6 +187,17 @@ const filteredItems = computed(() => {
   }
   return haruList.value.filter(haru => haru.includes(searchTerm.value));
 });
+
+const target = []
+
+function personaCheck(item) {
+  userMessage.value = userMessage.value.slice(0, userMessage.value.length - 1);
+  userMessage.value += item
+  target.push(item)
+  console.log(target)
+  closeModal()
+}
+
 
 const sendMessage = () => {
       // userMessage가 비어있으면 함수를 종료합니다.
