@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12" class="textarea">
-        <v-textarea name="input-7-1" label="나의 생각" auto-grow v-model="op"></v-textarea>
+        <v-textarea  id="mythink" name="input-7-1" label="나의 생각" auto-grow v-model="op"></v-textarea>
         <v-row>
 
           <v-checkbox :checked="opinion.isPublic === 'y'" @change="updateIsPublic" label="타인과 공유"></v-checkbox>
@@ -132,6 +132,9 @@ onMounted(async () => {
 
 
 <style>
+#mythink{
+  background-image: url("~@/assets/checkbackground.png");
+}
 .v-row{
   display: flex;
     flex-wrap: wrap;
