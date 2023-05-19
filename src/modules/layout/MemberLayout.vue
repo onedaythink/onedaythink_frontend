@@ -4,7 +4,7 @@
       <v-layout>
         <v-app-bar color="white">
           <v-app-bar-title>
-            <v-img width="50%" class="logo" src="@/assets/onedaythink.png" alt="하루생각"></v-img>
+            <v-img class="logo" src="@/assets/headerlogo.png" alt="하루생각"></v-img>
           </v-app-bar-title>
           <v-spacer></v-spacer>
           <v-btn icon>
@@ -21,7 +21,7 @@
               <v-list-item prepend-icon="mdi-face" title="하루봇과의 대화" value="chatWithHaru" to="/chatwithharubot"></v-list-item>
               <v-list-item prepend-icon="mdi-face" title="나의 공간" value="myPage" to="/mypage"></v-list-item>
               <br>
-              <v-btn>로그아웃</v-btn>
+              <v-btn @click="logout()"><router-link to="/login">로그아웃</router-link></v-btn>
             </v-list>
           </v-layout>
         </v-navigation-drawer>
