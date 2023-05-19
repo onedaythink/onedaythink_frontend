@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <h4>silver님의 정보수정</h4><br><br>
+    <h4>님의 정보수정</h4><br><br>
     <v-text-field
       v-model="id"
       color="primary"
@@ -39,6 +39,7 @@
     <v-btn color="info" class="submit">확인</v-btn>
   </v-container>
 </template>
+
 <script>
 export default {
   data: () => ({
@@ -49,6 +50,22 @@ export default {
     vModel: "name",
   }),
 };
+</script>
+
+<script setup>
+import { useUserStore } from '@/store/user';
+import { onMounted, nextTick } from 'vue';
+
+const user = {}
+
+const userStore = useUserStore()
+
+onMounted( async () => {
+  await nextTick()
+  user.value = userStore.getLoginUser
+})
+
+
 </script>
 <style scoped>
 .small {

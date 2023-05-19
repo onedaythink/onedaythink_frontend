@@ -1,7 +1,7 @@
 <template>
   <v-card-text class="main-text text-center">
-    <v-typography class="text-body-5" variant="body1">
-      <span class="double-quotes">"</span><br /><br />저희 하루 생각에 방문해주셔서
+    <v-typography class="text-body" variant="body1">
+      <span class="double-quotes">"</span><br />저희 하루 생각에 방문해주셔서
       감사합니다.<br />
       ‘하루생각' 반복되는 일상 속에서 지쳐가는 <br />사람들에게 작게나마
       <span id="think-field">생각할 시간</span>을 <br />선물해주기 위해
@@ -60,8 +60,9 @@ font-weight: normal;
 font-style: normal;
 }
 
-.text-body-5{
+.text-body{
    font-family: 'TheJamsil5';
+   color:gray;
 
 
 }
