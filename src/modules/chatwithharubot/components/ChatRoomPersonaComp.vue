@@ -67,7 +67,11 @@
       </v-card>
     </v-dialog>
 
-
+    <v-card>
+      <template v-for="item in target" :key="item">
+        <span>{{ item }}&nbsp;</span>
+      </template>
+    </v-card>
     <v-textarea v-model="userMessage" ref="userMessageInput" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup="sentenceCompeletion" @keyup.enter="sendMessage"></v-textarea>
   </v-col>
 </v-row>
@@ -98,9 +102,6 @@ const myName = userStore.getLoginUser.nickname
 // const otherName = ref('')
 const messages = ref([])
 const userMessage = ref("")
-
-const selectedChar = ref({});
-const haruChatStore = useHaruChatStore();
 
 async function scrollToLatestMessage() {
       await nextTick()
@@ -147,8 +148,14 @@ function createWebSocketConnection() {
 }
 
 
+// 하루봇 스토어
+const haruChatStore = useHaruChatStore();
+// 선택된 하루에 대한 모든 정보를 담는 변수
+const selectedChar = ref({});
+// 현재 페르소나 챗에 젖아되어 있는 페르소나를 담아놓는 배열
 const haruList = ref([])
 
+// 스토어에 저장되어 있는 선택된 페르소나를 haruChat 변수에 담는 함수
 function getSelectedChar() {
   selectedChar.value = haruChatStore.getSelectedChar;
   const l = []
@@ -159,11 +166,15 @@ function getSelectedChar() {
     console.log(haruList.value)
 }
 
+// 모달에서 검색하고 있는 문장
 const searchTerm = ref('');
+// 모달 온오프 여부
 const showModal = ref(false)
+// 모달의 검색창 포커스 확인 여부
 const searchBox = ref('')
 const userMessageInput = ref('')
 
+// 문장 자동완성 관련 함수. textarea 에 @ 가 입력되면 모달창이 열리도록 설정
 async function sentenceCompeletion(event) {
       const input = event.target.value;
       const lastCharacter = input[input.length - 1];
@@ -181,6 +192,8 @@ function closeModal() {
     showModal.value = false;
     userMessageInput.value.focus();
 } 
+
+// 모달창이 열렸을 때, 검색문장이 없으면 전체 하루리스트를 띄우고, 있다면 filter를 걸어서 해당 하루만 띄우는 함수
 const filteredItems = computed(() => {
   if (searchTerm.value === '') {
     return haruList.value;
@@ -188,12 +201,19 @@ const filteredItems = computed(() => {
   return haruList.value.filter(haru => haru.includes(searchTerm.value));
 });
 
+// 모달에서 선택된 하루이름을 담는 배열
 const target = []
 
+// 모달에서 하루 선택 시 이미 담겨져 있다면 제거, 없다면 타겟 배열에 추가 후 모달 종료
 function personaCheck(item) {
   userMessage.value = userMessage.value.slice(0, userMessage.value.length - 1);
-  userMessage.value += item
-  target.push(item)
+  let i = target.indexOf(item)
+  if ( i >= 0 ) {
+    target.pop(i)
+  } else {
+    userMessage.value += item
+    target.push(item)
+  }
   console.log(target)
   closeModal()
 }
