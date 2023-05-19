@@ -53,13 +53,13 @@
       <div class="mypage-card mt-10" v-for="opinion, idx in paginatedOpinions" :key="idx">
         <v-card class="mx-auto" max-width="344">
           <v-img
-              :src="findImage(opinion.subjectImg)"
+              :src="findImage(subjectImg)"
               width="200px"
               height="160px"
               cover
           ></v-img>
 
-          <v-card-title>{{ formatDate(opinion.subDate) }}</v-card-title>
+          <v-card-title>{{ foramtDate }}</v-card-title>
           <v-card-subtitle>{{ opinion.content }}</v-card-subtitle>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -102,9 +102,12 @@ export default {
 </script>
 
 <script setup>
+import { $postMainSubject } from '@/api/subject';
 import { useUserStore } from '@/store/user';
 import { $getMyOpinions, $addOpinion, $deleteOpinion, $getOpinion } from '@/api/opinion';
 import { onMounted, nextTick, ref, computed } from 'vue';
+
+import {useSubjectStore} from '@/store/subject';
 
 
 // 회원탈퇴 관련 import
@@ -120,25 +123,14 @@ const router = useRouter() // 회원탈퇴 알림창 관련
 const myOpinionList = ref([])
 const dialog = ref(false) // 회원탈퇴 알림창 관련
 
-// subjectImg를 가져오기 위한 처리
-const today = new Date();
-  const year = today.getFullYear();
-  const month = (today.getMonth() + 1).toString().padStart(2, '0');
-  const date = today.getDate().toString().padStart(2, '0');
-  const yyyymmdd = `${year}${month}${date}`;
-
-  const opinion = {
-    opinion : '',
-    isPublic : 'n',
-    createAt : yyyymmdd
-  }
-
   const op = ref('')
 
   const myOpinion = ref({
     opinion : ''
   })
 
+  const subjectStore = useSubjectStore()
+  const subjectText = ref('')
   const subjectImg = ref('')
 
   // 페이지네이션 관련 변수
@@ -157,16 +149,55 @@ const today = new Date();
   return Math.ceil(myOpinionList.value.length / itemsPerPage);
 });
 
-  // v-card 생성날짜 표기 관련 변수
-  const formatDate = (date) => {
-      const formattedDate = new Date(date);
-      const year = formattedDate.getFullYear();
-      const month = (formattedDate.getMonth() + 1).toString().padStart(2, '0');
-      const day = formattedDate.getDate().toString().padStart(2, '0');
-      return `${year}-${month}-${day}`;
+
+  // 날짜 데이터
+  const foramtDate = ref('')
+  function formattedDate() {
+    const d = new Date();
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      weekday: 'long',
     };
 
-    
+
+  const dateParts = d.toLocaleDateString('ko-KR', options).split('.');
+  const year = dateParts[0];
+  const month = dateParts[1];
+  const day = dateParts[2];
+  const weekday = dateParts[3];
+  const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+  const weekdayKor = weekdays[Number(weekday)]
+  foramtDate.value = `${year}년 ${month}월 ${day}일 ${weekdayKor}요일`;
+}
+
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = (today.getMonth() + 1).toString().padStart(2, '0');
+  const date = today.getDate().toString().padStart(2, '0');
+  const yyyymmdd = `${year}${month}${date}`;
+
+  const opinion = {
+    opinion : '',
+    isPublic : 'n',
+    createAt : yyyymmdd
+  }
+
+  function postMainSubject() {
+  
+  $postMainSubject(yyyymmdd)
+  
+  .then(res => {
+    subjectStore.setSubject(res.data)
+    subjectText.value = subjectStore.getSubject.content
+    // 이미지경로값:C://사용자/test.png
+    subjectImg.value = subjectStore.getSubject.subImgPath
+
+  }).catch(err => {
+    console.log(err)
+  })
+}
 
   // opinion 데이터 가져오기
   async function getMyOpinionList() {
@@ -202,19 +233,39 @@ async function getMyOpinion() {
   }).catch(err => console.log(err))
 }
 
-// 나의 의견 수정
 function updateOpinion() {
-      opinion.userOpiNo = myOpinion.value.userOpiNo
-      opinion.opinion = op.value
-      opinion.userNo = userStore.getLoginUser.userNo
-      // 저장 버튼을 클릭했을 때의 동작
-      $addOpinion(opinion)
-      .then(res => {
-        getMyOpinion(opinion.userNo, opinion.createAt)
-      }).catch(err => {
-        console.log(err)
-      })
-    }
+  // Ensure getLoginUser is not null or undefined
+  if (!userStore.getLoginUser) {
+    console.error('No user is logged in.');
+    return;
+  }
+
+  const user = userStore.getLoginUser.value;
+
+  // Ensure user object has a userNo property
+  if (!user || !user.userNo) {
+    console.error('Logged in user has no userNo property.');
+    return;
+  }
+
+  opinion.userOpiNo = myOpinion.value.userOpiNo;
+  opinion.opinion = op.value;
+  opinion.userNo = user.userNo;
+
+  // Check if opinion has userNo property
+  if (!opinion.userNo) {
+    console.error('opinion has no userNo property.');
+    return;
+  }
+
+  // 저장 버튼을 클릭했을 때의 동작
+  $addOpinion(opinion.value)
+    .then(res => {
+      getMyOpinion(opinion.value.userNo, opinion.value.createAt);
+    }).catch(err => {
+      console.log(err);
+    });
+}
 
 
 // 회원 탈퇴
@@ -247,7 +298,9 @@ async function deleteOpinion(opinion) {
 onMounted(async () => {
   await nextTick();
   user.value = userStore.getLoginUser;
-  await getMyOpinionList(); // 
+  await getMyOpinionList();
+  formattedDate();
+  postMainSubject();
   console.log(findImage(myOpinionList.value[0].subjectImg)); // 배열의 첫 번째 요소의 이미지를 테스트로 출력해봅니다.
 });
 
