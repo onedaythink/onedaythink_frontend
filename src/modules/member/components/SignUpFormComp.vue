@@ -170,6 +170,10 @@ import { useRouter } from 'vue-router';
 </script>
 
 <style scoped>
+.v-card {
+  height: 150vh;
+}
+
 .small {
   float: right;
 }
