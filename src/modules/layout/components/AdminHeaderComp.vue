@@ -3,7 +3,7 @@
     <v-container fluid>
       <v-row no-gutters class="d-flex align-center">
         <v-col cols="auto" class="logo-container">
-          <img class="logo-image" :src="require('@/assets/onedaythink.png')" alt="Logo">
+          <img class="logo-image" :src="require('@/assets/하루생각로고메모장.png')" alt="Logo">
         </v-col>
         <v-col cols="auto" class="menu-item">
           <router-link to="/admin" class="text">통계</router-link>
@@ -40,6 +40,7 @@ export default {
 </script>
 
 <style scoped>
+
 .v-app-bar {
   height: 113px;
 }

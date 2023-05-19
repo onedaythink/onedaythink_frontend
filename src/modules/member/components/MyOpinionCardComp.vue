@@ -4,7 +4,6 @@
         <v-col cols="12" class="textarea">
           <v-textarea
             name="input-7-1"
-            bg-color="yellow-lighten-5"      
             label="나의 생각"
             auto-grow
             v-model=op
