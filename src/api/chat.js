@@ -1,11 +1,12 @@
 import { createJsonAxiosInstance } from "./index";
 
-async function $createChatRoom(userOpiNo, userNo){
+async function $createChatRoom(userOpiNo, userNo, nickname){
     try {
         const axios = createJsonAxiosInstance()
         const data = {
             toUserOpiNo : userOpiNo,
-            fromUserNo: userNo
+            fromUserNo: userNo,
+            fromNickname: nickname
         }        
         return await axios.post('chat/rooms/', data);        
     } catch (err) {
