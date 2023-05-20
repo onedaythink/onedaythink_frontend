@@ -9,10 +9,10 @@ export const useHaruChatStore = defineStore('haruchat', () => {
   const chatRoomNo = ref(null)
   const getHaruchatChar = computed(() => haruchat.value)
   const getSelectedChar =  computed(() => selectedchar.value)
+  const getChatRoomNo = computed(() => chatRoomNo.value)
 
   function setHaruchatChar(haruchatchar) {
     selectedchar.value = haruchatchar
-    console.log("store 저장된 값" + selectedchar.value)
   }
 
   function setChatRoomNo(chatRoomNumber){ 
@@ -25,7 +25,8 @@ export const useHaruChatStore = defineStore('haruchat', () => {
     getHaruchatChar,
     setHaruchatChar,
     getSelectedChar,
-    setChatRoomNo
+    setChatRoomNo,
+    getChatRoomNo
   }
 
 })

@@ -122,9 +122,9 @@ const getCurrentTime = () => {
   };
 
 const stompClient = ref(null);
-const socket = new SockJS('http://localhost:8080/onedaythink/stomp/ws');
+const socket = new SockJS('http://localhost:8080/onedaythink/stomp/haru/ws');
 const stomp = Stomp.over(socket);
-
+const subscription = ref(null);
 
 
 // WebSocket 연결 생성 함수
@@ -134,7 +134,19 @@ function createWebSocketConnection() {
 
       // 과거의 채팅 기록 조회
       loadChatMessageHistory()
+      subscription.value = stomp.subscribe(`/sub/chat/haru/room/${haruChatStore.getChatRoomNo}`, (res) => {
+        const msg = JSON.parse(res.body); // 구독하게 되면 받아오게 되는 메세지
+        console.log(msg); 
 
+        const currentTime = getCurrentTime();
+        for(const item of msg) {
+        messages.value.push({
+          sender: { nickname: item.haruName, avatarUrl: item.haruImgPath },
+          content: item.chatMsgContent,
+          time: currentTime
+        });
+       }
+      })
       // 스크롤을 가장 아랫부분으로 내리기
       scrollToLatestMessage();
     });
@@ -230,7 +242,7 @@ const sendMessage = () => {
       });
       const sendData = {
         // chatRoomNo 은 페이지에 접속 할 때, 스토어에 저장된 챗정보에서 가지고 와야 한다.
-          "chatRoomNo" : 11,
+          "chatRoomNo" : haruChatStore.getChatRoomNo,
           "userNo" : userStore.getLoginUser.userNo,
           "subject" : subjectStore.getSubject.content,
           "userMsg" : userMessage.value,
@@ -267,17 +279,20 @@ const sendMessage = () => {
       // 스크롤을 최신 메시지로 이동시킵니다.
       scrollToLatestMessage();
     }
- 
+
   // 과거의 대화목록을 가져와서 띄워주기
 async function loadChatMessageHistory() {
-  await $getHaruChatMessages(userStore.getLoginUser.userNo)
+  const data = {
+    chatRoomNo : haruChatStore.getChatRoomNo
+  }
+  await $getHaruChatMessages(data)
   .then(res => {
     for(const item of res.data) {
           messages.value.push({
           sender: { nickname: item.haruName, avatarUrl: item.haruImgPath},
-          content: item.chatMsgContent
+          content: item.msgContent
         });
-        }
+      }
   })
   .catch(err => console.log(err))
       // 스크롤을 최신 메시지로 이동시킵니다.

@@ -23,10 +23,10 @@ async function $getHaruChatRooms(userNo) {
 }
 
 // 특정 채팅방 접속 시 하루봇 메세지 불러오기 : 페르소나 이름과 메시지 내용 노출
-async function $getHaruChatMessages(userNo){
+async function $getHaruChatMessages(data){
     try {
         const axios = createJsonAxiosInstance()
-        return await axios.get('haruchat/'+userNo);        
+        return await axios.post('haruchat/rooms/messages', data);        
     } catch (err) {
         console.log(err);
     }

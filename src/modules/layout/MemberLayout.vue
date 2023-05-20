@@ -110,6 +110,9 @@ function createWebSocketConnection() {
         console.log(res);
         const msg = JSON.parse(res.body); // 구독하게 되면 받아오게 되는 메세지
         console.log(msg); 
+        
+        notifyList.value.push(msg)
+
       })
 
       const sendData = JSON.stringify({
