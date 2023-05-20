@@ -67,8 +67,11 @@ async function startTalk() {
   
   const haruchatchar = selection.value;
   haruStore.setHaruchatChar(haruchatchar);
+  // receive first message(opinion about today's subject) from selected persona 
   await $receiveFirstMsgFromChatGPT(haruchatchar)
   .then(res=>{
+    const chatRoomNo = res.data[0].chatRoomNo
+        haruStore.setChatRoomNo(chatRoomNo)
     console.log(res)
   })
   .catch(err => console.log(err))
