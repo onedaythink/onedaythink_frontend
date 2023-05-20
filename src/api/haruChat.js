@@ -12,10 +12,10 @@ async function $sendMessage(data) {
 }
 
 // 하루 챗 리스트 불러오기 : 보낸사람이미지와 마지막 메시지 노출
-async function $getHaruChatRooms(data) {
+async function $getHaruChatRooms(userNo) {
     try {
         const axios = createJsonAxiosInstance();
-        return await axios.post("haruchat", data);
+        return await axios.get(`haruchat/rooms/${userNo}`);
     }
     catch (err) {
         console.log(err);
