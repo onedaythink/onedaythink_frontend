@@ -53,15 +53,15 @@
       <div class="mypage-card mt-10" v-for="opinion, idx in paginatedOpinions" :key="idx">
         <v-card class="mx-auto" max-width="344">
           <v-img
-              :src="findImage(subjectImg)"
+             :src= findImage(subjectImg)
               width="200px"
               height="160px"
               cover
           ></v-img>
 
-          <v-card-title>{{ foramtDate }}</v-card-title>
-          <v-card-subtitle>{{ opinion.content }}</v-card-subtitle>
-          <v-card-actions>
+          <v-card-title>{{ opinion.createAt }}</v-card-title>
+          <v-card-subtitle style="white-space: pre-wrap;">{{ opinion.content }}</v-card-subtitle>
+          <v-card-actions> 어떤 생각을 했을까?
             <v-spacer></v-spacer>
             <v-btn
               :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
@@ -74,8 +74,9 @@
               <v-divider></v-divider>
               <v-card-text >
                 <v-textarea v-model="opinion.opinion"></v-textarea>
-                <v-btn type="submit" class="mr-2" @click="updateOpinion">수정하기</v-btn>
-                <v-btn type="submit" @click="deleteOpinion(opinion)">삭제하기</v-btn>
+                <v-btn type="submit" class="mr-2" @click="save(opinion)">다시 생각해요</v-btn>
+                <v-btn type="submit" class="mr-2" @click="share(opinion)">생각을 숨길래요</v-btn>
+                <v-btn type="submit" class="mr-2" @click="opDelete(opinion)">생각을 비워요</v-btn>
               </v-card-text>
             </div>
           </v-expand-transition>
@@ -102,19 +103,19 @@ export default {
 </script>
 
 <script setup>
-import { $postMainSubject } from '@/api/subject';
 import { useUserStore } from '@/store/user';
-import { $getMyOpinions, $addOpinion, $deleteOpinion, $getOpinion } from '@/api/opinion';
+
+import { $postMainSubject } from '@/api/subject';
+import { useSubjectStore } from '@/store/subject';
+
+import { $getMyOpinions, $updateOpinion, $deleteOpinion, $getOpinion } from '@/api/opinion';
 import { onMounted, nextTick, ref, computed } from 'vue';
-
-import {useSubjectStore} from '@/store/subject';
-
 
 // 회원탈퇴 관련 import
 import { $deleteUser } from '@/api/user';
 import { useRouter } from 'vue-router';
 
-const user = ref({})
+const user = ref({}) // 유저정보
 const show = ref(false)
 
 const userStore = useUserStore() // 회원탈퇴 관련
@@ -123,106 +124,13 @@ const router = useRouter() // 회원탈퇴 알림창 관련
 const myOpinionList = ref([])
 const dialog = ref(false) // 회원탈퇴 알림창 관련
 
-  const op = ref('')
+const op = ref('') // 의견 수정, 비활성화
 
-  const myOpinion = ref({
-    opinion : ''
-  })
+const myOpinion = ref({ // 의견 수정, 비활성화
+  opinion : ''
+})
 
-  const subjectStore = useSubjectStore()
-  const subjectText = ref('')
-  const subjectImg = ref('')
-
-  // 페이지네이션 관련 변수
-  const currentPage = ref(1); // 현재 페이지 상태
-  const itemsPerPage = 1; // 페이지 당 항목 수
-
-  // 페이지네이션에 따른 의견 리스트 계산
-  const paginatedOpinions = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
-  return myOpinionList.value.slice(start, end);
-});
-
-  // 총 페이지 수 계산
-  const totalPages = computed(() => {
-  return Math.ceil(myOpinionList.value.length / itemsPerPage);
-});
-
-
-  // 날짜 데이터
-  const foramtDate = ref('')
-  function formattedDate() {
-    const d = new Date();
-    const options = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      weekday: 'long',
-    };
-
-
-  const dateParts = d.toLocaleDateString('ko-KR', options).split('.');
-  const year = dateParts[0];
-  const month = dateParts[1];
-  const day = dateParts[2];
-  const weekday = dateParts[3];
-  const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
-  const weekdayKor = weekdays[Number(weekday)]
-  foramtDate.value = `${year}년 ${month}월 ${day}일 ${weekdayKor}요일`;
-}
-
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = (today.getMonth() + 1).toString().padStart(2, '0');
-  const date = today.getDate().toString().padStart(2, '0');
-  const yyyymmdd = `${year}${month}${date}`;
-
-  const opinion = {
-    opinion : '',
-    isPublic : 'n',
-    createAt : yyyymmdd
-  }
-
-  function postMainSubject() {
-  
-  $postMainSubject(yyyymmdd)
-  
-  .then(res => {
-    subjectStore.setSubject(res.data)
-    subjectText.value = subjectStore.getSubject.content
-    // 이미지경로값:C://사용자/test.png
-    subjectImg.value = subjectStore.getSubject.subImgPath
-
-  }).catch(err => {
-    console.log(err)
-  })
-}
-
-  // opinion 데이터 가져오기
-  async function getMyOpinionList() {
-  const res = await $getMyOpinions(user.value.userNo);
-  myOpinionList.value = res.data.reverse(); // 의견의 순서를 역순으로 변경
-  subjectImg.value = myOpinionList.value[0].subjectImg;
-}
-
-  // subject 이미지 가져오기
-  console.log(opinion.subjectImg)
-  function findImage(subjectImg) {
-    if (!subjectImg) {
-      return '';
-    }
-    const convertedPath = subjectImg.replace(/\\/g, '/');
-    return `http://localhost:8080/onedaythink/api/v1/imgfind/subjectImg?subjectImgPath=${convertedPath}`;
-  }
-  console.log(findImage(opinion.subjectImg))
-
-  // 회원 탈퇴 알림창
-  async function deleteUser() {
-    dialog.value = true;
-  }
-
-
+// subjectImg 호출
 async function getMyOpinion() {
   await $getOpinion(userStore.getLoginUser.userNo, yyyymmdd)
   .then(res => {
@@ -233,40 +141,66 @@ async function getMyOpinion() {
   }).catch(err => console.log(err))
 }
 
-function updateOpinion() {
-  // Ensure getLoginUser is not null or undefined
-  if (!userStore.getLoginUser) {
-    console.error('No user is logged in.');
-    return;
-  }
+// subjectImg 호출
+const subjectStore = useSubjectStore()
+const today = new Date();
+const year = today.getFullYear();
+const month = (today.getMonth() + 1).toString().padStart(2, '0');
+const date = today.getDate().toString().padStart(2, '0');
+const yyyymmdd = `${year}${month}${date}`;
+const subjectImg = ref('')
 
-  const user = userStore.getLoginUser.value;
-
-  // Ensure user object has a userNo property
-  if (!user || !user.userNo) {
-    console.error('Logged in user has no userNo property.');
-    return;
-  }
-
-  opinion.userOpiNo = myOpinion.value.userOpiNo;
-  opinion.opinion = op.value;
-  opinion.userNo = user.userNo;
-
-  // Check if opinion has userNo property
-  if (!opinion.userNo) {
-    console.error('opinion has no userNo property.');
-    return;
-  }
-
-  // 저장 버튼을 클릭했을 때의 동작
-  $addOpinion(opinion.value)
+// subjectImg 호출
+function postMainSubject() {
+  $postMainSubject(yyyymmdd)
     .then(res => {
-      getMyOpinion(opinion.value.userNo, opinion.value.createAt);
+      console.log(res.data);
+      subjectStore.setSubject(res.data);
+      console.log(subjectStore.getSubject.subImgPath);
+      subjectImg.value = subjectStore.getSubject.subImgPath;
     }).catch(err => {
       console.log(err);
+      subjectImg.value = ''; 
     });
 }
 
+// subjectImg 호출
+function findImage(subjectImg) {
+  console.log(subjectImg)
+  if (subjectImg) {
+    console.log(subjectImg);
+    const convertedPath = subjectImg.replace(/\\/g, '/');
+    return `http://localhost:8080/onedaythink/api/v1/imgfind/subjectImg?subjectImgPath=${convertedPath}`;
+  } else {
+    return null;
+  }
+}
+// 페이지네이션 관련 변수
+const currentPage = ref(1); // 현재 페이지 상태
+const itemsPerPage = 1; // 페이지 당 항목 수
+
+// 페이지네이션에 따른 의견 리스트 계산
+const paginatedOpinions = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return myOpinionList.value.slice(start, end);
+});
+
+  // 총 페이지 수 계산
+const totalPages = computed(() => {
+  return Math.ceil(myOpinionList.value.length / itemsPerPage);
+});
+
+  // opinion 데이터 가져오기
+async function getMyOpinionList() {
+  const res = await $getMyOpinions(user.value.userNo);
+  myOpinionList.value = res.data.reverse(); // 의견의 순서를 역순으로 변경
+}
+
+// 회원 탈퇴 알림창
+async function deleteUser() {
+  dialog.value = true;
+}
 
 // 회원 탈퇴
 async function confirmDeleteUser() {
@@ -281,28 +215,59 @@ async function confirmDeleteUser() {
   }
 }
 
-
-// 나의 의견 삭제
-async function deleteOpinion(opinion) {
-    try {
-        await $deleteOpinion(opinion);
-        alert('의견이 성공적으로 삭제되었습니다.');
-        getMyOpinionList();
-    } catch (err) {
-        console.error(err);
-        alert('의견 삭제에 실패하였습니다. 다시 시도해주세요.');
-    }
+// 나의 의견 수정
+async function save(opinion) {
+  try {
+    await $updateOpinion(opinion)
+    getMyOpinionList(opinion.userNo, opinion.createAt)
+  } catch (err) {
+    console.log(err)
+  }
 }
 
+// 나의 의견 공유 활성화/비활성화
+async function share(opinion) {
+  if (opinion.isPublic == 'y') {
+    opinion.isPublic = 'n';
+  } else if (opinion.isPublic == 'n') {
+    opinion.isPublic = 'y';
+  }
+  try {
+    console.log(opinion)
+    await $updateOpinion(opinion)
+    getMyOpinionList(opinion.userNo, opinion.createAt)
+  } catch (err) {
+    console.log(err)
+  }
+}
 
+// 나의 의견 삭제
+async function opDelete(opinion) {
+  if (opinion.withdraw == 'n') {
+    opinion.withdraw = 'y';
+  } else if (opinion.withdraw == 'y') {
+    opinion.withdraw = 'n';
+  }
+  try {
+    console.log(opinion)
+    await $deleteOpinion(opinion)
+    getMyOpinionList(opinion.userNo, opinion.createAt)
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+// 페이지 갱신
 onMounted(async () => {
   await nextTick();
   user.value = userStore.getLoginUser;
   await getMyOpinionList();
-  formattedDate();
+  getMyOpinion
   postMainSubject();
-  console.log(findImage(myOpinionList.value[0].subjectImg)); // 배열의 첫 번째 요소의 이미지를 테스트로 출력해봅니다.
 });
 
-
 </script>
+
+<style>
+
+</style>

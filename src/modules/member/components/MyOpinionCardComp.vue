@@ -86,12 +86,13 @@ function save() {
     }
 
 function share() {
-      if (opinion.isPublic == 'y') {
-        opinion.isPublic = 'n'
-      } else {
-        opinion.isPublic = 'y'
-      }
-    }
+  if (opinion.isPublic == 'y') {
+    opinion.isPublic = 'n';
+  } else if (opinion.isPublic == 'n') {
+    opinion.isPublic = 'y';
+  }
+  save();
+}
 
 async function getMyOpinion() {
   await $getOpinion(userStore.getLoginUser.userNo, yyyymmdd)

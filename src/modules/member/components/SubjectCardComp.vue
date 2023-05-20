@@ -43,7 +43,7 @@ export default {
 <script setup>
 import { $postMainSubject } from '@/api/subject';
 import { ref, onMounted, nextTick } from 'vue';
-import {useSubjectStore} from '@/store/subject';
+import { useSubjectStore } from '@/store/subject';
 
 const foramtDate = ref('')
 function formattedDate() {
@@ -84,6 +84,7 @@ function postMainSubject() {
     subjectStore.setSubject(res.data)
     subjectText.value = subjectStore.getSubject.content
     // 이미지경로값:C://사용자/test.png
+    
     subjectImg.value = subjectStore.getSubject.subImgPath
 
   }).catch(err => {

@@ -47,6 +47,28 @@ async function $addOpinion(currnet_opinion){
     }
 }
 
+// mypage - opinion 수정
+async function $updateOpinion(opinion){
+    try {
+        const axios = createJsonAxiosInstance()
+        console.log(opinion.userNo)
+        return await axios.post('opinions/mypage/update/'+opinion.userNo, opinion);        
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+// Mypage에서 opinion 삭제
+async function $deleteOpinion(opinion){
+    try {
+        const axios = createJsonAxiosInstance()
+        console.log(opinion.userNo)
+        return await axios.post('opinions/mypage/delete/'+opinion.userNo, opinion);
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 async function $likeControll(userNo, userOpiNo){
     try {
         const axios = createJsonAxiosInstance()
@@ -60,27 +82,8 @@ async function $likeControll(userNo, userOpiNo){
     }
 }
 
-// Mypage에서 opinion 수정
-async function $updateOpinion(currnet_opinion){
-    try {
-        const axios = createJsonAxiosInstance()
-        console.log(currnet_opinion.userNo)
-        return await axios.post('opinions/'+currnet_opinion.userNo, currnet_opinion);
-    } catch (err) {
-        console.log(err);
-    }
-}
 
-// Mypage에서 opinion 삭제
-async function $deleteOpinion(currnet_opinion){
-    try {
-        const axios = createJsonAxiosInstance()
-        console.log(currnet_opinion.userNo)
-        return await axios.post('opinions/deleteopinion/'+currnet_opinion.userNo, currnet_opinion);
-    } catch (err) {
-        console.log(err);
-    }
-}
+
 
 export { $getOpinions, $addOpinion, $getOpinion, $updateOpinion, $deleteOpinion,
          $getOpinionsByCreateAt, $likeControll, $getMyOpinions }
