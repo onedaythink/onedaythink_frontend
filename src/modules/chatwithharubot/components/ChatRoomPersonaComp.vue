@@ -152,7 +152,7 @@ function createWebSocketConnection() {
 const haruChatStore = useHaruChatStore();
 // 선택된 하루에 대한 모든 정보를 담는 변수
 const selectedChar = ref({});
-// 현재 페르소나 챗에 젖아되어 있는 페르소나를 담아놓는 배열
+// 현재 페르소나 챗에 저장되어 있는 페르소나를 담아놓는 배열
 const haruList = ref([])
 
 // 스토어에 저장되어 있는 선택된 페르소나를 haruChat 변수에 담는 함수

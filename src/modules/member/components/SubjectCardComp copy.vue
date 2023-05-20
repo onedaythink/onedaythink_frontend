@@ -1,31 +1,49 @@
 <template>
-  <div>
-    <v-card>
-      <v-row>
-        <v-col cols="12">
+  <v-card
+  >
+    <v-img
+     :src= findImage(subjectImg)
+      width="256px"
+      height="256px"
+      cover
+    ></v-img>
+    <v-card-title>
+      {{ foramtDate }}
+    </v-card-title>
 
-          <p class="formatted-date">{{ foramtDate }} </p>
-          <h4 class="mt-2">오늘의 사유</h4>
-          <div class="mainbox">
-            <v-img class="mt-5" :src="findImage(subjectImg)" width="256px" height="256px" contain></v-img>
-            <h1 class="  subject-text mt-3">"{{ subjectText }}"</h1>
-          </div>
-        </v-col>
-      </v-row>
-    </v-card>
-  </div>
+    <v-card-subtitle>
+      오늘의 사유
+    </v-card-subtitle>
+
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn
+        :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+        @click="show = !show"
+      ></v-btn>
+    </v-card-actions>
+
+    <v-expand-transition>
+      <div v-show="show">
+        <v-divider></v-divider>
+        <v-card-text>
+          {{ subjectText }}  
+        </v-card-text>
+      </div>
+    </v-expand-transition>
+  </v-card>
 </template>
 
 <script>
 export default {
-  name: 'SubjectCardComp'
+    name : 'SubjectCardComp'
 }
 </script>
 
 <script setup>
 import { $postMainSubject } from '@/api/subject';
 import { ref, onMounted, nextTick } from 'vue';
-import { useSubjectStore } from '@/store/subject';
+import {useSubjectStore} from '@/store/subject';
 
 const foramtDate = ref('')
 function formattedDate() {
@@ -56,31 +74,29 @@ const month = (today.getMonth() + 1).toString().padStart(2, '0');
 const date = today.getDate().toString().padStart(2, '0');
 const yyyymmdd = `${year}${month}${date}`;
 
-
+const show = ref(true)
 
 function postMainSubject() {
-
+  
   $postMainSubject(yyyymmdd)
+  
+  .then(res => {
+    subjectStore.setSubject(res.data)
+    subjectText.value = subjectStore.getSubject.content
+    // 이미지경로값:C://사용자/test.png
+    subjectImg.value = subjectStore.getSubject.subImgPath
 
-    .then(res => {
-      subjectStore.setSubject(res.data)
-      subjectText.value = subjectStore.getSubject.content
-      // 이미지경로값:C://사용자/test.png
-      subjectImg.value = subjectStore.getSubject.subImgPath
-
-    }).catch(err => {
-      console.log(err)
-    })
+  }).catch(err => {
+    console.log(err)
+  })
 }
 
 function findImage(subjectImg) {
-  if (subjectImg != '') {
   const convertedPath = subjectImg.replace(/\\/g, '/');
   return `http://localhost:8080/onedaythink/api/v1/imgfind/subjectImg?subjectImgPath=${convertedPath}`;
-  }
 }
 
-onMounted(async () => {
+onMounted( async () => {
   await nextTick()
   formattedDate()
   postMainSubject();
@@ -88,28 +104,6 @@ onMounted(async () => {
 
 </script>
 
-<style scoped>
-.v-row {
-  margin: 0px;
-}
+<style>
 
-.mainbox {
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.formatted-date {
-  color: #877b78;
-  font-size: 10px;
-}
-
-.subject-text {
-  display: flex;
-  align-items: center;
-  width: 95%;
-  color: #877b78;
-  font-size: 15px;
-
-}</style>
+</style>
