@@ -171,7 +171,11 @@ import { useRouter } from 'vue-router';
 
 <style scoped>
 .v-card {
+
   height: 80vh;
+
+  height: 150vh;
+
 }
 
 .small {

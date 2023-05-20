@@ -67,6 +67,16 @@ function save() {
   opinion.value.userNo = userStore.getLoginUser.userNo;
   opinion.value.subNo = subjectStore.getSubject.subNo;
 
+
+function share() {
+  if (opinion.isPublic == 'y') {
+    opinion.isPublic = 'n';
+  } else if (opinion.isPublic == 'n') {
+    opinion.isPublic = 'y';
+  }
+  save();
+}
+
   $addOpinion(opinion.value)
     .then((res) => {
       getMyOpinion(opinion.value.userNo, opinion.value.createAt, opinion.value.isPublic);

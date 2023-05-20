@@ -98,7 +98,7 @@ async function likeControll(userOpiNo) {
 }
 
 async function createChatRoom(userOpiNo) {
-    await $createChatRoom(userOpiNo, userStore.getLoginUser.userNo)
+    await $createChatRoom(userOpiNo, userStore.getLoginUser.userNo, userStore.getLoginUser.nickname)
     .then(res => {
         console.log(res.data)
         window.alert(res.data.msg)

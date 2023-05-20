@@ -1,11 +1,12 @@
 import { createJsonAxiosInstance } from "./index";
 
-async function $createChatRoom(userOpiNo, userNo){
+async function $createChatRoom(userOpiNo, userNo, nickname){
     try {
         const axios = createJsonAxiosInstance()
         const data = {
             toUserOpiNo : userOpiNo,
-            fromUserNo: userNo
+            fromUserNo: userNo,
+            fromNickname: nickname
         }        
         return await axios.post('chat/rooms/', data);        
     } catch (err) {
@@ -41,14 +42,5 @@ async function $getChatRoomsAll(){
     }
 }
 
-// 하루 캐릭터 조회
-async function $getHaruChar(){
-    try {
-        const axios = createJsonAxiosInstance()
-        return await axios.get('haruchat');        
-    } catch (err) {
-        console.log('error msg : ', err);
-    }
-}
 
-export { $createChatRoom, $getChatRooms, $getChatMessages, $getChatRoomsAll, $getHaruChar }
+export { $createChatRoom, $getChatRooms, $getChatMessages, $getChatRoomsAll }
