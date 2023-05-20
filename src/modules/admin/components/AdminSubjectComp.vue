@@ -157,7 +157,7 @@ async function makeImg() {
 async function runPrompt() {
     const response = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: "다음 주제에 어울리는 그림을 그리고 싶은데, 그 그림에 어울리는 아이디어를 한문장으로 된 영어로 답변해줘. 주제:" + test_text.value,
+      prompt: "다음 주제에 어울리는 실제 사진같은 그림을 그리고 싶은데, 그 그림에 어울리는 아이디어를 자세하게 영어로 답변해줘. 주제:" + test_text.value,
       max_tokens: 700,
       temperature: 0.2,
     });

@@ -12,7 +12,7 @@
 
   <v-row justify="center" align="center" style="margin-bottom: 6px">
     <v-col cols="auto">
-      <v-btn color= "#FBF0A0" density="compact">
+      <v-btn color= "#FBF0A0" density="comfortable">
         <router-link to="/signup">회원가입</router-link></v-btn
       >
     </v-col>
