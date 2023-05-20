@@ -6,6 +6,7 @@
         <v-row>
           <v-col v-for="(item, i) in haruList" :key="i" cols="12" md="6">
             <v-item>
+
               <v-img :src="item.haruImgPath" :alt="item.haruNo" cover height="150" class="d-flex justify-end pa-2"
                 @click="toggleItem(item)">
                 <div class="image-overlay">
@@ -14,6 +15,7 @@
                 <div class="overlay" v-if="!isSelected(item)"></div>
                 <v-btn :icon="isSelected(item) ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"
                   class="icon-btn"></v-btn>
+
               </v-img>
             </v-item>
           </v-col>
@@ -30,7 +32,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { $getHaruChar } from '@/api/chat';
+import { $getHaruChar, $receiveFirstMsgFromChatGPT } from '@/api/personachat'
 import { useRouter } from 'vue-router';
 import { useHaruChatStore } from '@/store/haruchat';
 
@@ -61,10 +63,18 @@ function toggleItem(item) {
   }
 }
 
-function startTalk() {
-
+async function startTalk() {
+  
   const haruchatchar = selection.value;
   haruStore.setHaruchatChar(haruchatchar);
+  // receive first message(opinion about today's subject) from selected persona 
+  await $receiveFirstMsgFromChatGPT(haruchatchar)
+  .then(res=>{
+    const chatRoomNo = res.data[0].chatRoomNo
+        haruStore.setChatRoomNo(chatRoomNo)
+    console.log(res)
+  })
+  .catch(err => console.log(err))
   router.push('/chatroompersona');
 }
 
@@ -115,3 +125,4 @@ onMounted(getHaruChar);
   text-align: center;
 }
 </style>
+

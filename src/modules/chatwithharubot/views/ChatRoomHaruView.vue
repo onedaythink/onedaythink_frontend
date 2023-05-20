@@ -12,9 +12,28 @@
 
   <v-card>
     <v-card-actions class="topic-btn">
-      <v-spacer>하루에게 궁금한 것을 물어보세요</v-spacer>
+      <v-spacer>생각주제</v-spacer>
+      <v-btn
+        :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'"
+        @click="show = !show"
+      ></v-btn>
     </v-card-actions>
+
+    <v-expand-transition>
+      <div v-show="show">
+        <v-divider></v-divider>
+        <v-card-text>
+           I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape.
+        </v-card-text>
+      </div>
+    </v-expand-transition>
   </v-card>
+
+    <v-row>
+      <v-col cols="12" class="text-center">
+        <h3 class="grey--text">{{ otherName }}님과의 대화</h3>
+      </v-col>
+    </v-row>
 
   <!-- Chat messages -->
 <v-row>
@@ -35,7 +54,7 @@
               </div>
             </div>
             <div> 
-                <div class="d-flex grey--text" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">{{ message.sender.nickname }} {{ message.time }}</div>
+                <span class="grey--text">{{ message.sender.nickname }} {{ message.time }}</span>
             </div>
           </v-col>
         </v-row>
@@ -47,27 +66,7 @@
 <!-- Message input -->
 <v-row>
   <v-col cols="12">
-    
-    <!-- 하루봇 선택을 위한 모달 -->
-    <v-dialog v-model="showModal" persistent max-width="500px">
-      <v-card>
-        <v-card-title>
-
-          <input ref="searchBox" type="text" :value="searchTerm" @input="filteredList">
-          <v-spacer></v-spacer>
-        </v-card-title>
-        <v-card-text>
-          <ul>
-            <li v-for="(item, index) in filteredList" :key="index">{{ item }}</li>
-          </ul>
-          </v-card-text>
-        <v-card-actions>
-          <v-btn color="primary" text @click="closeModal">Close</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-textarea v-model="userMessage" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup="sentenceCompeletion" @keyup.enter="sendMessage"></v-textarea>
+    <v-textarea v-model="userMessage" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup.enter="sendMessageAndClear"></v-textarea>
   </v-col>
 </v-row>
 <v-row>
@@ -76,195 +75,86 @@
   </v-col>
 </v-row>
 
+<!-- Add this button after the '전송' button -->
+<v-btn color="#FBF0A0" dark @click="receiveMessage">Receive</v-btn>
+
   </v-container>
 </template>
+
 <script>
 export default {
-  name: "ChatRoomHaruView"
-}
-</script>
-
-<script setup>
-import { ref, nextTick, onMounted, onBeforeUnmount, watch} from "vue";
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
-import { useUserStore } from '@/store/user';
-import { $questionForHaru } from '@/api/flask';
-  
-
-const userStore = useUserStore()
-const myName = userStore.getLoginUser.nickname
-const otherName = ref('하루')
-const messages = ref([])
-const userMessage = ref("")
-
-async function scrollToLatestMessage() {
-      await nextTick()
-      const container = document.querySelector(".chat-card-wrapper");
+  name: "ChatRoom",
+  data: () => ({
+    show: false,
+    otherName: "하루",
+    myName: "후니",
+    messages: [], // 채팅 메시지 배열
+    userMessage: '',
+  }),
+  watch: {
+    messages() {
+      this.$nextTick(() => {
+      const container = this.$el.querySelector(".chat-card-wrapper");
       container.scrollTop = container.scrollHeight;
-  }
-
-const getCurrentTime = () => {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const ampm = hours >= 12 ? "pm" : "am";
-    const hour = hours % 12;
-    const time = `${ampm} ${hour}:${minutes < 10 ? "0" + minutes : minutes}`;
-    return time;
-  };
-
-  // db에 저장되어 있는 대화목록을 불러오는 부분
-  // 하루챗에 맞춰서 수정이 필요함
-  // function loadChatHistory() {
-  //   $getChatMessages(chatRoomNo.value)
-  //   .then(res => {
-  //     chatHistory.value = res.data
-  //     console.log(res.data)
-  //     // for문을 돌면서 해당 메세지의 sendUserNo 이 `나` 일 경우 오른쪽,
-  //     // 상대방일 경우 왼쪽에 추가
-  //     chatHistory.value.forEach(chatMsg => {
-  //       if (myName == chatMsg.sendNickname) {
-  //         messages.value.push({
-  //           sender: { nickname: myName, avatarUrl: "" },
-  //           content: chatMsg.chatMsgContent,
-  //           time: chatMsg.chatCreateAt,
-  //         });
-  //       } else {
-  //         otherName.value = chatMsg.sendNickname
-  //         messages.value.push({
-  //           sender: { nickname: chatMsg.sendNickname, avatarUrl: ""},
-  //           content: chatMsg.chatMsgContent,
-  //             time: chatMsg.chatCreateAt,
-  //         });
-  //       }
-  //     });
-  //     scrollToLatestMessage();
-  //   })
-  //   .catch(err => console.log(err))
-  // }
-
-// WebSocket 연결을 담을 ref 변수
-const stompClient = ref(null);
-const socket = new SockJS('http://localhost:8080/onedaythink/stomp/ws');
-const stomp = Stomp.over(socket);
-
-// WebSocket 연결 생성 함수
-function createWebSocketConnection() {
-  console.log('test')
-  stomp.connect({}, () => {
-    stompClient.value = stomp;
-
-      // 과거의 채팅 기록 조회
-      // loadChatHistory()
-
-      // api 테스트
-      // 지금은 테스트를 위해서 여기에 axios 를 만들었지만
-      // 실제로 하실 때에는 api/ 폴더에 하루챗.js 만들어서 해주세요!
-      // const axios = createJsonAxiosInstance()
-      // axios.get('haruchat/test')
-      // .then(res => {console.log(res.data)})
-      // .catch(err => console.log(err))
-
-      // 스크롤을 가장 아랫부분으로 내리기
-      scrollToLatestMessage();
     });
-}
-
-const haruList = ref([
-  'hello',
-  'world',
-  'myname',
-  'is',
-  'haru',
-  'nice',
-  'to',
-  'meet',
-  'you'
-])
-const searchTerm = ref('');
-const showModal = ref(false)
-const searchBox = ref('')
-
-async function sentenceCompeletion(event) {
-      const input = event.target.value;
-      const lastCharacter = input[input.length - 1];
-      if (lastCharacter === '@') {
-        // '@' 문자가 입력되었을 때 처리할 로직을 작성합니다.
-        console.log('자동 완성 기능을 실행합니다.');
-        showModal.value = true
-        await nextTick(() => {
-          searchBox.value.focus();
-        });
-      }
-    }
-
-function closeModal() {
-      showModal.value = false;
-} 
-function filteredList(){
-  if (searchTerm.value === '') {
-    return haruList.value;
-  }
-  return haruList.value.filter(haru => {
-    if (haru.includes(searchTerm.value)) {
-      return haru;
-    }
-  });
-}
-
-watch(searchTerm, () => {
-  const filteredList = filteredList()
-})
-
-const sendMessage = () => {
+    },
+  },
+  methods: {
+    // 사용자가 새로운 메시지를 입력하면 호출되는 함수
+    sendMessage() {
       // userMessage가 비어있으면 함수를 종료합니다.
-      if (userMessage.value == null || userMessage.value.trim() == "") {
-        console.log(userMessage.value)
+      if (!this.userMessage) {
         return;
-        
       }
       // messages 배열에 새로운 메시지를 추가합니다.
-      const currentTime = getCurrentTime();
-      messages.value.push({
-        sender: { nickname: userStore.getLoginUser.nickname, avatarUrl: '' },
-        content: userMessage.value,
-        time: currentTime
+      const currentTime = this.getCurrentTime();
+      this.messages.push({
+        sender: { nickname: this.myName, avatarUrl: '' },
+        content: this.userMessage,
+        time: currentTime,
       });
-      receiveMessage()
       // userMessage를 초기화합니다.
-      userMessage.value = "";
+      this.userMessage = "";
 
       // 스크롤을 최신 메시지로 이동시킵니다.
-      scrollToLatestMessage();
-    }
-
-
-async function receiveMessage() {
-  await $questionForHaru(userMessage.value)
-  .then(res => {
-    const answer = res.data
-    messages.value.push({
-      sender: { nickname: otherName.value, avatarUrl: '' },
-      content: answer.content
+      this.scrollToLatestMessage();
+    },
+    // sendMessage 메소드를 호출하고 userMessage를 초기화하는 함수
+    sendMessageAndClear() {
+      this.sendMessage();
+      this.userMessage = "";
+    },
+    getCurrentTime() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const ampm = hours >= 12 ? "pm" : "am";
+      const hour = hours % 12;
+      const time = `${ampm} ${hour}:${minutes < 10 ? "0" + minutes : minutes}`;
+      return time;
+    },
+    receiveMessage() {
+    const currentTime = this.getCurrentTime();
+    this.messages.push({
+      sender: { nickname: this.otherName, avatarUrl: '' },
+      content: "미라니가 뭘 바라고 있는지 몰라서 그래??",
+      time: currentTime,
     });
-  })
-  .catch(err => console.log(err))
-      // 스크롤을 최신 메시지로 이동시킵니다.
-      scrollToLatestMessage();
-}
-
-onBeforeUnmount(() => {
-  if (stompClient.value) {
-    stompClient.value.disconnect();
-  }
-})
-
-// 컴포넌트가 마운트되면 WebSocket 연결 생성 함수 실행
-onMounted(async () => {
-  await createWebSocketConnection();
-});
-
+        // 스크롤을 최신 메시지로 이동시킵니다.
+        this.scrollToLatestMessage();
+  },
+  
+    scrollToLatestMessage() {
+      this.$nextTick(() => {
+        const container = this.$el.querySelector(".chat-card-wrapper");
+        container.scrollTop = container.scrollHeight;
+      });
+    },
+    goToChatWithHaru() {
+      this.$router.push('/chatwithharubot');
+    },
+  },
+};
 </script>
 
 <style scoped>

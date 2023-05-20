@@ -8,7 +8,7 @@
             :width="250"
             aspect-ratio="1/1"
             cover
-            src="~@/assets/메인-하루생각.png"
+            src="~@/assets/하루생각로고메모장.png"
           ></v-img>
           <router-view></router-view>
         </v-main>
