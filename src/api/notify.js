@@ -12,6 +12,7 @@ async function $getNotifies(userNo) {
 async function $editNotify(data) {
     try {
         const axios = createJsonAxiosInstance()
+        console.log(data)
         return await axios.post('notify/edit/users', data);        
     } catch (err) {
         console.log(err);
