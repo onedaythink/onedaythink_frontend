@@ -16,12 +16,12 @@
         </v-col>
         <v-col cols="9">
         <v-card-text>
-            <div>"하루는 이렇게 생각해요 블라블라"</div>
+            <div>{{ message }}</div>
         </v-card-text>
         
         <v-card-actions class="button">
         <v-btn @click="goToChatRoomHaru" variant="outlined" color="yellow-accent-4" class="btn-bold">입장</v-btn>
-        <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold">종료</v-btn>
+        <v-btn @click="closeChatRoomHaru" variant="outlined" color="pink-lighten-4" class="btn-bold">종료</v-btn>
         </v-card-actions>
         </v-col>
         </v-row>
@@ -30,10 +30,18 @@
 
 <script>
 export default {
+  data(){
+    return{
+      message : '하루는 이렇게 생각해요 블라블라',
+    };
+  },
   methods: {
     goToChatRoomHaru() {
       this.$router.push('/chatroompersona');
     },
+    closeChatRoomHaru(){
+      
+    }
   },
 };
 </script>
