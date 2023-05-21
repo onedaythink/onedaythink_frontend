@@ -22,7 +22,7 @@
                 </v-card-text>
                 <v-card-actions class="button">
             <v-btn @click="goToChatRoomOther(chatRoom)" variant="outlined" color="yellow-accent-4" class="btn-bold" >입장</v-btn>
-            <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold">종료</v-btn>
+            <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold" @click="modalSwitch(chatRoom.chatRoomNo)">종료</v-btn>
             </v-card-actions>
             </v-col>
         </template>
@@ -53,13 +53,22 @@
                 </template>
                 <v-card-actions class="button">
             <v-btn @click="goToChatRoomOther(chatRoom)" variant="outlined" color="yellow-accent-4" class="btn-bold" >입장</v-btn>
-            <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold">종료</v-btn>
+            <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold" @click="modalSwitch(chatRoom.chatRoomNo)">종료</v-btn>
             </v-card-actions>
             </v-col>
         </template>
         </v-row>
     </v-card>
     <br>
+    <v-dialog v-model="showConfirmationDialog" max-width="500px">
+      <v-card>
+        <v-card-title class="headline">정말로 종료하시겠습니까?</v-card-title>
+        <v-card-actions>
+          <v-btn color="red" text @click="confirmExit">종료</v-btn>
+          <v-btn text @click="cancelExit">취소</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
     </template>
     <template v-else>
         <div>활성화된 채팅방이 존재하지 않습니다.</div>
@@ -75,7 +84,7 @@ export default {
 <script setup>
 import { useUserStore } from '@/store/user';
 import { useRouter } from 'vue-router';
-import {$getChatRooms} from '@/api/chat'
+import {$getChatRooms, $closeChatRoom} from '@/api/chat'
 import { ref, nextTick, onMounted } from 'vue'
 import { useChatStore } from '@/store/chat';
 
@@ -101,10 +110,39 @@ function getChatRooms() {
     .catch(err => console.log(err))
 }
 
+function closeChatRoom(chatRoomNo){
+    $closeChatRoom(chatRoomNo)
+    .then(res => {
+        console.log(res.data)
+        getChatRooms()
+    })
+    .catch(err => console.log(err))
+}
+
 onMounted( async () => {
     await nextTick()
     getChatRooms()
 })
+
+// 모달 부분
+
+const showConfirmationDialog = ref(false)
+const removeChatRoomNo = ref(0)
+function modalSwitch(chatRoomNo) {
+    showConfirmationDialog.value = true
+    removeChatRoomNo.value = chatRoomNo
+}
+
+function confirmExit() {
+    closeChatRoom(removeChatRoomNo.value);
+    showConfirmationDialog.value = false;
+}
+
+function cancelExit() {
+    removeChatRoomNo.value = 0
+    showConfirmationDialog.value = false;
+}
+
 
 </script>
 

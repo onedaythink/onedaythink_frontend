@@ -51,6 +51,18 @@ async function $deleteUser(userData){
     }
 }
 
+// 회원수정
+async function $updateUser(userData){
+    try {
+        const axios = createJsonAxiosInstance()
+        console.log(userData)
+        return await axios.post('users', userData)
+    }
+    catch (err) {
+        console.log('error msg : ', err)
+    }
+}
+
 
 // 전체 회원 조회(관리자)
 async function $getUsers(){
@@ -62,4 +74,4 @@ async function $getUsers(){
     }
 }
 
-export { $loginUser, $registerUser, $checkUserId, $checkNickname, $getUsers, $deleteUser}
+export { $loginUser, $registerUser, $checkUserId, $checkNickname, $getUsers, $deleteUser, $updateUser}

@@ -32,6 +32,15 @@ async function $getChatMessages(chatRoomNo){
     }
 }
 
+async function $closeChatRoom(chatRoomNo){
+    try {
+        const axios = createJsonAxiosInstance()
+        return await axios.get(`chat/rooms/${chatRoomNo}/close`);        
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 // 전체 채팅방 조회 (관리자용)
 async function $getChatRoomsAll(){
     try {
@@ -43,4 +52,4 @@ async function $getChatRoomsAll(){
 }
 
 
-export { $createChatRoom, $getChatRooms, $getChatMessages, $getChatRoomsAll }
+export { $closeChatRoom, $createChatRoom, $getChatRooms, $getChatMessages, $getChatRoomsAll }
