@@ -221,7 +221,6 @@
         const chatMsg = JSON.parse(res.body); // 구독하게 되면 받아오게 되는 메세지
         console.log(chatMsg);
         const writer = chatMsg.sendNickname;
-        console.log(chatMsg.sendNickname)
 
         if (myName == writer) {
           const currentTime = getCurrentTime();

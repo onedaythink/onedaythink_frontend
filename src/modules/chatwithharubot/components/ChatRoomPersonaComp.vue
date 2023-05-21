@@ -96,13 +96,15 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useUserStore } from '@/store/user';
 import { useHaruChatStore } from '@/store/haruchat';
+import { useSubjectStore } from "@/store/subject";
+import { $getHaruChatMessages, $sendMessage} from '@/api/haruChat';
 
 const userStore = useUserStore()
 const myName = userStore.getLoginUser.nickname
-// const otherName = ref('')
 const messages = ref([])
 const userMessage = ref("")
 
+const subjectStore = useSubjectStore()
 async function scrollToLatestMessage() {
       await nextTick()
       const container = document.querySelector(".chat-card-wrapper");
@@ -120,28 +122,31 @@ const getCurrentTime = () => {
   };
 
 const stompClient = ref(null);
-const socket = new SockJS('http://localhost:8080/onedaythink/stomp/ws');
+const socket = new SockJS('http://localhost:8080/onedaythink/stomp/haru/ws');
 const stomp = Stomp.over(socket);
-
+const subscription = ref(null);
 
 
 // WebSocket 연결 생성 함수
 function createWebSocketConnection() {
-  console.log('test')
   stomp.connect({}, () => {
     stompClient.value = stomp;
 
       // 과거의 채팅 기록 조회
-      // loadChatHistory()
+      loadChatMessageHistory()
+      subscription.value = stomp.subscribe(`/sub/chat/haru/room/${haruChatStore.getChatRoomNo}`, (res) => {
+        const msg = JSON.parse(res.body); // 구독하게 되면 받아오게 되는 메세지
+        console.log(msg); 
 
-      // api 테스트
-      // 지금은 테스트를 위해서 여기에 axios 를 만들었지만
-      // 실제로 하실 때에는 api/ 폴더에 하루챗.js 만들어서 해주세요!
-      // const axios = createJsonAxiosInstance()
-      // axios.get('haruchat/test')
-      // .then(res => {console.log(res.data)})
-      // .catch(err => console.log(err))
-
+        const currentTime = getCurrentTime();
+        for(const item of msg) {
+        messages.value.push({
+          sender: { nickname: item.haruName, avatarUrl: item.haruImgPath },
+          content: item.chatMsgContent,
+          time: currentTime
+        });
+       }
+      })
       // 스크롤을 가장 아랫부분으로 내리기
       scrollToLatestMessage();
     });
@@ -152,7 +157,7 @@ function createWebSocketConnection() {
 const haruChatStore = useHaruChatStore();
 // 선택된 하루에 대한 모든 정보를 담는 변수
 const selectedChar = ref({});
-// 현재 페르소나 챗에 젖아되어 있는 페르소나를 담아놓는 배열
+// 현재 페르소나 챗에 저장되어 있는 페르소나를 담아놓는 배열
 const haruList = ref([])
 
 // 스토어에 저장되어 있는 선택된 페르소나를 haruChat 변수에 담는 함수
@@ -163,7 +168,7 @@ function getSelectedChar() {
       l.push(selectedChar.value[char].haruName)
     }
     haruList.value = l
-    console.log(haruList.value)
+    target.value = l
 }
 
 // 모달에서 검색하고 있는 문장
@@ -180,7 +185,6 @@ async function sentenceCompeletion(event) {
       const lastCharacter = input[input.length - 1];
       if (lastCharacter === '@') {
         // '@' 문자가 입력되었을 때 처리할 로직을 작성합니다.
-        console.log('자동 완성 기능을 실행합니다.');
         showModal.value = true
         await nextTick(() => {
           searchBox.value.focus();
@@ -202,19 +206,23 @@ const filteredItems = computed(() => {
 });
 
 // 모달에서 선택된 하루이름을 담는 배열
-const target = []
+const target = ref([])
+const firstSelect = ref(true)
 
 // 모달에서 하루 선택 시 이미 담겨져 있다면 제거, 없다면 타겟 배열에 추가 후 모달 종료
 function personaCheck(item) {
+  if(firstSelect.value){
+    target.value = []
+    firstSelect.value = false
+  }
   userMessage.value = userMessage.value.slice(0, userMessage.value.length - 1);
-  let i = target.indexOf(item)
+  let i = target.value.indexOf(item)
   if ( i >= 0 ) {
-    target.pop(i)
+    target.value.pop(i)
   } else {
     userMessage.value += item
-    target.push(item)
+    target.value.push(item)
   }
-  console.log(target)
   closeModal()
 }
 
@@ -222,7 +230,6 @@ function personaCheck(item) {
 const sendMessage = () => {
       // userMessage가 비어있으면 함수를 종료합니다.
       if (userMessage.value == null || userMessage.value.trim() == "") {
-        console.log(userMessage.value)
         return;
         
       }
@@ -233,26 +240,71 @@ const sendMessage = () => {
         content: userMessage.value,
         time: currentTime
       });
-      // userMessage를 초기화합니다.
-      userMessage.value = "";
+      const sendData = {
+        // chatRoomNo 은 페이지에 접속 할 때, 스토어에 저장된 챗정보에서 가지고 와야 한다.
+          "chatRoomNo" : haruChatStore.getChatRoomNo,
+          "userNo" : userStore.getLoginUser.userNo,
+          "subject" : subjectStore.getSubject.content,
+          "userMsg" : userMessage.value,
+      }
+
+      const haruName = {}
+      const haruPrompt = {}
+      const haruNo = []
+
+      for(const item of selectedChar.value) {
+        if (target.value.includes(item.haruName)) {
+          haruName[item.haruNo] = item.haruName
+          haruPrompt[item.haruNo] = item.haruPrompt
+          haruNo.push(item.haruNo)
+        }
+      }
+      sendData['haruName'] = haruName
+      sendData['haruPrompt'] = haruPrompt 
+      sendData['haruNo'] = haruNo 
+
+      $sendMessage(sendData)
+      .then(res => {
+        console.log(res.data)
+        for(const item of res.data) {
+          messages.value.push({
+          sender: { nickname: item.haruName, avatarUrl: item.haruImgPath},
+          content: item.chatMsgContent
+        });
+        }
+      })
+      .catch(err => console.log(err))
+      messageClear()
 
       // 스크롤을 최신 메시지로 이동시킵니다.
       scrollToLatestMessage();
     }
- 
+
   // 과거의 대화목록을 가져와서 띄워주기
 async function loadChatMessageHistory() {
-  // await $questionForHaru(userMessage.value)
-  // .then(res => {
-  //   const answer = res.data
-  //   messages.value.push({
-  //     sender: { nickname: otherName.value, avatarUrl: '' },
-  //     content: answer.content
-  //   });
-  // })
-  // .catch(err => console.log(err))
-  //     // 스크롤을 최신 메시지로 이동시킵니다.
-  //     scrollToLatestMessage();
+  const data = {
+    chatRoomNo : haruChatStore.getChatRoomNo
+  }
+  await $getHaruChatMessages(data)
+  .then(res => {
+    for(const item of res.data) {
+          messages.value.push({
+          sender: { nickname: item.haruName, avatarUrl: item.haruImgPath},
+          content: item.msgContent
+        });
+      }
+  })
+  .catch(err => console.log(err))
+      // 스크롤을 최신 메시지로 이동시킵니다.
+      scrollToLatestMessage();
+}
+
+function messageClear() {
+    // userMessage를 초기화합니다.
+    userMessage.value = "";
+    // 타겟 초기화
+    target.value = haruList.value
+    firstSelect.value = true
 }
 
 onBeforeUnmount(() => {
@@ -265,7 +317,6 @@ onBeforeUnmount(() => {
 onMounted(async () => {
   await nextTick();
   await createWebSocketConnection();
-  await loadChatMessageHistory();
   getSelectedChar()
 });
 

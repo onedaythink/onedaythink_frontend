@@ -88,7 +88,7 @@ async function getOpinionsByCreateAt() {
 }
 
 async function likeControll(userOpiNo) {
-    await $likeControll(userStore.getLoginUser.userNo, userOpiNo)
+    await $likeControll(userStore.getLoginUser.userNo, userOpiNo, userStore.getLoginUser.nickname)
     .then(async res => {
         if (res.data == 1) {
             await getOpinionsByCreateAt()
@@ -98,7 +98,7 @@ async function likeControll(userOpiNo) {
 }
 
 async function createChatRoom(userOpiNo) {
-    await $createChatRoom(userOpiNo, userStore.getLoginUser.userNo)
+    await $createChatRoom(userOpiNo, userStore.getLoginUser.userNo, userStore.getLoginUser.nickname)
     .then(res => {
         console.log(res.data)
         window.alert(res.data.msg)

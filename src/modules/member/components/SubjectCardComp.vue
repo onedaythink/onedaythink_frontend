@@ -74,8 +74,10 @@ function postMainSubject() {
 }
 
 function findImage(subjectImg) {
+  if (subjectImg != '') {
   const convertedPath = subjectImg.replace(/\\/g, '/');
   return `http://localhost:8080/onedaythink/api/v1/imgfind/subjectImg?subjectImgPath=${convertedPath}`;
+  }
 }
 
 onMounted(async () => {

@@ -1,11 +1,12 @@
 import { createJsonAxiosInstance } from "./index";
 
-async function $createChatRoom(userOpiNo, userNo){
+async function $createChatRoom(userOpiNo, userNo, nickname){
     try {
         const axios = createJsonAxiosInstance()
         const data = {
             toUserOpiNo : userOpiNo,
-            fromUserNo: userNo
+            fromUserNo: userNo,
+            fromNickname: nickname
         }        
         return await axios.post('chat/rooms/', data);        
     } catch (err) {
@@ -31,6 +32,15 @@ async function $getChatMessages(chatRoomNo){
     }
 }
 
+async function $closeChatRoom(chatRoomNo){
+    try {
+        const axios = createJsonAxiosInstance()
+        return await axios.get(`chat/rooms/${chatRoomNo}/close`);        
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 // 전체 채팅방 조회 (관리자용)
 async function $getChatRoomsAll(){
     try {
@@ -41,14 +51,5 @@ async function $getChatRoomsAll(){
     }
 }
 
-// 하루 캐릭터 조회
-async function $getHaruChar(){
-    try {
-        const axios = createJsonAxiosInstance()
-        return await axios.get('haruchat');        
-    } catch (err) {
-        console.log('error msg : ', err);
-    }
-}
 
-export { $createChatRoom, $getChatRooms, $getChatMessages, $getChatRoomsAll, $getHaruChar }
+export { $closeChatRoom, $createChatRoom, $getChatRooms, $getChatMessages, $getChatRoomsAll }
