@@ -12,6 +12,16 @@ async function $getHaruChar(){
         console.log('error msg : ', err);
     }
 }
+ 
+// 회원별 종료되지 않은 채팅방 전체 목록 조회
+async function $getHaruChatRooms(userNo){
+    try {
+        const axios = createJsonAxiosInstance()
+        return await axios.get('/haruchat/rooms/'+userNo);
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 // 페르소나 쳇 입장 시 페르소나 의견 회신
 async function $receiveFirstMsgFromChatGPT(haruchatchar){
@@ -56,4 +66,4 @@ async function $receiveFirstMsgFromChatGPT(haruchatchar){
     }
 }
 
-export { $getHaruChar, $receiveFirstMsgFromChatGPT}
+export { $getHaruChar, $getHaruChatRooms, $receiveFirstMsgFromChatGPT}

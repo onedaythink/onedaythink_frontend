@@ -1,49 +1,131 @@
 <template>
-    <v-card class="mx-auto" >
+  <template v-if="haruChatRooms.length>0">
+    <v-card class="mx-auto" v-for="(haruChatRoom, index) in haruChatRooms" :key="index" >
         <v-row>
+          <template v-if="haruChatRoom.userNo==0">
         <v-col cols="3" >
         <v-img
             class="align-end text-white"
-            src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+            :src="findImage(haruChatRoom.haruImg)"
             cover
             rounded
             style="border-radius: 50%; width: 70px; height: 70px;"  
         >
         </v-img>
         <v-card-text>
-            Haru
+            {{ haruChatRoom.haruName }}
         </v-card-text>
         </v-col>
         <v-col cols="9">
         <v-card-text>
-            <div>{{ message }}</div>
+            <div>" {{ haruChatRoom.lastMessage }} " </div>
         </v-card-text>
         
         <v-card-actions class="button">
-        <v-btn @click="goToChatRoomHaru" variant="outlined" color="yellow-accent-4" class="btn-bold">입장</v-btn>
-        <v-btn @click="closeChatRoomHaru" variant="outlined" color="pink-lighten-4" class="btn-bold">종료</v-btn>
+        <v-btn @click="goToChatRoomHaru(haruChatRoom)" variant="outlined" color="yellow-accent-4" class="btn-bold">입장</v-btn>
+        <v-btn @click="modalSwitch(chatRoom.chatRoomNo)" variant="outlined" color="pink-lighten-4" class="btn-bold">종료</v-btn>
         </v-card-actions>
         </v-col>
+      </template>
+      <template v-else>
+        <v-col cols="3" >
+        <v-img
+            class="align-end text-white"
+            :src="findImage(haruChatRoom.userImg)"
+            cover
+            rounded
+            style="border-radius: 50%; width: 70px; height: 70px;"  
+        >
+        </v-img>
+        <v-card-text>
+            {{ haruChatRoom.userNickName }}
+        </v-card-text>
+        </v-col>
+        <v-col cols="9">
+        <v-card-text>
+            <div>" {{ haruChatRoom.lastMessage }} "</div>
+        </v-card-text>
+        
+        <v-card-actions class="button">
+        <v-btn @click="goToChatRoomHaru(haruChatRoom)" variant="outlined" color="yellow-accent-4" class="btn-bold">입장</v-btn>
+        <v-btn @click="modalSwitch(chatRoom.chatRoomNo)" variant="outlined" color="pink-lighten-4" class="btn-bold">종료</v-btn>
+        </v-card-actions>
+        </v-col>
+      </template>
         </v-row>
     </v-card>
+    <br>
+    <v-dialog v-model="showConfirmationDialog" max-width="500px">
+      <v-card>
+        <v-card-title class="headline">정말로 종료하시겠습니까?</v-card-title>
+        <v-card-actions>
+          <v-btn color="red" text @click="confirmExit">종료</v-btn>
+          <v-btn text @click="cancelExit">취소</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </template>
+  <template v-else>
+        <div>활성화된 채팅방이 존재하지 않습니다.</div>
+    </template>
 </template>
 
 <script>
 export default {
-  data(){
-    return{
-      message : '하루는 이렇게 생각해요 블라블라',
-    };
-  },
-  methods: {
-    goToChatRoomHaru() {
-      this.$router.push('/chatroompersona');
-    },
-    closeChatRoomHaru(){
-      
-    }
-  },
+  name : 'HaruChatListComp'
 };
+</script>
+
+<script setup>
+import { useRouter } from 'vue-router';
+import { useHaruChatStore } from '@/store/haruchat';
+import { useUserStore } from '@/store/user';
+import { $getHaruChatRooms } from '@/api/personachat';
+import { ref, nextTick, onMounted } from 'vue';
+
+const router = useRouter()
+const haruChatRooms = ref([])
+
+// 채팅방 입장
+function goToChatRoomHaru(haruChatRoom){
+  const haruChatStore = useHaruChatStore()
+  haruChatStore.setHaruChatRoom(haruChatRoom)
+  console.log(haruChatRoom)
+  router.push({path:'/chatroompersona'})
+}
+
+const userStore = useUserStore()
+// 채팅방 리스트
+function getHaruChatRooms(){
+    $getHaruChatRooms(userStore.getLoginUser.userNo)
+    .then(res => {
+      console.log(res.data)
+      haruChatRooms.value = res.data
+    })
+    .catch(err => 
+    console.log(err)
+    )
+}
+
+// 프로필 이미지 가져오기
+function findImage(image){
+  console.log(image);
+  if (image !=null && image != '') {
+  const convertedPath = image.replace(/\\/g, '/');
+  return `http://localhost:8080/onedaythink/api/v1/imgfind/subjectImg?subjectImgPath=${convertedPath}`;
+  }
+}
+
+
+// 채팅방 종료
+
+
+onMounted( async() => {
+  await nextTick()
+  getHaruChatRooms()
+})
+
+
 </script>
 
 <style>
