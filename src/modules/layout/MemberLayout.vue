@@ -43,7 +43,10 @@
           <template v-if="notifyList.length > 0">
             <div v-for="notify in notifyList" :key="notify">
               <v-row>
-                <v-col cols="10">
+                <v-col v-if="notify.type == 'invite'" cols="10" @click="goToChatRoomOther(notify)">
+                  {{ notify.message }}
+                </v-col>
+                <v-col v-else cols="10">
                   {{ notify.message }}
                 </v-col>
                 <v-col cols="2" class="text-right">
@@ -92,7 +95,19 @@ import Stomp from 'stompjs';
 import { useUserStore } from '@/store/user';
 import { ref, nextTick, onBeforeMount, onMounted } from 'vue';
 import {$getNotifies, $editNotify} from '@/api/notify';
-// import SvgIcon from '@jamescoyle/vue-icon';
+import { useRouter } from 'vue-router';
+import { useChatStore } from '@/store/chat';
+
+const router = useRouter()
+
+function goToChatRoomOther(notifyDetail) {
+    // 채팅방 연결
+    const chatStore = useChatStore()
+    chatStore.setChatRoom(notifyDetail)
+    console.log(notifyDetail)
+    router.push({path:'/chatroomother'});
+}
+
 
 const userStore = useUserStore()
 
