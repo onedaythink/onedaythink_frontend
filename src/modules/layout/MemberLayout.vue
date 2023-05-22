@@ -103,8 +103,16 @@ const router = useRouter()
 function goToChatRoomOther(notifyDetail) {
     // 채팅방 연결
     const chatStore = useChatStore()
-    chatStore.setChatRoom(notifyDetail)
+    const chatRoom = {
+      chatRoomNo : notifyDetail.chatRoomNo,
+      fromNickname : notifyDetail.inviteNickname,
+      toNickname : userStore.getLoginUser.nickname
+    }
+    chatStore.setChatRoom(chatRoom)
     console.log(notifyDetail)
+    console.log(chatRoom)
+    beForeEditNotify(notifyDetail)
+    modalSwitch()
     router.push({path:'/chatroomother'});
 }
 

@@ -33,17 +33,24 @@ async function $getHaruChatMessages(data){
 }
 
 // 채팅방 삭제하기
-async function $removeChatRoom() {
+async function $closeHaruChatRoom(chatRoomNo){
+    try {
+        const axios = createJsonAxiosInstance()
+        return await axios.get(`haruchat/rooms/${chatRoomNo}/close`);        
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+// 하루 챗 리스트 불러오기 : 보낸사람이미지와 마지막 메시지 노출
+async function $getSelectedCahr(chatRoomNo) {
     try {
         const axios = createJsonAxiosInstance();
-        const data = {
-            
-        }
-        return await axios.post("haruchat", data);
+        return await axios.get(`haruchat/rooms/${chatRoomNo}/selected-haru`);
     }
     catch (err) {
         console.log(err);
     }
 }
 
-export {$sendMessage, $getHaruChatRooms, $getHaruChatMessages, $removeChatRoom}
+export { $getSelectedCahr, $sendMessage, $getHaruChatRooms, $getHaruChatMessages, $closeHaruChatRoom}

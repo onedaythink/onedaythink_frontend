@@ -17,6 +17,15 @@ async function $createReport(chatRoomNo,reportReason){
     }
 }
 
+async function $getReport(){
+    try {
+        const axios = createJsonAxiosInstance()
+        return await axios.get('chatting/report/reportAll');        
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 
-export { $createReport }
+
+export { $createReport,$getReport }

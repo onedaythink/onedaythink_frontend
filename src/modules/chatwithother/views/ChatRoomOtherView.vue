@@ -135,6 +135,7 @@ const userMessage = ref(""); // 전송하려는 메세지 콘텐츠
 const chatRoomNo = ref(chatStore.getChatRoom.chatRoomNo); // 채팅방 이름을 저장할 ref 변수
 reportDialog.value = false;
 
+
 const getCurrentTime = () => {
   const now = new Date();
   const hours = now.getHours();
@@ -144,6 +145,9 @@ const getCurrentTime = () => {
   const time = `${ampm} ${hour}:${minutes < 10 ? "0" + minutes : minutes}`;
   return time;
 };
+
+
+
 
 function findOtherName() {
   if (myName == chatStore.getChatRoom.fromNickname) {

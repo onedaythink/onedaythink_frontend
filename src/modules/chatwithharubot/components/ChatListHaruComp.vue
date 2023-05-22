@@ -6,7 +6,7 @@
         <v-col cols="3" >
         <v-img
             class="align-end text-white"
-            :src="findImage(haruChatRoom.haruImg)"
+            :src="haruChatRoom.haruImg"
             cover
             rounded
             style="border-radius: 50%; width: 70px; height: 70px;"  
@@ -23,7 +23,7 @@
         
         <v-card-actions class="button">
         <v-btn @click="goToChatRoomHaru(haruChatRoom)" variant="outlined" color="yellow-accent-4" class="btn-bold">입장</v-btn>
-        <v-btn @click="modalSwitch(chatRoom.chatRoomNo)" variant="outlined" color="pink-lighten-4" class="btn-bold">종료</v-btn>
+        <v-btn @click="modalSwitch(haruChatRoom.chatRoomNo)" variant="outlined" color="pink-lighten-4" class="btn-bold">종료</v-btn>
         </v-card-actions>
         </v-col>
       </template>
@@ -48,7 +48,7 @@
         
         <v-card-actions class="button">
         <v-btn @click="goToChatRoomHaru(haruChatRoom)" variant="outlined" color="yellow-accent-4" class="btn-bold">입장</v-btn>
-        <v-btn @click="modalSwitch(chatRoom.chatRoomNo)" variant="outlined" color="pink-lighten-4" class="btn-bold">종료</v-btn>
+        <v-btn @click="modalSwitch(haruChatRoom.chatRoomNo)" variant="outlined" color="pink-lighten-4" class="btn-bold">종료</v-btn>
         </v-card-actions>
         </v-col>
       </template>
@@ -82,15 +82,18 @@ import { useHaruChatStore } from '@/store/haruchat';
 import { useUserStore } from '@/store/user';
 import { $getHaruChatRooms } from '@/api/personachat';
 import { ref, nextTick, onMounted } from 'vue';
+import { $closeHaruChatRoom, $getSelectedCahr} from '@/api/haruChat'
 
 const router = useRouter()
 const haruChatRooms = ref([])
+const haruChatStore = useHaruChatStore()
 
 // 채팅방 입장
 function goToChatRoomHaru(haruChatRoom){
-  const haruChatStore = useHaruChatStore()
   haruChatStore.setHaruChatRoom(haruChatRoom)
+  haruChatStore.setChatRoomNo(haruChatRoom.chatRoomNo)
   console.log(haruChatRoom)
+  getSelectedCahr(haruChatRoom.chatRoomNo)
   router.push({path:'/chatroompersona'})
 }
 
@@ -107,17 +110,43 @@ function getHaruChatRooms(){
     )
 }
 
-// 프로필 이미지 가져오기
-function findImage(image){
-  console.log(image);
-  if (image !=null && image != '') {
-  const convertedPath = image.replace(/\\/g, '/');
-  return `http://localhost:8080/onedaythink/api/v1/imgfind/subjectImg?subjectImgPath=${convertedPath}`;
-  }
+// 채팅방 입장 전 해당 채팅방과 연계되어 있는 하루봇 리스트를 조회해서 스토어에 담기
+function getSelectedCahr(chatRoomNo){
+  $getSelectedCahr(chatRoomNo)
+  .then(res => {
+    console.log(res.data)
+    haruChatStore.setHaruchatChar(res.data);
+  })
+  .catch(err => console.log(err))
 }
 
-
 // 채팅방 종료
+function closeChatRoom(chatRoomNo){
+    $closeHaruChatRoom(chatRoomNo)
+    .then(res => {
+        console.log(res.data)
+        getHaruChatRooms()
+    })
+    .catch(err => console.log(err))
+}
+
+// 모달 부분
+const showConfirmationDialog = ref(false)
+const removeChatRoomNo = ref(0)
+function modalSwitch(chatRoomNo) {
+    showConfirmationDialog.value = true
+    removeChatRoomNo.value = chatRoomNo
+}
+
+function confirmExit() {
+    closeChatRoom(removeChatRoomNo.value);
+    showConfirmationDialog.value = false;
+}
+
+function cancelExit() {
+    removeChatRoomNo.value = 0
+    showConfirmationDialog.value = false;
+}
 
 
 onMounted( async() => {
