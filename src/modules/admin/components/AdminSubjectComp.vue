@@ -9,7 +9,7 @@
             <i></i>
             <i></i>
           </div>
-          <p>AI 이미지 생성중</p>
+          <p> AI가 논제에 대한 이미지를 상상하고 있습니다. <br><span style="color:#877b78; font-size: 9px;">{{ test_text }}</span></p>
         </div>
         <v-row class="my-5 align-center justify-center">
           <v-col cols="12" md="6">
@@ -109,7 +109,6 @@ async function getSubjects() {
     .then(res => {
       if (res.data != null || res.data != '') {
         subjectList.value = res.data
-        console.log(subjectList.value);
       }
       sj.value = subjectList.value.subject
       // console.log(sj.value);
@@ -157,7 +156,7 @@ async function makeImg() {
 async function runPrompt() {
     const response = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: "다음 주제에 어울리는 실제 사진같은 그림을 그리고 싶은데, 그 그림에 어울리는 아이디어를 자세하게 영어로 답변해줘. 주제:" + test_text.value,
+      prompt: "다음 주제에 어울리는 실제 사진같은 그림을 그리고 싶은데, 그 그림에 어울리는 아이디어를 자세하게 영어로 답변해주고 한국어로 키워드를 뽑아줘. 주제:" + test_text.value,
       max_tokens: 700,
       temperature: 0.2,
     });

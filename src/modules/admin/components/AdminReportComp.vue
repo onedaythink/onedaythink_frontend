@@ -17,7 +17,15 @@
       <tr v-for="item in ReportList" :key="item.userNo">
         <td>{{ item.nickName }}</td>
         <td>{{ getReportReason(item.rtno) }}</td>
-        <td>{{ getReportStatus(item.reportResult) }}</td>
+        <td style="display: flex;
+    justify-content: space-between;">
+          <select v-model="item.reportResult">
+            <option value="W">대기 상태</option>
+            <option value="Y">승인</option>
+            <option value="N">거절</option>
+          </select>
+          <v-btn class="ml-4 small confirm">확인</v-btn>
+        </td>
       </tr>
     </tbody>
   </v-table>
@@ -40,12 +48,12 @@ export default {
         return reportType;
       }
     },
-    getReportStatus(status){
-      if(status === 'W'){
+    getReportStatus(status) {
+      if (status === 'W') {
         return "대기 상태";
-      } else if(status === 'Y'){
+      } else if (status === 'Y') {
         return "승인";
-      } else if(status === 'N'){
+      } else if (status === 'N') {
         return "거절";
       }
     }
@@ -53,18 +61,18 @@ export default {
 };
 </script>
 <script setup>
-import { ref, onMounted} from 'vue';
+import { ref, onMounted } from 'vue';
 import { $getReport } from '@/api/report';
 
 const ReportList = ref([]);
 
-async function getReport(){
+async function getReport() {
   try {
     const res = await $getReport();
     if (res.data != null || res.data != '') {
       ReportList.value = res.data;
       console.log(ReportList.value)
-      console.log("AdminReportList컴포넌트"+ ReportList.value[0].rTNo);
+      console.log("AdminReportList컴포넌트" + ReportList.value[0].rTNo);
     }
   } catch (err) {
     console.log(err);
@@ -73,6 +81,7 @@ async function getReport(){
 
 onMounted(getReport);
 </script>
+
 <style scoped>
 .th-header {
   background-color: #F5F5F5;
@@ -83,5 +92,14 @@ onMounted(getReport);
 .custom-table {
   width: 80%;
   margin: 0 auto;
+}
+
+.confirm {
+  font-size: 12px;
+  padding: 4px 8px;
+  background-color: rgb(251, 240, 160);
+  width: 19px;
+  height: 26px;
+  margin: 2px;
 }
 </style>
