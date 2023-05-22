@@ -95,8 +95,10 @@ export default {
 import { useUserStore } from '@/store/user';
 import { useRouter } from 'vue-router';
 import {$getChatRooms, $closeChatRoom} from '@/api/chat'
-import { ref, nextTick, onMounted } from 'vue'
+import { ref, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { useChatStore } from '@/store/chat';
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
 
 const router = useRouter()
 const chatRooms = ref([])
@@ -116,6 +118,10 @@ function getChatRooms() {
     .then(res => {
         console.log(res.data)
         chatRooms.value = res.data
+        for(let i of res.data) {
+            console.log(i)
+            init(i)
+        }
     })
     .catch(err => console.log(err))
 }
@@ -132,6 +138,41 @@ function closeChatRoom(chatRoomNo){
 onMounted( async () => {
     await nextTick()
     getChatRooms()
+})
+
+
+
+
+function init(chatRoom){
+    const stompClient = ref(null);
+    const socket = new SockJS('http://localhost:8080/onedaythink/stomp/ws');
+    const stomp = Stomp.over(socket);
+    console.log(chatRoom.chatRoomNo)
+    // 채팅방에 대한 구독(subscribe)을 담을 ref 변수
+    const subscription = ref(null);
+    stomp.connect({}, () => {
+    stompClient.value = stomp;
+
+    // 채팅방 구독(subscribe) 요청
+    subscription.value = stomp.subscribe(`/sub/chat/room/${chatRoom.chatRoomNo}`, (res) => {
+      console.log(res);
+      const chatMsg = JSON.parse(res.body); // 구독하게 되면 받아오게 되는 메세지
+      console.log(chatMsg);
+      const writer = chatMsg.sendNickname;
+
+      chatRoom.lastMessage = chatMsg.message; // Assuming the message is stored in the 'message' property
+      chatRoom.sendNickname = chatMsg.sendNickname;
+      
+    });
+
+})
+}
+
+
+onBeforeUnmount(() => {
+//   if (stompClient.value) {
+//     stompClient.value.disconnect();
+//   }
 })
 
 // 모달 부분
