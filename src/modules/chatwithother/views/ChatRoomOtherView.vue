@@ -141,6 +141,7 @@
     };
 
     function findOtherName() {
+      console.log(chatStore.getChatRoom)
       if (myName == chatStore.getChatRoom.fromNickname) {
         otherName.value = chatStore.getChatRoom.toNickname
       } else {
