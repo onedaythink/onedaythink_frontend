@@ -129,7 +129,7 @@ const subscription = ref(null);
 
 // WebSocket 연결 생성 함수
 function createWebSocketConnection() {
-  stomp.connect({}, () => {
+  stomp.connect({}, async () => {
     stompClient.value = stomp;
 
       // 과거의 채팅 기록 조회
@@ -148,7 +148,7 @@ function createWebSocketConnection() {
        }
       })
       // 스크롤을 가장 아랫부분으로 내리기
-      scrollToLatestMessage();
+      await scrollToLatestMessage();
     });
 }
 
@@ -162,6 +162,7 @@ const haruList = ref([])
 
 // 스토어에 저장되어 있는 선택된 페르소나를 haruChat 변수에 담는 함수
 function getSelectedChar() {
+  console.log(selectedChar)
   selectedChar.value = haruChatStore.getSelectedChar;
   const l = []
   for (let char in selectedChar.value) {
@@ -227,7 +228,7 @@ function personaCheck(item) {
 }
 
 
-const sendMessage = () => {
+const sendMessage = async () => {
       // userMessage가 비어있으면 함수를 종료합니다.
       if (userMessage.value == null || userMessage.value.trim() == "") {
         return;
@@ -277,7 +278,7 @@ const sendMessage = () => {
       messageClear()
 
       // 스크롤을 최신 메시지로 이동시킵니다.
-      scrollToLatestMessage();
+      await scrollToLatestMessage();
     }
 
   // 과거의 대화목록을 가져와서 띄워주기
@@ -316,8 +317,8 @@ onBeforeUnmount(() => {
 // 컴포넌트가 마운트되면 WebSocket 연결 생성 함수 실행
 onMounted(async () => {
   await nextTick();
-  await createWebSocketConnection();
-  getSelectedChar()
+  createWebSocketConnection();
+  getSelectedChar();
 });
 
 </script>

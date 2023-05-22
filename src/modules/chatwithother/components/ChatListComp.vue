@@ -12,9 +12,14 @@
                 style="border-radius: 50%; width: 70px; height: 70px;"  
             >
             </v-img>
-                <v-card-text>
-                    {{chatRoom.toNickname}}
-                </v-card-text>
+                <template v-if="chatRoom.fromUserNo == userStore.getLoginUser.userNo">
+                    <v-card-text>
+                    {{chatRoom.toNickname}} 
+                    </v-card-text>
+                </template>
+                <template v-else>
+                    {{chatRoom.fromNickname}}
+                </template>
                 </v-col>
                 <v-col cols="9">
                 <v-card-text>
@@ -36,9 +41,14 @@
                 style="border-radius: 50%; width: 70px; height: 70px;"  
             >
             </v-img>
-                <v-card-text>
-                {{chatRoom.fromNickname}}
-                </v-card-text>
+                <template v-if="chatRoom.fromUserNo == userStore.getLoginUser.userNo">
+                    <v-card-text>
+                    {{chatRoom.toNickname}} 
+                    </v-card-text>
+                </template>
+                <template v-else>
+                    {{chatRoom.fromNickname}}
+                </template>
                 </v-col>
                 <v-col cols="9">
                 <template v-if="chatRoom.fromUserNo == userStore.getLoginUser.userNo">
@@ -125,7 +135,6 @@ onMounted( async () => {
 })
 
 // 모달 부분
-
 const showConfirmationDialog = ref(false)
 const removeChatRoomNo = ref(0)
 function modalSwitch(chatRoomNo) {
