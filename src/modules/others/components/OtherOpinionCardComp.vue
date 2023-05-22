@@ -88,7 +88,7 @@ async function getOpinionsByCreateAt() {
 }
 
 async function likeControll(userOpiNo) {
-    await $likeControll(userStore.getLoginUser.userNo, userOpiNo)
+    await $likeControll(userStore.getLoginUser.userNo, userOpiNo, userStore.getLoginUser.nickname)
     .then(async res => {
         if (res.data == 1) {
             await getOpinionsByCreateAt()

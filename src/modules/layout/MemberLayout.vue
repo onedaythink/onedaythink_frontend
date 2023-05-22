@@ -41,8 +41,18 @@
         <v-card-text>
           <!-- 알림 내용을 여기에 표시 -->
           <template v-if="notifyList.length > 0">
-            <div v-for="notify in notifyList" :key="notify" @click="beForeEditNotify(notify)">
-              {{ notify.message }}
+            <div v-for="notify in notifyList" :key="notify">
+              <v-row>
+                <v-col v-if="notify.type == 'invite'" cols="10" @click="goToChatRoomOther(notify)">
+                  {{ notify.message }}
+                </v-col>
+                <v-col v-else cols="10">
+                  {{ notify.message }}
+                </v-col>
+                <v-col cols="2" class="text-right">
+                  <span class="mdi mdi-close-circle" @click="beForeEditNotify(notify)"></span>
+                </v-col>
+              </v-row>  
             </div>
           </template>
           <template v-else>
@@ -85,6 +95,27 @@ import Stomp from 'stompjs';
 import { useUserStore } from '@/store/user';
 import { ref, nextTick, onBeforeMount, onMounted } from 'vue';
 import {$getNotifies, $editNotify} from '@/api/notify';
+import { useRouter } from 'vue-router';
+import { useChatStore } from '@/store/chat';
+
+const router = useRouter()
+
+function goToChatRoomOther(notifyDetail) {
+    // 채팅방 연결
+    const chatStore = useChatStore()
+    const chatRoom = {
+      chatRoomNo : notifyDetail.chatRoomNo,
+      fromNickname : notifyDetail.inviteNickname,
+      toNickname : userStore.getLoginUser.nickname
+    }
+    chatStore.setChatRoom(chatRoom)
+    console.log(notifyDetail)
+    console.log(chatRoom)
+    beForeEditNotify(notifyDetail)
+    modalSwitch()
+    router.push({path:'/chatroomother'});
+}
+
 
 const userStore = useUserStore()
 
@@ -138,12 +169,15 @@ function loadNotifyHistory() {
 // 읽음처리하는 함수
 // 1) 하나씩 삭제할 때
 function beForeEditNotify(item){
-  let notifyList = {"notiNo" : item}
   const data = {
             notifyList : [
-              {'notiNo' : item}
+              item
             ]
         }
+  const index = notifyList.value.indexOf(item);
+  if (index > -1) {
+      notifyList.value.splice(index, 1);
+  }
   editNotify(data)
 }
 
@@ -152,20 +186,10 @@ function beforeAllEditNotify(){
   const data = {
             notifyList : []
         }
-    for(let i in notifyList) {
-        let notifyData = {}
-        notifyData['notiNo'] = notifyList[i]
-        data['notifyList'].push(notifyData)
+    for(let i in notifyList.value) {
+        data['notifyList'].push(notifyList.value[i])
     }
-    // 예시 데이터
-    // {
-    //     "notifyList" : [
-    //         {"notiNo" : "10"},
-    //         {
-    //          "notiNo" : "20"
-    //         }
-    //     ]
-    // }
+    notifyList.value = []
   editNotify(data)
 }
 

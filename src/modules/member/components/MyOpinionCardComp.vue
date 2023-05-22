@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12" class="textarea">
-        <v-textarea  id="mythink" name="input-7-1" label="나의 생각" auto-grow v-model="op"></v-textarea>
+        <v-textarea id="mythink" name="input-7-1" label="나의 생각" auto-grow v-model="op"></v-textarea>
         <v-row>
 
           <v-checkbox :checked="opinion.isPublic === 'y'" @change="updateIsPublic" label="타인과 공유"></v-checkbox>
@@ -11,11 +11,11 @@
 
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="8" class="button">
-        <v-btn class="mx-auto mr-2" @click="helper">생각 도우미</v-btn>
 
-      </v-col>
+    <v-row>
+      <v-col cols="8" class="button " style=" justify-content: flex-end; ">
+      <v-btn class="thinkhelper-btn no-border" @click="helper">생각 도우미</v-btn>
+    </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" class="textarea">
@@ -132,16 +132,29 @@ onMounted(async () => {
 
 
 <style>
-#mythink{
+#mythink {
   background-image: url("~@/assets/checkbackground.png");
 }
-.v-row{
-  display: flex;
-    flex-wrap: wrap;
-    flex: 1 1 auto;
-    margin-left: 5px;
-    align-items: flex-end;
+.thinkhelper-btn {
+  border: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+ 
 }
+
+.thinkhelper-btn:hover {
+  background-color: none !important;
+}
+
+.v-row {
+  display: flex;
+  flex-wrap: wrap;
+  flex: 1 1 auto;
+  margin-left: 5px;
+  align-items: flex-end;
+}
+
 .textarea {
   margin-left: -10px;
 }

@@ -69,12 +69,13 @@ async function $deleteOpinion(opinion){
     }
 }
 
-async function $likeControll(userNo, userOpiNo){
+async function $likeControll(userNo, userOpiNo, nickname){
     try {
         const axios = createJsonAxiosInstance()
         const data = {
             userNo : userNo,
-            userOpiNo : userOpiNo
+            userOpiNo : userOpiNo,
+            nickname : nickname
         }
         return await axios.post('opinions/like', data);        
     } catch (err) {

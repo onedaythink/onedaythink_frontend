@@ -95,7 +95,7 @@ export default {
 
 <script setup>
 import { useUserStore } from '@/store/user';
-import { $updateUser, $checkNickname, $getUsers, $uploadProfile } from '@/api/user'
+import { $updateUser, $checkNickname, $getUsers } from '@/api/user'
 import { onMounted, nextTick, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -153,9 +153,8 @@ async function onFileChange(e) {
     selectedImageUrl.value = event.target.result;
   }
   reader.readAsDataURL(selectedFile.value);
-  
   try {
-    const response = await $uploadProfile(formData);   // Call your API to upload the file
+    const response = await $updateUser(formData);   // Call your API to upload the file
     userData.value.userImgPath = response.data.url; // Assuming response.data.url contains the image URL
   } catch (error) {
     console.error('Error while uploading the image:', error);
