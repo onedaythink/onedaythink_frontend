@@ -147,8 +147,6 @@ const getCurrentTime = () => {
 };
 
 
-
-
 function findOtherName() {
   if (myName == chatStore.getChatRoom.fromNickname) {
     otherName.value = chatStore.getChatRoom.toNickname

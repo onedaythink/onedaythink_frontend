@@ -105,9 +105,6 @@ export default {
 <script setup>
 import { useUserStore } from '@/store/user';
 
-import { $postMainSubject } from '@/api/subject';
-import { useSubjectStore } from '@/store/subject';
-
 import { $getMyOpinions, $updateOpinion, $deleteOpinion, $getOpinion } from '@/api/opinion';
 import { onMounted, nextTick, ref, computed } from 'vue';
 
@@ -142,7 +139,6 @@ async function getMyOpinion() {
 }
 
 // subjectImg 호출
-const subjectStore = useSubjectStore()
 const today = new Date();
 const year = today.getFullYear();
 const month = (today.getMonth() + 1).toString().padStart(2, '0');
@@ -150,19 +146,6 @@ const date = today.getDate().toString().padStart(2, '0');
 const yyyymmdd = `${year}${month}${date}`;
 const subjectImg = ref('')
 
-// subjectImg 호출
-function postMainSubject() {
-  $postMainSubject(yyyymmdd)
-    .then(res => {
-      console.log(res.data);
-      subjectStore.setSubject(res.data);
-      console.log(subjectStore.getSubject.subImgPath);
-      subjectImg.value = subjectStore.getSubject.subImgPath;
-    }).catch(err => {
-      console.log(err);
-      subjectImg.value = ''; 
-    });
-}
 
 // subjectImg 호출
 function findImage(subjectImg) {
@@ -262,8 +245,7 @@ onMounted(async () => {
   await nextTick();
   user.value = userStore.getLoginUser;
   await getMyOpinionList();
-  getMyOpinion
-  postMainSubject();
+  getMyOpinion()
 });
 
 </script>
