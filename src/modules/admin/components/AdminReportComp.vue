@@ -71,8 +71,6 @@ async function getReport() {
     const res = await $getReport();
     if (res.data != null || res.data != '') {
       ReportList.value = res.data;
-      console.log(ReportList.value)
-      console.log("AdminReportList컴포넌트" + ReportList.value[0].rTNo);
     }
   } catch (err) {
     console.log(err);
