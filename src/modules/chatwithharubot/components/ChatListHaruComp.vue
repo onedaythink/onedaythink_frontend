@@ -114,8 +114,11 @@ function getHaruChatRooms(){
 function getSelectedCahr(chatRoomNo){
   $getSelectedCahr(chatRoomNo)
   .then(res => {
-    console.log(res.data)
-    haruChatStore.setHaruchatChar(res.data);
+    const haruchatChar = res.data
+    for(const h of haruchatChar) {
+      h.userNo = userStore.getLoginUser.userNo
+    }
+    haruChatStore.setHaruchatChar(haruchatChar);
   })
   .catch(err => console.log(err))
 }

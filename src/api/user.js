@@ -1,4 +1,4 @@
-import { createJsonAxiosInstance } from "./index"; 
+import { createJsonAxiosInstance, createFormAxiosInstance } from "./index"; 
 
 async function $loginUser(loginData){
     try {
@@ -54,7 +54,7 @@ async function $deleteUser(userData){
 // 회원수정
 async function $updateUser(userData){
     try {
-        const axios = createJsonAxiosInstance()
+        const axios = createFormAxiosInstance()
         console.log(userData)
         return await axios.post('users', userData)
     }
