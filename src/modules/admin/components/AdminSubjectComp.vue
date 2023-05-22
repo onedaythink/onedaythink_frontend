@@ -9,7 +9,7 @@
             <i></i>
             <i></i>
           </div>
-          <p>AI 이미지 생성중</p>
+          <p>AI가 논제에 대한 이미지를 상상하고 있습니다. <br><span style="color:#877b78; font-size: 7px;">{{ test_text }}</span></p>
         </div>
         <v-row class="my-5 align-center justify-center">
           <v-col cols="12" md="6">
