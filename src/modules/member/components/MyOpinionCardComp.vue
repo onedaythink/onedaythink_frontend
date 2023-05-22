@@ -13,10 +13,9 @@
     </v-row>
 
     <v-row>
-      <v-col cols="8" class="button">
-        <v-btn class="mx-auto mr-2" @click="helper">생각 도우미</v-btn>
-
-      </v-col>
+      <v-col cols="8" class="button " style=" justify-content: flex-end; ">
+      <v-btn class="thinkhelper-btn no-border" @click="helper">생각 도우미</v-btn>
+    </v-col>
     </v-row>
     <v-row>
       <v-col cols="12" class="textarea">
@@ -135,6 +134,17 @@ onMounted(async () => {
 <style>
 #mythink {
   background-image: url("~@/assets/checkbackground.png");
+}
+.thinkhelper-btn {
+  border: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+ 
+}
+
+.thinkhelper-btn:hover {
+  background-color: none !important;
 }
 
 .v-row {
