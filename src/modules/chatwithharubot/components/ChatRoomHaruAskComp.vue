@@ -152,6 +152,9 @@ async function receiveMessage(msg) {
 
 </script>
 <style scoped>
+:root {
+  --v-layout-top: 0px;
+}
 .nickname {
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 13px;

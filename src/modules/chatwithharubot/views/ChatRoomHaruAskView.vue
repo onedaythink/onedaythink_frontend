@@ -18,6 +18,9 @@ export default {
 </script>
 
 <style scoped>
+:root {
+  --v-layout-top: 0px;
+}
 /* 스크롤바 관련 설정 */
 .subject-card-wrapper {
   height: 500px;
