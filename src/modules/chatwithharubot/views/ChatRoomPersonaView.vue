@@ -16,7 +16,8 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
+
 /* 스크롤바 관련 설정 */
 .subject-card-wrapper {
   height: 500px;
@@ -28,9 +29,6 @@ export default {
 /* 스크롤바 숨기기 */
 .subject-card-wrapper::-webkit-scrollbar {
   display: none;
-}
-.subject-card-wrapper{
-    --v-layout-top: 0px; 
 }
 
 </style>

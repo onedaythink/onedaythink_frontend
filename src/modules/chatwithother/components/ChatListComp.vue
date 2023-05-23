@@ -1,84 +1,78 @@
 <template>
     <template v-if="chatRooms.length > 0">
-    <v-card class="mx-auto" v-for="(chatRoom, index) in chatRooms" :key="index">
-        <v-row>
-        <template v-if="chatRoom.lastMessage != null && chatRoom.lastMessage != ''">
-            <v-col cols="3">
-            <v-img
-                class="align-end text-white"
-                src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-                cover
-                rounded
-                style="border-radius: 50%; width: 70px; height: 70px;"  
-            >
-            </v-img>
-                <template v-if="chatRoom.fromUserNo == userStore.getLoginUser.userNo">
-                    <v-card-text>
-                    {{chatRoom.toNickname}} 
-                    </v-card-text>
+        <v-card class="mx-auto" v-for="(chatRoom, index) in chatRooms" :key="index">
+            <v-row>
+                <template v-if="chatRoom.lastMessage != null && chatRoom.lastMessage != ''">
+                    <v-col cols="3" style="display: flex;  flex-direction: column; align-items: center;"> 
+                        <v-img class="align-end text-white" src="https://i.ibb.co/jfvCkSZ/basicprofile.jpg" cover rounded
+                            style="border-radius: 50%; width: 70px; height: 70px;">
+                        </v-img>
+                        <template v-if="chatRoom.fromUserNo == userStore.getLoginUser.userNo">
+                            <v-card-text>
+                                {{ chatRoom.toNickname }}
+                            </v-card-text>
+                        </template>
+                        <template v-else>
+                            {{ chatRoom.fromNickname }}
+                        </template>
+                    </v-col>
+                    <v-col cols="9">
+                        <v-card-text>
+                            <div>{{ chatRoom.sendNickname }} : {{ chatRoom.lastMessage }} </div>
+                        </v-card-text>
+                        <v-card-actions class="button">
+                            <v-btn @click="goToChatRoomOther(chatRoom)" variant="outlined" color="yellow-accent-4"
+                                class="btn-bold">입장</v-btn>
+                            <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold"
+                                @click="modalSwitch(chatRoom.chatRoomNo)">종료</v-btn>
+                        </v-card-actions>
+                    </v-col>
                 </template>
                 <template v-else>
-                    {{chatRoom.fromNickname}}
+                    <v-col cols="3">
+                        <v-img class="align-end text-white" src="https://i.ibb.co/jfvCkSZ/basicprofile.jpg" cover rounded
+                            style="border-radius: 50%; width: 70px; height: 70px;">
+                        </v-img>
+                        <template v-if="chatRoom.fromUserNo == userStore.getLoginUser.userNo">
+                            <v-card-text>
+                                {{ chatRoom.toNickname }}
+                            </v-card-text>
+                        </template>
+                        <template v-else>
+                            {{ chatRoom.fromNickname }}
+                        </template>
+                    </v-col>
+                    <v-col cols="9">
+                        <template v-if="chatRoom.fromUserNo == userStore.getLoginUser.userNo">
+                            <v-card-text>
+                                <div>"{{ chatRoom.toNickname }} 에게 초대 메세지를 보냈습니다!" </div>
+                            </v-card-text>
+                        </template>
+                        <template v-else>
+                            <v-card-text>
+                                <div>"{{ chatRoom.fromNickname }} 님이 회원님과 대화하고싶어해요!" </div>
+                            </v-card-text>
+                        </template>
+                        <v-card-actions class="button">
+                            <v-btn @click="goToChatRoomOther(chatRoom)" variant="outlined" color="yellow-accent-4"
+                                class="btn-bold">입장</v-btn>
+                            <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold"
+                                @click="modalSwitch(chatRoom.chatRoomNo)">종료</v-btn>
+                        </v-card-actions>
+                    </v-col>
                 </template>
-                </v-col>
-                <v-col cols="9">
-                <v-card-text>
-                    <div>{{chatRoom.sendNickname}} : {{ chatRoom.lastMessage }} </div>
-                </v-card-text>
-                <v-card-actions class="button">
-            <v-btn @click="goToChatRoomOther(chatRoom)" variant="outlined" color="yellow-accent-4" class="btn-bold" >입장</v-btn>
-            <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold" @click="modalSwitch(chatRoom.chatRoomNo)">종료</v-btn>
-            </v-card-actions>
-            </v-col>
-        </template>
-        <template v-else>
-            <v-col cols="3">
-            <v-img
-                class="align-end text-white"
-                src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-                cover
-                rounded
-                style="border-radius: 50%; width: 70px; height: 70px;"  
-            >
-            </v-img>
-                <template v-if="chatRoom.fromUserNo == userStore.getLoginUser.userNo">
-                    <v-card-text>
-                    {{chatRoom.toNickname}} 
-                    </v-card-text>
-                </template>
-                <template v-else>
-                    {{chatRoom.fromNickname}}
-                </template>
-                </v-col>
-                <v-col cols="9">
-                <template v-if="chatRoom.fromUserNo == userStore.getLoginUser.userNo">
-                    <v-card-text>
-                        <div>"{{chatRoom.toNickname}} 에게 초대 메세지를 보냈습니다!" </div>
-                    </v-card-text>
-                </template>
-                <template v-else>
-                    <v-card-text>
-                        <div>"{{chatRoom.fromNickname }} 님이 회원님과 대화하고싶어해요!" </div>
-                    </v-card-text>
-                </template>
-                <v-card-actions class="button">
-            <v-btn @click="goToChatRoomOther(chatRoom)" variant="outlined" color="yellow-accent-4" class="btn-bold" >입장</v-btn>
-            <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold" @click="modalSwitch(chatRoom.chatRoomNo)">종료</v-btn>
-            </v-card-actions>
-            </v-col>
-        </template>
-        </v-row>
-    </v-card>
-    <br>
-    <v-dialog v-model="showConfirmationDialog" max-width="500px">
-      <v-card>
-        <v-card-title class="headline">정말로 종료하시겠습니까?</v-card-title>
-        <v-card-actions>
-          <v-btn color="red" text @click="confirmExit">종료</v-btn>
-          <v-btn text @click="cancelExit">취소</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+            </v-row>
+        </v-card>
+        <br>
+        <v-dialog v-model="showConfirmationDialog" max-width="500px">
+            <v-card>
+                <v-card-title class="headline">정말로 종료하시겠습니까?</v-card-title>
+                <v-card-actions>
+                    <v-btn color="red" text @click="confirmExit">종료</v-btn>
+                    <v-btn text @click="cancelExit">취소</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </template>
     <template v-else>
         <div>활성화된 채팅방이 존재하지 않습니다.</div>
@@ -94,7 +88,7 @@ export default {
 <script setup>
 import { useUserStore } from '@/store/user';
 import { useRouter } from 'vue-router';
-import {$getChatRooms, $closeChatRoom} from '@/api/chat'
+import { $getChatRooms, $closeChatRoom } from '@/api/chat'
 import { ref, nextTick, onMounted } from 'vue'
 import { useChatStore } from '@/store/chat';
 
@@ -106,30 +100,30 @@ function goToChatRoomOther(chatRoom) {
     const chatStore = useChatStore()
     chatStore.setChatRoom(chatRoom)
     console.log(chatRoom)
-    router.push({path:'/chatroomother'});
+    router.push({ path: '/chatroomother' });
 }
 
 const userStore = useUserStore()
 
 function getChatRooms() {
     $getChatRooms(userStore.getLoginUser.userNo)
-    .then(res => {
-        console.log(res.data)
-        chatRooms.value = res.data
-    })
-    .catch(err => console.log(err))
+        .then(res => {
+            console.log(res.data)
+            chatRooms.value = res.data
+        })
+        .catch(err => console.log(err))
 }
 
-function closeChatRoom(chatRoomNo){
+function closeChatRoom(chatRoomNo) {
     $closeChatRoom(chatRoomNo)
-    .then(res => {
-        console.log(res.data)
-        getChatRooms()
-    })
-    .catch(err => console.log(err))
+        .then(res => {
+            console.log(res.data)
+            getChatRooms()
+        })
+        .catch(err => console.log(err))
 }
 
-onMounted( async () => {
+onMounted(async () => {
     await nextTick()
     getChatRooms()
 })
@@ -156,11 +150,11 @@ function cancelExit() {
 </script>
 
 <style>
-  .btn-bold {
+.btn-bold {
     font-weight: bold;
-  }
+}
 
-  .v-row {
+.v-row {
     display: flex;
     flex-wrap: wrap;
     flex: 1 1 auto;
@@ -184,6 +178,4 @@ function cancelExit() {
     padding: 0.5rem;
     margin-left: 100px;
 }
-
-
 </style>
