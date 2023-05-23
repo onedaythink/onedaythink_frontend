@@ -2,17 +2,12 @@
     <template v-if="opinion_list.length > 0">
         <v-card v-for="(opinion, index) in opinion_list" :key="index">
             <v-row>
-                <v-col cols="3" >
-                    <v-img
-                        class="align-end text-white"
-                        src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-                        cover
-                        rounded
-                        style="border-radius: 50%; width: 70px; height: 70px;"  
-                    >
+                <v-col cols="3">
+                    <v-img class="align-end text-white" src="https://cdn.vuetifyjs.com/images/cards/docks.jpg" cover rounded
+                        style="border-radius: 50%; width: 70px; height: 70px;">
                     </v-img>
                     <v-card-text>
-                        {{opinion.nickname}}
+                        {{ opinion.nickname }}
                         <br>
                         ♥ {{ opinion.likeCount }}
                     </v-card-text>
@@ -22,12 +17,15 @@
                         <div>{{ opinion.opinion }}</div>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn @click="likeControll(opinion.userOpiNo)" variant="outlined" color="yellow-accent-4" class="btn-bold">"좋아요"</v-btn>
-                        <template v-if=False>
-                            <v-btn @click="goToChatRoomOther(opinion.chatRoom)" variant="outlined" color="blue-lighten-4" class="btn-bold">채팅방 입장</v-btn>
+                        <v-btn @click="likeControll(opinion.userOpiNo)" variant="outlined" color="pink" class="small">좋아요
+                            ♥</v-btn>
+                        <template v-if="false">
+                            <v-btn @click="goToChatRoomOther(opinion.chatRoom)" variant="outlined" color="blue-lighten-4"
+                                class="btn-bold small">채팅방 입장</v-btn>
                         </template>
                         <template v-else>
-                            <v-btn @click="createChatRoom(opinion.userOpiNo)" variant="outlined" color="blue-lighten-4" class="btn-bold">"대화하고싶어요"</v-btn>
+                            <v-btn @click="createChatRoom(opinion.userOpiNo)" variant="outlined" color="blue-lighten-4"
+                                class="btn-bold small">대화하고싶어요</v-btn>
                         </template>
                     </v-card-actions>
                 </v-col>
@@ -37,14 +35,9 @@
     <template v-else>
         <v-card>
             <v-row>
-                <v-col cols="3" >
-                    <v-img
-                        class="align-end text-white"
-                        src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
-                        cover
-                        rounded
-                        style="border-radius: 50%; width: 70px; height: 70px;"  
-                    >
+                <v-col cols="3">
+                    <v-img class="align-end text-white" src="https://cdn.vuetifyjs.com/images/cards/docks.jpg" cover rounded
+                        style="border-radius: 50%; width: 70px; height: 70px;">
                     </v-img>
                     <v-card-text>
                         하루봇
@@ -80,30 +73,30 @@ const opinion_list = ref({})
 
 async function getOpinionsByCreateAt() {
     await $getOpinionsByCreateAt(subjectStore.getSubject.subNo, userStore.getLoginUser.userNo)
-    .then(res => {
-        console.log(res.data)
-        opinion_list.value = res.data
-    })
-    .catch(err => console.log(err))
+        .then(res => {
+            console.log(res.data)
+            opinion_list.value = res.data
+        })
+        .catch(err => console.log(err))
 }
 
 async function likeControll(userOpiNo) {
     await $likeControll(userStore.getLoginUser.userNo, userOpiNo, userStore.getLoginUser.nickname)
-    .then(async res => {
-        if (res.data == 1) {
-            await getOpinionsByCreateAt()
-        }
-    })
-    .catch(err => console.log(err))
+        .then(async res => {
+            if (res.data == 1) {
+                await getOpinionsByCreateAt()
+            }
+        })
+        .catch(err => console.log(err))
 }
 
 async function createChatRoom(userOpiNo) {
     await $createChatRoom(userOpiNo, userStore.getLoginUser.userNo, userStore.getLoginUser.nickname)
-    .then(res => {
-        console.log(res.data)
-        window.alert(res.data.msg)
-    })
-    .catch(err => console.log(err))
+        .then(res => {
+            console.log(res.data)
+            window.alert(res.data.msg)
+        })
+        .catch(err => console.log(err))
 }
 
 function goToChatRoomOther(chatRoom) {
@@ -111,21 +104,21 @@ function goToChatRoomOther(chatRoom) {
     const router = useRouter()
     const chatStore = useChatStore()
     chatStore.setChatRoom(chatRoom)
-    router.push({path:'/chatroomother'});
+    router.push({ path: '/chatroomother' });
 }
 
-onMounted( async () => {
+onMounted(async () => {
     getOpinionsByCreateAt()
 })
 
 </script>
 
 <style>
-  .btn-bold {
+.btn-bold {
     font-weight: bold;
-  }
+}
 
-  .v-row {
+.v-row {
     display: flex;
     flex-wrap: wrap;
     flex: 1 1 auto;
@@ -140,5 +133,4 @@ onMounted( async () => {
     padding: 8px;
     text-transform: none;
 }
-
 </style>
