@@ -87,7 +87,7 @@
     <v-row>
       <v-col cols="12">
         <v-textarea v-model="userMessage" outlined placeholder="메시지 입력" class="mb-2 message-input"
-          @keyup.enter="sendMessage"></v-textarea>
+        @keyup.shift.enter="inputBlank" @keyup.enter="sendMessage"></v-textarea>
       </v-col>
     </v-row>
     <v-row>
@@ -271,9 +271,20 @@ function createWebSocketConnection() {
   });
 }
 
+const enterSwitch = ref(true)
+function inputBlank() {
+  enterSwitch.value = false
+}
+
 const sendMessage = () => {
+  if(!enterSwitch.value) {
+        enterSwitch.value = true
+        return 
+  }
+
   // userMessage가 비어있으면 함수를 종료합니다.
   if (userMessage.value == null || userMessage.value.trim() == "") {
+    userMessage.value = ''
     console.log(userMessage.value)
     return;
 
@@ -288,10 +299,9 @@ const sendMessage = () => {
       sendNickname: myName,
       chatMsgContent: userMessage.value
     })
+    userMessage.value = '';
     console.log(sendData)
     stomp.send('/pub/chat/message', {}, sendData)
-
-    userMessage.value = "";
   }
   // 스크롤을 최신 메시지로 이동시킵니다.
   scrollToLatestMessage();

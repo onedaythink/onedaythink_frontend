@@ -9,8 +9,15 @@
           <v-spacer></v-spacer>
         </v-col>
       </v-row>
-  
-    <v-card>
+      <div class="loading-box" v-if="loading">
+          <div class="circles">
+            <i></i>
+            <i></i>
+            <i></i>
+          </div>
+          <p>AI가 질문에 대한 대답을 고민하고 있습니다. <br><span style="color:#877b78; font-size: 7px;">{{ test_text }}</span></p>
+      </div>
+    <v-card>  
       <v-card-actions class="topic-btn">
         <v-spacer>하루에게 궁금한 것을 물어보세요</v-spacer>
       </v-card-actions>
@@ -47,7 +54,7 @@
   <!-- Message input -->
   <v-row>
     <v-col cols="12">
-      <v-textarea v-model="userMessage" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup.enter="sendMessage"></v-textarea>
+      <v-textarea v-model="userMessage" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup.shift.enter="inputBlank" @keyup.enter="sendMessage" ></v-textarea>
     </v-col>
   </v-row>
   <v-row>
@@ -92,10 +99,20 @@ const getCurrentTime = () => {
     return time;
   };
 
-const sendMessage = () => {
+const loading = ref(false);
+const enterSwitch = ref(true)
+function inputBlank() {
+  enterSwitch.value = false
+}
+
+const sendMessage = async () => {
+      if(!enterSwitch.value) {
+        enterSwitch.value = true
+        return 
+      }
       // userMessage가 비어있으면 함수를 종료합니다.
       if (userMessage.value == null || userMessage.value.trim() == "") {
-        console.log(userMessage.value)
+        userMessage.value = '';
         return;
         
       }
@@ -106,17 +123,19 @@ const sendMessage = () => {
         content: userMessage.value,
         time: currentTime
       });
-      receiveMessage()
+      const msg = userMessage.value.trim()
+      userMessage.value = '';
+      await receiveMessage(msg)
       // userMessage를 초기화합니다.
-      userMessage.value = "";
 
       // 스크롤을 최신 메시지로 이동시킵니다.
       scrollToLatestMessage();
     }
 
 
-async function receiveMessage() {
-  await $questionForHaru(userMessage.value)
+async function receiveMessage(msg) {
+  loading.value = true
+  await $questionForHaru(msg)
   .then(res => {
     const answer = res.data
     messages.value.push({
@@ -125,8 +144,9 @@ async function receiveMessage() {
     });
   })
   .catch(err => console.log(err))
-      // 스크롤을 최신 메시지로 이동시킵니다.
-      scrollToLatestMessage();
+    loading.value = false
+    // 스크롤을 최신 메시지로 이동시킵니다.
+    scrollToLatestMessage();
 }
 
 </script>
@@ -205,4 +225,56 @@ async function receiveMessage() {
     color: #2C2C2C;
     border-radius: 5px;
   }
+
+
+
+.loading-box {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 100;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  width: 500px;
+  text-align: center;
+  background: #f2f2f2;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, .2);
+}
+
+.loading-box .circles {
+  padding-top: 10px;
+}
+
+.loading-box .circles i {
+  animation: scaleBounce .3s alternate infinite;
+  display: inline-block;
+  margin: 0 4px;
+  width: 10px;
+  height: 10px;
+  background: #00a5e5;
+  border-radius: 50em;
+}
+
+.loading-box .circles i:nth-child(2) {
+  animation-delay: .1s;
+}
+
+.loading-box .circles i:nth-child(3) {
+  animation-delay: .2s;
+}
+
+.loading-box p {
+  margin-top: 20px;
+  font-size: 18px;
+}
+
+@keyframes scaleBounce {
+  from {
+    transform: scale(.7)
+  }
+
+  to {
+    transform: scale(1.3)
+  }
+}
   </style>
