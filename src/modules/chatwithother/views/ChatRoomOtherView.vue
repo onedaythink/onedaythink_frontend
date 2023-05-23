@@ -1,15 +1,17 @@
 <template>
   <v-container fluid>
-    <v-row>
-      <v-col cols="12" class="d-flex justify-start">
+    <v-row class="topMenuBar">
+      <v-col cols="3" class="d-flex justify-start">
         <v-img @click="$router.go(-1)" src="@/assets/back_arrow.png" class="back-arrow"></v-img>
-        <v-spacer></v-spacer>
-        <v-btn @click="openReportModal()" class="report-btn">
+       
+        
+      </v-col>
+      <v-spacer></v-spacer><v-spacer></v-spacer>
+      <v-btn @click="openReportModal()" class="report-btn">
           신고하기
         </v-btn>
-      </v-col>
     </v-row>
-
+<br>
     <!-- Add the modal for reporting -->
     <v-dialog v-model="reportDialog" max-width="290" persistent>
       <v-card>
@@ -29,7 +31,11 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
+    <v-row>
+      <v-col cols="12" class="text-center">
+        <h3 class="grey--text">{{ otherName }}님과의 대화</h3>
+      </v-col>
+    </v-row>
     <v-card>
       <v-card-actions class="topic-btn">
         <v-spacer>생각주제</v-spacer>
@@ -46,11 +52,7 @@
       </v-expand-transition>
     </v-card>
 
-    <v-row>
-      <v-col cols="12" class="text-center">
-        <h3 class="grey--text">{{ otherName }}님과의 대화</h3>
-      </v-col>
-    </v-row>
+   <br>
 
     <!-- Chat messages -->
     <v-row>
@@ -84,13 +86,13 @@
     </v-row>
 
     <!-- Message input -->
-    <v-row>
+    <v-row class="textArea">
       <v-col cols="12">
         <v-textarea v-model="userMessage" outlined placeholder="메시지 입력" class="mb-2 message-input"
         @keyup.shift.enter="inputBlank" @keyup.enter="sendMessage"></v-textarea>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row class="sendButtonRow">
       <v-col cols="12" class="d-flex justify-end">
         <v-btn color="#FBF0A0" dark @click="sendMessage" class="send-btn">전송</v-btn>
       </v-col>
@@ -331,10 +333,14 @@ onBeforeUnmount(() => {
   color: #000000;
 }
 
+.textArea{
+  margin-right: 1px;
+}
 .chat-card-wrapper {
   width: 100%;
   height: 300px;
   overflow-y: auto;
+  margin-right: 12px;
 }
 
 .chat-message-mint {
@@ -374,14 +380,14 @@ onBeforeUnmount(() => {
 
 /* 신고하기 버튼 스타일 */
 .report-btn {
-  background-color: #FF4C4C;
+  background-color: #ffa1a1;
   color: white;
   border-radius: 5px;
 }
 
 /* 생각주제 버튼 스타일 */
 .topic-btn {
-  background-color: #d1f0ee;
+  background-color: #fdfdef;
   color: #2C2C2C;
   border-radius: 3px;
 }
@@ -398,5 +404,14 @@ onBeforeUnmount(() => {
   background-color: #FED800;
   color: #2C2C2C;
   border-radius: 5px;
+  margin-right: 10px;
 }
+
+.topMenuBar{
+  margin-right: 30px;
+}
+
+.sendButtonRow{
+    margin-top: -25px;
+ }
 </style>
