@@ -1,5 +1,5 @@
 <template>
-  <v-container class = "override-layout" fluid >
+  <v-container fluid >
     <v-row>
       <v-col cols="12" class="d-flex justify-start">
         <v-img @click="$router.go(-1)"
@@ -346,7 +346,7 @@ onMounted(async () => {
 <style scoped>
 
 .v-main{
-  --v-layout-top: 64px;
+  --v-layout-top: 0px !important;
 }
 .nickname {
   font-family: "IBM Plex Sans", sans-serif;
@@ -416,7 +416,4 @@ onMounted(async () => {
     border-radius: 5px;
   }
 
-  .override-layout {
-  --v-layout-top: 0px !important;
-}
 </style>
