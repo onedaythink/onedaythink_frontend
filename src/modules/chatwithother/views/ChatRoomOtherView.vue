@@ -110,7 +110,7 @@ export default {
 
 
 <script setup>
-import { ref, nextTick, onMounted} from "vue";
+import { ref, nextTick, onMounted, onBeforeUnmount} from "vue";
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useUserStore } from "@/store/user";
@@ -312,6 +312,14 @@ const sendMessage = () => {
 onMounted(async () => {
   await createWebSocketConnection();
 });
+
+
+onBeforeUnmount(() => {
+    if (stompClient.value) {
+      stompClient.value.disconnect();
+    }
+})
+
 
 </script>
 
