@@ -22,7 +22,7 @@ export default {
 .subject-card-wrapper {
   height: 500px;
   overflow-y: auto;
-  margin-top: 60px;
+  margin-top: 10px;
   margin-bottom: 60px;
 }
 
@@ -30,9 +30,9 @@ export default {
 .subject-card-wrapper::-webkit-scrollbar {
   display: none;
 }
-.v-main{
+/* .v-main{
     --v-layout-top: 0px !important; 
-}
+} */
 
 
 </style>

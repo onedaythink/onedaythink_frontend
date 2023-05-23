@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
       <v-row>
-        <v-col cols="12" class="d-flex justify-start">
+        <v-col cols="3" class="d-flex justify-start">
           <v-img @click="$router.go(-1)"
             src="@/assets/back_arrow.png"
             class="back-arrow"
@@ -9,6 +9,7 @@
           <v-spacer></v-spacer>
         </v-col>
       </v-row>
+    
       <div class="loading-box" v-if="loading">
           <div class="circles">
             <i></i>
@@ -22,7 +23,7 @@
         <v-spacer>하루에게 궁금한 것을 물어보세요</v-spacer>
       </v-card-actions>
     </v-card>
-  
+    <br>
     <!-- Chat messages -->
   <v-row>
     <v-col cols="12" class="d-flex justify-center">
@@ -52,12 +53,12 @@
   </v-row>
   
   <!-- Message input -->
-  <v-row>
+  <v-row class="textArea">
     <v-col cols="12">
       <v-textarea v-model="userMessage" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup.shift.enter="inputBlank" @keyup.enter="sendMessage" ></v-textarea>
     </v-col>
   </v-row>
-  <v-row>
+  <v-row class="button">
     <v-col cols="12" class="d-flex justify-end">
       <v-btn color="#FBF0A0" dark @click="sendMessage" class="send-btn">전송</v-btn>
     </v-col>
@@ -161,10 +162,20 @@ async function receiveMessage(msg) {
   color: #000000;
 }
 
+.textArea{
+  margin-right: 8px;
+}
+
+.button{
+  margin-right: 3px;
+  margin-top: -30px;
+ 
+}
 .chat-card-wrapper{
   width: 100%;
   height: 300px;
   overflow-y: auto;
+  margin-right: 15px;
 }
 
 .chat-message-mint {
