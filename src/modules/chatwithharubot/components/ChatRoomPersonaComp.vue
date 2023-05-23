@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container class = "override-layout" fluid >
     <v-row>
       <v-col cols="12" class="d-flex justify-start">
         <v-img @click="$router.go(-1)"
@@ -9,13 +9,21 @@
         <v-spacer></v-spacer>
       </v-col>
     </v-row>
+    <v-card>
+      <v-card-actions class="topic-btn">
+        <v-spacer>생각주제</v-spacer>
+        <v-btn :icon="show ? 'mdi-chevron-up' : 'mdi-chevron-down'" @click="show = !show"></v-btn>
+      </v-card-actions>
 
-  <v-card>
-    <v-card-actions class="topic-btn">
-      <v-spacer>페르소나 챗</v-spacer>
-    </v-card-actions>
-  </v-card>
-
+      <v-expand-transition>
+        <div v-show="show">
+          <v-divider></v-divider>
+          <v-card-text>
+            {{ todaySubjectContent }}
+          </v-card-text>
+        </div>
+      </v-expand-transition>
+    </v-card>
   <!-- Chat messages -->
 <v-row>
   <v-col cols="12" class="d-flex justify-center">
@@ -108,8 +116,10 @@ const userStore = useUserStore()
 const myName = userStore.getLoginUser.nickname
 const messages = ref([])
 const userMessage = ref("")
-
+const show = ref(false);
 const subjectStore = useSubjectStore()
+const todaySubjectContent = subjectStore.getSubject.content
+
 async function scrollToLatestMessage() {
       await nextTick()
       const container = document.querySelector(".chat-card-wrapper");
@@ -334,6 +344,10 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+
+.v-main{
+  --v-layout-top: 64px;
+}
 .nickname {
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 13px;
@@ -381,16 +395,9 @@ onMounted(async () => {
     cursor: pointer;
   }
 
-  /* 신고하기 버튼 스타일 */
-  .report-btn {
-    background-color: #FF4C4C;
-    color: white;
-    border-radius: 5px;
-  }
-
   /* 생각주제 버튼 스타일 */
   .topic-btn {
-    background-color: #d1f0ee;
+    background-color: #e7f6f3;
     color: #2C2C2C;
     border-radius: 3px;
   }
@@ -408,4 +415,8 @@ onMounted(async () => {
     color: #2C2C2C;
     border-radius: 5px;
   }
+
+  .override-layout {
+  --v-layout-top: 0px !important;
+}
 </style>

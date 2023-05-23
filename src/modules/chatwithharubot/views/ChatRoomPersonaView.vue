@@ -33,4 +33,7 @@ export default {
     --v-layout-top: 0px; 
 }
 
+.v-main{
+  --v-layout-top: 64px;
+}
 </style>
