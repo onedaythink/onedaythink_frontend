@@ -56,7 +56,7 @@ async function $updateUser(userData){
     try {
         const axios = createFormAxiosInstance()
         console.log(userData)
-        return await axios.post('users', userData)
+        return await axios.post('mypage/users/update', userData)
     }
     catch (err) {
         console.log('error msg : ', err)
@@ -74,4 +74,22 @@ async function $getUsers(){
     }
 }
 
-export { $loginUser, $registerUser, $checkUserId, $checkNickname, $getUsers, $deleteUser, $updateUser}
+// 프로필 이미지 업로드
+async function $uploadProfile(fileData) {
+    try {
+      const axios = createFormAxiosInstance();
+      let config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+      return await axios.post('users/uploadAvatar', fileData, config);
+    } catch (err) {
+      console.log('error msg : ', err);
+    }
+  }
+
+
+
+export { $loginUser, $registerUser, $checkUserId, $checkNickname, 
+        $getUsers, $deleteUser, $updateUser, $uploadProfile}

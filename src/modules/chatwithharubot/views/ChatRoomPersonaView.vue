@@ -30,5 +30,9 @@ export default {
 .subject-card-wrapper::-webkit-scrollbar {
   display: none;
 }
+.v-main{
+    --v-layout-top: 0px !important; 
+}
+
 
 </style>
