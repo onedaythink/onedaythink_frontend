@@ -87,7 +87,7 @@
     <v-row>
       <v-col cols="12">
         <v-textarea v-model="userMessage" outlined placeholder="메시지 입력" class="mb-2 message-input"
-          @keyup.enter="sendMessage"></v-textarea>
+        @keyup.shift.enter="inputBlank" @keyup.enter="sendMessage"></v-textarea>
       </v-col>
     </v-row>
     <v-row>
@@ -110,7 +110,7 @@ export default {
 
 
 <script setup>
-import { ref, nextTick, onMounted, onBeforeUnmount } from "vue";
+import { ref, nextTick, onMounted, onBeforeUnmount} from "vue";
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useUserStore } from "@/store/user";
@@ -145,17 +145,6 @@ const getCurrentTime = () => {
   const time = `${ampm} ${hour}:${minutes < 10 ? "0" + minutes : minutes}`;
   return time;
 };
-
-
-
-
-function findOtherName() {
-  if (myName == chatStore.getChatRoom.fromNickname) {
-    otherName.value = chatStore.getChatRoom.toNickname
-  } else {
-    otherName.value = chatStore.getChatRoom.fromNickname
-  }
-}
 
 async function scrollToLatestMessage() {
   await nextTick()
@@ -220,11 +209,27 @@ const subscription = ref(null);
 const socket = new SockJS('http://localhost:8080/onedaythink/stomp/ws');
 const stomp = Stomp.over(socket);
 
+
+// function findOtherName(chatRoom) {
+//   console.log(chatRoom)
+//   if (myName == chatRoom.fromNickname) {
+//     otherName.value = chatRoom.toNickname
+//   } else {
+//     otherName.value = chatRoom.fromNickname
+//   }
+// }
+
 // WebSocket 연결 생성 함수
 function createWebSocketConnection() {
-  console.log(chatStore.getChatRoom)
+
   stomp.connect({}, () => {
     stompClient.value = stomp;
+
+    if (myName == chatStore.getChatRoom.fromNickname) {
+      otherName.value = chatStore.getChatRoom.toNickname
+    } else {
+      otherName.value = chatStore.getChatRoom.fromNickname
+    }
 
     // 과거의 채팅 기록 조회
     loadChatHistory()
@@ -253,9 +258,6 @@ function createWebSocketConnection() {
           time: currentTime,
         });
       }
-
-      findOtherName()
-
       scrollToLatestMessage();
     });
 
@@ -269,9 +271,20 @@ function createWebSocketConnection() {
   });
 }
 
+const enterSwitch = ref(true)
+function inputBlank() {
+  enterSwitch.value = false
+}
+
 const sendMessage = () => {
+  if(!enterSwitch.value) {
+        enterSwitch.value = true
+        return 
+  }
+
   // userMessage가 비어있으면 함수를 종료합니다.
   if (userMessage.value == null || userMessage.value.trim() == "") {
+    userMessage.value = ''
     console.log(userMessage.value)
     return;
 
@@ -286,25 +299,27 @@ const sendMessage = () => {
       sendNickname: myName,
       chatMsgContent: userMessage.value
     })
+    userMessage.value = '';
     console.log(sendData)
     stomp.send('/pub/chat/message', {}, sendData)
-
-    userMessage.value = "";
   }
   // 스크롤을 최신 메시지로 이동시킵니다.
   scrollToLatestMessage();
 };
 
-onBeforeUnmount(() => {
-  if (stompClient.value) {
-    stompClient.value.disconnect();
-  }
-})
 
 // 컴포넌트가 마운트되면 WebSocket 연결 생성 함수 실행
 onMounted(async () => {
   await createWebSocketConnection();
 });
+
+
+onBeforeUnmount(() => {
+    if (stompClient.value) {
+      stompClient.value.disconnect();
+    }
+})
+
 
 </script>
 

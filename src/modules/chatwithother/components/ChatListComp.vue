@@ -95,8 +95,10 @@ export default {
 import { useUserStore } from '@/store/user';
 import { useRouter } from 'vue-router';
 import {$getChatRooms, $closeChatRoom} from '@/api/chat'
-import { ref, nextTick, onMounted } from 'vue'
+import { ref, nextTick, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useChatStore } from '@/store/chat';
+import SockJS from 'sockjs-client';
+import Stomp from 'stompjs';
 
 const router = useRouter()
 const chatRooms = ref([])
@@ -110,16 +112,6 @@ function goToChatRoomOther(chatRoom) {
 }
 
 const userStore = useUserStore()
-
-function getChatRooms() {
-    $getChatRooms(userStore.getLoginUser.userNo)
-    .then(res => {
-        console.log(res.data)
-        chatRooms.value = res.data
-    })
-    .catch(err => console.log(err))
-}
-
 function closeChatRoom(chatRoomNo){
     $closeChatRoom(chatRoomNo)
     .then(res => {
@@ -132,6 +124,81 @@ function closeChatRoom(chatRoomNo){
 onMounted( async () => {
     await nextTick()
     getChatRooms()
+})
+
+function getChatRooms() {
+    $getChatRooms(userStore.getLoginUser.userNo)
+    .then(res => {
+        chatRooms.value = res.data.map(room => {
+        return {
+          ...room,
+          lastMessage: ref(room.lastMessage)
+        };
+      });
+      for(let i of chatRooms.value) {
+        console.log(i)
+        init(i)
+      }
+    })
+    .catch(err => console.log(err))
+}
+
+watch(chatRooms, (newChatRooms) => {
+  newChatRooms.forEach((room) => {
+    watch(() => room.lastMessage, (newValue) => {
+      console.log(`Updated lastMessage in chatRoomNo ${room.chatRoomNo}:`, newValue);
+    });
+  });
+}, { deep: true });
+
+const activeSubscriptions = [];
+
+function init(chatRoom) {
+  const stompClient = ref(null);
+  const socket = new SockJS('http://localhost:8080/onedaythink/stomp/ws');
+  const stomp = Stomp.over(socket);
+  console.log(chatRoom.chatRoomNo);
+
+  // Check if a subscription already exists for the chat room
+  if (activeSubscriptions.includes(chatRoom.chatRoomNo)) {
+    // Subscription already exists, no need to create a new one
+    return;
+  }
+
+  stomp.connect({}, () => {
+    stompClient.value = stomp;
+    const subscriptionId = `sub-${chatRoom.chatRoomNo}`;
+    // 채팅방 구독(subscribe) 요청
+    const subscription = stomp.subscribe(`/sub/chat/room/${chatRoom.chatRoomNo}`, (res) => {
+      console.log(res);
+      const chatMsg = JSON.parse(res.body); // 구독하게 되면 받아오게 되는 메세지
+      console.log(chatMsg);
+      const writer = chatMsg.sendNickname;
+
+      // Update the lastMessage property of the chatRoom
+      chatRoom.lastMessage = chatMsg.chatMsgContent; // Assuming the message is stored in the 'message' property
+      chatRoom.sendNickname = chatMsg.sendNickname;
+
+      // Force Vue to update the view by triggering a re-render
+      // This step may depend on the reactivity system you're using (Vue 2 or Vue 3)
+      // For Vue 2, you can use Vue.set or Object.assign to trigger reactivity
+      // Vue.set(chatRooms, index, Object.assign({}, chatRoom));
+      // For Vue 3, you can use the composition API to achieve reactivity
+      // chatRooms.value[index] = { ...chatRoom };
+    },  { id: subscriptionId });
+
+    // Store the chat room subscription ID in the activeSubscriptions array
+    activeSubscriptions.push(chatRoom.chatRoomNo);
+  });
+}
+
+
+onBeforeUnmount(() => {
+    // chatRooms.value.forEach((chatRoom) => {
+    //     if (chatRoom.stompClient.value) {
+    //     chatRoom.stompClient.value.disconnect();
+    //     }
+    // })
 })
 
 // 모달 부분
@@ -151,8 +218,6 @@ function cancelExit() {
     removeChatRoomNo.value = 0
     showConfirmationDialog.value = false;
 }
-
-
 </script>
 
 <style>

@@ -10,17 +10,18 @@
       <v-menu min-width="200px" rounded>
         <template v-slot:activator="{ props }">
           <v-btn icon v-bind="props">
-            <v-avatar color="brown" size="large">
-              <span class="text-h5">{{ user.initials }}</span>
-            </v-avatar>
-          </v-btn> <span>{{ user.nickname }}</span><br>
+            <v-img v-if="user.userImgPath" 
+                   :src="`${user.userImgPath}`"
+                   height="100px"
+                   width="100px"
+                   class="rounded-circle">
+            </v-img>
+          </v-btn> 
+          <span>{{ user.nickname }}</span><br>
         </template>
         <v-card>
           <v-card-text class="small">
             <div class="mx-auto text-center">
-              <v-avatar color="brown">
-                <span class="text-h5">{{ user.initials }}</span>
-              </v-avatar>
               <h3>{{ user.nickname }}</h3>
               <p class="text-caption mt-1">
                 {{ user.email }}
@@ -53,7 +54,7 @@
       <div class="mypage-card mt-10" v-for="opinion, idx in paginatedOpinions" :key="idx">
         <v-card class="mx-auto" max-width="344">
           <v-img
-             :src= findImage(subjectImg)
+             :src= findImage(opinion.subImgPath)
               width="200px"
               height="160px"
               cover
@@ -105,9 +106,6 @@ export default {
 <script setup>
 import { useUserStore } from '@/store/user';
 
-import { $postMainSubject } from '@/api/subject';
-import { useSubjectStore } from '@/store/subject';
-
 import { $getMyOpinions, $updateOpinion, $deleteOpinion, $getOpinion } from '@/api/opinion';
 import { onMounted, nextTick, ref, computed } from 'vue';
 
@@ -142,27 +140,11 @@ async function getMyOpinion() {
 }
 
 // subjectImg 호출
-const subjectStore = useSubjectStore()
 const today = new Date();
 const year = today.getFullYear();
 const month = (today.getMonth() + 1).toString().padStart(2, '0');
 const date = today.getDate().toString().padStart(2, '0');
 const yyyymmdd = `${year}${month}${date}`;
-const subjectImg = ref('')
-
-// subjectImg 호출
-function postMainSubject() {
-  $postMainSubject(yyyymmdd)
-    .then(res => {
-      console.log(res.data);
-      subjectStore.setSubject(res.data);
-      console.log(subjectStore.getSubject.subImgPath);
-      subjectImg.value = subjectStore.getSubject.subImgPath;
-    }).catch(err => {
-      console.log(err);
-      subjectImg.value = ''; 
-    });
-}
 
 // subjectImg 호출
 function findImage(subjectImg) {
@@ -175,6 +157,20 @@ function findImage(subjectImg) {
     return null;
   }
 }
+
+// // userImg 호출
+// function findUserImage(userImg) {
+//   console.log(userImg)
+//   if (userImg) {
+//     console.log(userImg);
+//     const convertedPath = userImg.replace(/\\/g, '/');
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
+//   } else {
+//     return null;
+//   }
+// }
+
+
 // 페이지네이션 관련 변수
 const currentPage = ref(1); // 현재 페이지 상태
 const itemsPerPage = 1; // 페이지 당 항목 수
@@ -262,8 +258,8 @@ onMounted(async () => {
   await nextTick();
   user.value = userStore.getLoginUser;
   await getMyOpinionList();
-  getMyOpinion
-  postMainSubject();
+  getMyOpinion()
+
 });
 
 </script>
