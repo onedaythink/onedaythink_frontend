@@ -158,6 +158,7 @@ export default {
 </script>
 
 <style scoped>
+
 .nickname {
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 13px;

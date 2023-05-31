@@ -21,6 +21,6 @@ export default {
   }
 }
 .bg-D1F0EE {
-    background-color: #D1F0EE;
+    background-color: #eaf8f8;
   }
 </style>

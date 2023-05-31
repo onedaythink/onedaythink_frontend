@@ -257,7 +257,8 @@ onMounted(async () => {
   await nextTick();
   user.value = userStore.getLoginUser;
   await getMyOpinionList();
-  getMyOpinion
+  getMyOpinion()
+
 });
 
 </script>
