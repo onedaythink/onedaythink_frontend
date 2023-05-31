@@ -107,7 +107,7 @@ import { useRouter } from 'vue-router';
   }
 
   function required(v) {
-    return !!v || "Field is required";
+    return !!v || "입력을 완료해주세요.";
   }
 
 

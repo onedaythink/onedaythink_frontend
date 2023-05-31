@@ -10,7 +10,7 @@
             <img :src="findUserImage(userData.userImgPath)">
           </v-avatar>
         </v-btn>
-        <input type="file" accept="image/png" ref="fileInput" style="display: none" @change="onFileChange">
+        <input type="file" accept="image/*" ref="fileInput" style="display: none" @change="onFileChange">
       </div>
         <v-btn class="profile-image-container" @click="imgRollback();"> 
           이미지 되돌리기
@@ -101,7 +101,7 @@ export default {
 
 <script setup>
 import { useUserStore } from '@/store/user';
-import { $updateUser, $checkNickname, $getUsers, $updateUserProfile } from '@/api/user'
+import { $updateUser, $checkNickname, $getUsers } from '@/api/user'
 import { onMounted, nextTick, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -132,54 +132,53 @@ function findUserImage(userImg) {
 // 프로필 이미지 변경
 const editProfile = ref(false)
 const selectedFile = ref(null)
-const selectedImageUrl = ref('src/main/resources/static/profileImages/'); // 수정된 이미지 경로
+const selectedImageUrl = ref('/src/main/resources/static/profileImages/'); // 수정된 이미지 경로
 let fileInput = ref(null)
 
 // 유저의 원본 이미지 정보를 저장하는 레퍼런스
 const originalUserImgOrigin = ref('')
 const originalUserImgPath = ref('')
 
-// 프로필 이미지 변경
 async function onFileChange(e) {
   selectedFile.value = e.target.files[0];
 
+  // 생성된 PNG 파일명을 userImgOrigin 값으로 설정합니다.
+  userData.value.userImgOrigin = selectedFile.value.name;
+
+  // userImgPath의 값은 selectedImageUrl + 생성된 png 파일명으로 수정합니다.
+  userData.value.userImgPath = selectedImageUrl.value + selectedFile.value.name;
+
   let formData = new FormData();
-  formData.append('userNo', userStore.getLoginUser.userNo);
-  formData.append('upfile', selectedFile.value); // 서버로 보내는 파일의 이름을 원래 이름 그대로 유지합니다.
+  formData.append('upfile', selectedFile.value);
+
+  console.log("formData: ", formData); // formData 확인
+  let entries = formData.entries();
+  for (const pair of entries) {
+      console.log(pair[0]+ ', ' + pair[1]); 
+  }
 
   const reader = new FileReader();
   reader.onload = function(event) {
     selectedImageUrl.value = event.target.result;
   }
   reader.readAsDataURL(selectedFile.value);
-
   try {
-    const response = await $updateUserProfile(formData);   // API를 호출하여 파일을 업로드합니다.
-    if (response.data && response.data.filename) { // 응답에 data 속성과 filename 속성이 있는지 확인합니다.
-
-      // 응답의 data.filename이 새 이미지 파일의 이름을 포함한다고 가정합니다.
-      userData.value.userImgOrigin = response.data.filename; // 사용자 데이터의 userImgOrigin 값을 새 파일 이름으로 설정합니다.
-
-      // userImgPath의 값은 selectedImageUrl + 새로운 png 파일명으로 수정합니다.
-      userData.value.userImgPath = selectedImageUrl.value + response.data.filename;
-    } else {
-      throw new Error('The response does not contain a data property with a filename property.');
-    }
+    const response = await $updateUser(formData);   // Call your API to upload the file
+    userData.value.userImgPath = response.data.url; // Assuming response.data.url contains the image URL
   } catch (error) {
-    // router.push("/mypage"/)
     console.error('Error while uploading the image:', error);
   }
 }
 
 function openFileInput() {
-  // 저장된 원본 이미지의 정보를 저장
+  // 저장된 원본 이미지의 정보를 저장합니다.
   originalUserImgOrigin.value = userData.value.userImgOrigin;
   originalUserImgPath.value = userData.value.userImgPath;
   fileInput.value.click()
 }
 
 function imgRollback() {
-  // 원본 이미지 정보로 롤백
+  // 원본 이미지 정보로 롤백합니다.
   userData.value.userImgOrigin = originalUserImgOrigin.value;
   userData.value.userImgPath = originalUserImgPath.value;
 }
@@ -206,12 +205,12 @@ function checkDuplicateNickname() {
     router
   }
 
-const passwordRegex = /^(?=.*\d)(?=.*[a-z]).{8,15}$/;
-const passwordValueCheck = ref(null)
-function pwdCheck() {
-    passwordValueCheck.value = passwordRegex.test(userData.value.userPwd);
-    console.log(passwordValueCheck.value)
-}
+  const passwordRegex = /^(?=.*\d)(?=.*[a-z]).{8,15}$/;
+  const passwordValueCheck = ref(null)
+  function pwdCheck() {
+      passwordValueCheck.value = passwordRegex.test(userData.value.userPwd);
+      console.log(passwordValueCheck.value)
+  }
 const passwordDoubleCheck = ref(null)
 function pwdDoubleCheck() {
   if (userData.value.userPwd === passwordConfirmation.value || passwordConfirmation.value === null) {  
@@ -229,16 +228,8 @@ function pwdDoubleCheck() {
 
 async function updateUser() {
   try {
-    if (isClear() && userData.value.userImgPath !== originalUserImgPath.value) {
-      // Check if the image upload was successful before updating the user data
-      
-      let formData = new FormData();
-      formData.append('upfile', selectedFile.value); 
-      for (let key in userData.value) {
-        formData.append(key, userData.value[key]);
-      }
-
-      await $updateUser(userData);  // 수정된 formData 전송
+    if (isClear()) {
+      await $updateUser(userData.value);
       getUsers(); 
     } else {
       window.alert('작성한 내용을 다시 확인해주세요.');

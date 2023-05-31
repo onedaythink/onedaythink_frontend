@@ -1,14 +1,15 @@
 <template>
   <v-container fluid >
     <v-row>
-      <v-col cols="3" class="d-flex justify-start">
+      <v-col cols="2" class="d-flex justify-start">
         <v-img @click="$router.go(-1)"
           src="@/assets/back_arrow.png"
           class="back-arrow"
         ></v-img>
         <v-spacer></v-spacer>
-      </v-col>
+      </v-col> 
     </v-row>
+   
     <v-card>
       <v-card-actions class="topic-btn">
         <v-spacer>생각주제</v-spacer>
@@ -24,6 +25,7 @@
         </div>
       </v-expand-transition>
     </v-card>
+    <br>
   <!-- Chat messages -->
 <v-row>
   <v-col cols="12" class="d-flex justify-center">
@@ -58,7 +60,7 @@
 </v-row>
 
 <!-- Message input -->
-<v-row>
+<v-row class="textArea">
   <v-col cols="12">
 
     <!-- 하루봇 선택을 위한 모달 -->
@@ -88,7 +90,7 @@
     <v-textarea v-model="userMessage" ref="userMessageInput" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup="sentenceCompeletion" @keyup.enter="sendMessage"></v-textarea>
   </v-col>
 </v-row>
-<v-row>
+<v-row class="sendButtonRow">
   <v-col cols="12" class="d-flex justify-end">
     <v-btn color="#FBF0A0" dark @click="sendMessage" class="send-btn">전송</v-btn>
   </v-col>
@@ -345,9 +347,6 @@ onMounted(async () => {
 
 <style scoped>
 
-.v-main{
-  --v-layout-top: 0px !important;
-}
 .nickname {
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 13px;
@@ -355,24 +354,28 @@ onMounted(async () => {
   color: #000000;
 }
 
+.textArea{
+  margin-right: 5px;
+}
 .chat-card-wrapper{
   width: 100%;
   height: 300px;
   overflow-y: auto;
+  margin-right: 15px;
 }
 
 .chat-message-mint {
-  background-color: #d1f0ee;
+  background-color: #eaeff0;
   border-radius: 6px;
 }
 
 .chat-message-yellow {
-  background-color: #f5d76e;
+  background-color: #fff28e;
   border-radius: 6px;
 }
 
 .chat-message-mint {
-    background-color: #d1f0ee;
+    background-color: #f0fffb;
     border-radius: 6px;
   }
   .chat-card-wrapper::-webkit-scrollbar {
@@ -397,15 +400,15 @@ onMounted(async () => {
 
   /* 생각주제 버튼 스타일 */
   .topic-btn {
-    background-color: #e7f6f3;
+    background-color: #fffef7;
     color: #2C2C2C;
     border-radius: 3px;
   }
 
   /* 메시지 입력창 스타일 */
   .message-input {
-    background-color: #F5F5F5;
-    border: 1px solid #E0E0E0;
+    background-color: #ffffff;
+    border: 1px solid #fdfff6;
     border-radius: 10px;
   }
 
@@ -414,6 +417,10 @@ onMounted(async () => {
     background-color: #FED800;
     color: #2C2C2C;
     border-radius: 5px;
+    margin-right : 17px;
   }
 
+ .sendButtonRow{
+    margin-top: -30px;
+ }
 </style>
