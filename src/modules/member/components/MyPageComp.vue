@@ -6,17 +6,17 @@
       class="d-flex flex-column align-content-center"
     >
       <h5>나의 공간</h5>
-      <!-- <br /> -->
-      <v-menu min-width="200px" rounded>
-        <template v-slot:activator="{ props }">
-          <v-btn icon v-bind="props">
-            <v-img v-if="user.userImgPath" 
-                   :src="`${user.userImgPath}`"
-                   height="100px"
-                   width="100px"
-                   class="rounded-circle">
-            </v-img>
-          </v-btn> 
+      <v-menu min-width="300px" rounded>
+          <template v-slot:activator="{ props }" >
+            <v-btn icon size="70" v-bind="props">
+              <v-avatar size="70">
+                <img 
+                  :src="findUserImage(user.userImgPath)" 
+                  class="rounded-circle" 
+                  style="object-fit: cover;"
+                >
+              </v-avatar>
+            </v-btn>
           <span>{{ user.nickname }}</span><br>
         </template>
         <v-card>
@@ -158,18 +158,17 @@ function findImage(subjectImg) {
   }
 }
 
-// // userImg 호출
-// function findUserImage(userImg) {
-//   console.log(userImg)
-//   if (userImg) {
-//     console.log(userImg);
-//     const convertedPath = userImg.replace(/\\/g, '/');
-//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
-//   } else {
-//     return null;
-//   }
-// }
-
+// userImg 호출
+function findUserImage(userImg) {
+  console.log(userImg)
+  if (userImg) {
+    console.log(userImg);
+    const convertedPath = userImg.replace(/\\/g, '/');
+    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
+  } else {
+    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=`;
+  }
+}
 
 // 페이지네이션 관련 변수
 const currentPage = ref(1); // 현재 페이지 상태
@@ -263,6 +262,13 @@ onMounted(async () => {
 
 </script>
 
-<style>
+<style scoped>
+.v-img > div > img {
+  border-radius: 50%;
+  object-fit: cover;
+}
 
+.v-btn:active {
+  box-shadow: 0px 0px 50px rgba(115, 142, 212, 0.5) !important;
+}
 </style>
