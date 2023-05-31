@@ -179,12 +179,6 @@ function init(chatRoom) {
       chatRoom.lastMessage = chatMsg.chatMsgContent; // Assuming the message is stored in the 'message' property
       chatRoom.sendNickname = chatMsg.sendNickname;
 
-      // Force Vue to update the view by triggering a re-render
-      // This step may depend on the reactivity system you're using (Vue 2 or Vue 3)
-      // For Vue 2, you can use Vue.set or Object.assign to trigger reactivity
-      // Vue.set(chatRooms, index, Object.assign({}, chatRoom));
-      // For Vue 3, you can use the composition API to achieve reactivity
-      // chatRooms.value[index] = { ...chatRoom };
     },  { id: subscriptionId });
 
     // Store the chat room subscription ID in the activeSubscriptions array
