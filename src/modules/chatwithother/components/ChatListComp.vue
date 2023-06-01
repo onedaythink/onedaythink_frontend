@@ -3,9 +3,9 @@
         <v-card class="mx-auto" v-for="(chatRoom, index) in chatRooms" :key="index">
             <v-row>
                 <template v-if="chatRoom.lastMessage != null && chatRoom.lastMessage != ''">
-                    <v-col cols="3" style="display: flex;  flex-direction: column; align-items: center;"> 
+                    <v-col cols="3" style="display: flex;  flex-direction: column; align-items: center; text-align: center;"> 
                         <v-img class="align-end text-white" src="https://i.ibb.co/jfvCkSZ/basicprofile.jpg" cover rounded
-                            style="border-radius: 50%; width: 70px; height: 70px;">
+                            style="border-radius: 50%; width: 50px; height: 50px; margin-top: 20px;">
                         </v-img>
                         <template v-if="chatRoom.fromUserNo == userStore.getLoginUser.userNo">
                             <v-card-text>
@@ -29,9 +29,9 @@
                     </v-col>
                 </template>
                 <template v-else>
-                    <v-col cols="3">
+                    <v-col cols="3" style="text-align: center;">
                         <v-img class="align-end text-white" src="https://i.ibb.co/jfvCkSZ/basicprofile.jpg" cover rounded
-                            style="border-radius: 50%; width: 70px; height: 70px;">
+                            style="border-radius: 50%; width: 50px; height: 50px;  margin-top: 20px;">
                         </v-img>
                         <template v-if="chatRoom.fromUserNo == userStore.getLoginUser.userNo">
                             <v-card-text>
@@ -75,7 +75,7 @@
         </v-dialog>
     </template>
     <template v-else>
-        <div>활성화된 채팅방이 존재하지 않습니다.</div>
+        <div style="text-align:center;">활성화된 채팅방이 존재하지 않습니다.</div>
     </template>
 </template>
 
@@ -108,6 +108,7 @@ function goToChatRoomOther(chatRoom) {
 const userStore = useUserStore()
 
 function closeChatRoom(chatRoomNo){
+
     $closeChatRoom(chatRoomNo)
         .then(res => {
             console.log(res.data)

@@ -3,17 +3,20 @@
     <v-card class="mx-auto" v-for="(haruChatRoom, index) in haruChatRooms" :key="index">
       <v-row>
         <template v-if="haruChatRoom.userNo == 0">
-            <v-col cols="3">
-              <v-img class="align-end text-white" :src="haruChatRoom.haruImg" cover rounded
-                style="border-radius: 50%; width: 70px; height: 70px;">
-              </v-img>
-              <v-card-text>
-                {{ haruChatRoom.haruName }}
-              </v-card-text>
-            </v-col>
+          <v-col cols="3">
+            <v-img class="align-end text-white" :src="haruChatRoom.haruImg" cover rounded
+              style="border-radius: 50%; width: 70px; height: 70px; margin-top: 20px;">
+            </v-img>
+            <v-card-text style="font-size: 13px;text-align: center;">
+              {{ haruChatRoom.haruName }}
+            </v-card-text>
+          </v-col>
           <v-col cols="9">
             <v-card-text>
-              <div>" {{ haruChatRoom.lastMessage }} " </div>
+              <div>
+                {{ haruChatRoom.lastMessage.length > 30 ? haruChatRoom.lastMessage.substring(0, 20) + '...' :
+                  haruChatRoom.lastMessage }}
+              </div>
             </v-card-text>
 
             <v-card-actions class="button">
@@ -25,7 +28,7 @@
           </v-col>
         </template>
         <template v-else>
-          <v-col cols="3" style="display:flex; ">
+          <v-col cols="3">
             <v-img class="align-end text-white" :src="findImage(haruChatRoom.userImg)" cover rounded
               style="border-radius: 50%; width: 70px; height: 70px;">
             </v-img>
@@ -60,7 +63,7 @@
     </v-dialog>
   </template>
   <template v-else>
-    <div>활성화된 채팅방이 존재하지 않습니다.</div>
+    <div style="text-align: center; color: gray;">활성화된 채팅방이 존재하지 않습니다.</div>
   </template>
 </template>
 
@@ -155,7 +158,6 @@ onMounted(async () => {
 </script>
 
 <style>
-
 .btn-bold {
   font-weight: bold;
 }
