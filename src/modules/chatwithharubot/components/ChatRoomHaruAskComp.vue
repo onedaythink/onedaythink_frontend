@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-      <v-row>
+      <v-row class="back-header" style="margin-bottom: 0px;">
         <v-col cols="3" class="d-flex justify-start">
           <v-img @click="$router.go(-1)"
             src="@/assets/back_arrow.png"

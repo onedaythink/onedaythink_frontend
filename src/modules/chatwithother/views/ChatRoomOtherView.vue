@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid>
-    <v-row class="topMenuBar">
+  <v-container fluid class="subject-card-wrapper">
+    <v-row class="topMenuBar" style="margin-bottom: 0px;">
       <v-col cols="3" class="d-flex justify-start">
         <v-img @click="$router.go(-1)" src="@/assets/back_arrow.png" class="back-arrow"></v-img>
        
@@ -414,4 +414,21 @@ onBeforeUnmount(() => {
 .sendButtonRow{
     margin-top: -25px;
  }
+
+ /* 스크롤바 관련 설정 */
+.subject-card-wrapper {
+  height: 600px;
+  overflow-y: auto;
+  margin-top: 10px;
+  margin-bottom: 60px;
+}
+
+/* 스크롤바 숨기기 */
+.subject-card-wrapper::-webkit-scrollbar {
+  display: none;
+}
+/* .v-main{
+    --v-layout-top: 0px !important; 
+} */
+
 </style>

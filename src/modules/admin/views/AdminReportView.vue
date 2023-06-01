@@ -15,7 +15,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 /* 스크롤바 관련 설정 */
 /* .subject-card-wrapper {
   height: 2000px;

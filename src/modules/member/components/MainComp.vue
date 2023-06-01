@@ -11,15 +11,15 @@
   </v-card-text>
 
   <v-row justify="center" align="center" style="margin-bottom: 6px">
-    <v-col cols="auto">
+    <v-col cols="auto" >
       <v-btn color= "#FBF0A0" density="comfortable">
-        <router-link to="/signup">회원가입</router-link></v-btn
+        <router-link class="btn-main" to="/signup">회원가입</router-link></v-btn
       >
     </v-col>
 
     <v-col cols="auto">
       <v-btn color= "#FBF0A0" density="comfortable">
-        <router-link to="/login">로그인</router-link></v-btn
+        <router-link class="btn-main" to="/login">로그인</router-link></v-btn
       >
     </v-col>
   </v-row>
@@ -69,5 +69,10 @@ font-style: normal;
 .double-quotes{
   font-family: 'UhBeeMiMi';
   font-size: 30px;
+}
+
+.btn-main {
+  text-decoration: blink;
+  color:chocolate;
 }
 </style>

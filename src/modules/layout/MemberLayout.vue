@@ -30,7 +30,6 @@
         </v-navigation-drawer>
         <v-main class="mainview">
           <router-view></router-view>
-          
           <sticky-haru-comp></sticky-haru-comp>
         </v-main>
       </v-layout>
@@ -254,7 +253,8 @@ function modalSwitch() {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  justify-content: flex-end;
+  /* justify-content: flex-end; */
+  position: relative;
   width: 420px;
   height: 700px;
 }
