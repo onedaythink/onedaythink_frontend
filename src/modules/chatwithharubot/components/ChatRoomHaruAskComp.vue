@@ -249,7 +249,7 @@ async function receiveMessage(msg) {
   z-index: 100;
   transform: translate(-50%, -50%);
   padding: 20px;
-  width: 200px;
+  width: 400px;
   text-align: center;
   background: #fffeef;
   box-shadow: 0 3px 0 rgba(0, 0, 0, .2);
