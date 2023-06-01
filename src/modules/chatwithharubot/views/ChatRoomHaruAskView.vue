@@ -25,7 +25,7 @@ export default {
 .subject-card-wrapper {
   height: 500px;
   overflow-y: auto;
-  margin-top: 60px;
+  margin-top: 10px;
   margin-bottom: 60px;
 }
 
