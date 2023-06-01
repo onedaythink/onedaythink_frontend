@@ -91,7 +91,7 @@
       v-model="isPasswordEditable"
       label="비밀번호 수정"
     ></v-checkbox>
-    <v-btn color="info" @click="updateUser" class="submit">확인</v-btn>
+    <!-- <v-btn color="info" @click="updateUser" class="submit">확인</v-btn> -->
   </v-container>
 </template>
 
@@ -179,24 +179,32 @@ async function onFileChange(e) {
   }
 }
 
-  // 저장된 원본 이미지의 정보를 저장
 function openFileInput() {
+  // 저장된 원본 이미지의 정보를 저장
   originalUserImgOrigin.value = userData.value.userImgOrigin;
   originalUserImgPath.value = userData.value.userImgPath;
   fileInput.value.click()
 }
 
-  // 변경 전 이미지 정보로 롤백
 function imgRollback() {
+  // 원본 이미지 정보로 롤백
   userData.value.userImgOrigin = originalUserImgOrigin.value;
   userData.value.userImgPath = originalUserImgPath.value;
 }
 
-  // 기본 이미지 정보로 롤백
 function imgRollbackDefault() {
+  // 기본 이미지 정보로 롤백
   userData.value.userImgOrigin = 'default.png';
   userData.value.userImgPath = 'src/main/resources/static/profileImages/default.png';
 }
+
+// function isClear() {
+//     if (checkNickname.value && passwordValueCheck.value && passwordDoubleCheck.value || passwordConfirmation.value === null) {
+//       return true;
+//     } else {
+//       return false;
+//     }
+//   }
 
 function checkDuplicateNickname() {
     // 닉네임 중복 체크 로직 구현
@@ -212,7 +220,6 @@ function checkDuplicateNickname() {
     router
   }
 
-// 비밀번호 체크
 const passwordRegex = /^(?=.*\d)(?=.*[a-z]).{8,15}$/;
 const passwordValueCheck = ref(null)
 function pwdCheck() {
@@ -227,36 +234,33 @@ function pwdDoubleCheck() {
     passwordDoubleCheck.value = false
   }
 }
+
   // user 데이터 가져오기
   async function getUsers() {
   const res = await $getUsers(userData.value.userNo);
   getUsers.value = res.userData
 }
 
-// 회원정보 수정내역 저장(미구현)
-async function updateUser() {
-  // Create a FormData object
-  let formData = new FormData();
-  formData.append('userNo', userStore.getLoginUser.userNo);
-  formData.append('userPwd', userStore.getLoginUser.userNo);
-  formData.append('upfile', selectedFile.value); 
+// async function updateUser() {
+//   try {
+//     if (isClear() && userData.value.userImgPath !== originalUserImgPath.value) {
+//       // Check if the image upload was successful before updating the user data
+      
+//       let formData = new FormData();
+//       formData.append('upfile', selectedFile.value); 
+//       for (let key in userData.value) {
+//         formData.append(key, userData.value[key]);
+//       }
 
-    for (let key in userData.value) { 
-    formData.append(key, userData.value[key]);
-  }
-  console.log('formData:', formData);
-
-  try {
-    const response = await $updateUserProfile(formData);
-    if (response && response.status === 200) {
-      console.log('User update successful!');
-    } else {
-      throw new Error(`Request failed with status code ${response.status}`);
-    }
-  } catch (err) {
-    console.error('Error updating user:', err);
-  }
-}
+//       await $updateUser(userData);  // 수정된 formData 전송
+//       getUsers(); 
+//     } else {
+//       window.alert('작성한 내용을 다시 확인해주세요.');
+//     }
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
 
 onMounted( async () => {
   await nextTick()
