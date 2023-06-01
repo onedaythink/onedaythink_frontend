@@ -30,8 +30,8 @@
         </v-navigation-drawer>
         <v-main class="mainview">
           <router-view></router-view>
-          <sticky-haru-comp></sticky-haru-comp>
         </v-main>
+        <sticky-haru-comp></sticky-haru-comp>
       </v-layout>
     </v-card>
     <footer-comp></footer-comp>
