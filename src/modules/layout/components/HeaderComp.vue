@@ -15,7 +15,7 @@
       </v-btn>
       
       <v-btn icon @click="modalSwitch">
-        <v-icon class="">mdi-bell</v-icon>
+        <v-icon class="" style="font-size: 9px;">mdi-bell</v-icon>
       </v-btn>
       
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
