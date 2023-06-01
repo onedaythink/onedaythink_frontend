@@ -51,7 +51,7 @@ async function $deleteUser(userData){
     }
 }
 
-// 회원 프로필 수정
+// 회원 프로필 이미지 수정
 async function $updateUserProfile(formData){
     try {
         const axios = createFormAxiosInstance()
@@ -66,7 +66,7 @@ async function $updateUserProfile(formData){
 async function $updateUser(userData){
     try {
         const axios = createJsonAxiosInstance()
-        return await axios.post('mypage/users/update', userData)
+        return await axios.post('mypage/users/updateprofile', userData)
     }
     catch (err) {
         console.log('error msg : ', err)
