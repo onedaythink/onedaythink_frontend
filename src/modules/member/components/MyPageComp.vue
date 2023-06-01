@@ -148,6 +148,7 @@ const yyyymmdd = `${year}${month}${date}`;
 
 // subjectImg 호출
 function findImage(subjectImg) {
+  console.log(paginatedOpinions.value)
   console.log(subjectImg)
   if (subjectImg) {
     console.log(subjectImg);

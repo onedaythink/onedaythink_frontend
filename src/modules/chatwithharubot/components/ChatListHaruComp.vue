@@ -157,7 +157,7 @@ onMounted(async () => {
 
 </script>
 
-<style>
+<style scoped>
 .btn-bold {
   font-weight: bold;
 }

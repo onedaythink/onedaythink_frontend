@@ -114,10 +114,10 @@ import { $checkNickname, $getUsers, $updateUserProfile } from '@/api/user'
 import { onMounted, nextTick, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-const userData = ref({}) // 유저 데이터 정보
-
 // 로그인 정보
 const userStore = useUserStore() // 회원탈퇴 관련
+
+const userData = userStore.getLoginUser
 
 const router = useRouter() // 회원탈퇴 알림창 관련
 
@@ -164,6 +164,7 @@ async function onFileChange(e) {
 
   try {
     const response = await $updateUserProfile(formData);   // API를 호출하여 파일을 업로드합니다.
+    console.log(response.data)
     if (response.data && response.data.userOriginImg) { // 응답에 data 속성과 filename 속성이 있는지 확인합니다.
 
       // 응답의 data.userOriginImg 새 이미지 파일의 이름을 포함한다고 가정합니다.
@@ -229,9 +230,11 @@ function pwdDoubleCheck() {
 }
   // user 데이터 가져오기
   async function getUsers() {
-  const res = await $getUsers(userData.value.userNo);
-  getUsers.value = res.userData
-}
+  $getUsers(userData.value.userNo).then(res => {
+    userStore.setLoginUser(res.data)
+  })
+  .catch(err => console.log(err))
+  }
 
 // 회원정보 수정내역 저장(미구현)
 async function updateUser() {
@@ -250,6 +253,7 @@ async function updateUser() {
     const response = await $updateUserProfile(formData);
     if (response && response.status === 200) {
       console.log('User update successful!');
+      getUsers()
     } else {
       throw new Error(`Request failed with status code ${response.status}`);
     }
@@ -260,8 +264,6 @@ async function updateUser() {
 
 onMounted( async () => {
   await nextTick()
-  userData.value = userStore.getLoginUser
-  getUsers
 })
 
 

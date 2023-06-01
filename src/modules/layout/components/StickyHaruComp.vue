@@ -27,9 +27,18 @@ export default {
 };
 </script>
 <style>
-.floating-button {
+/* .floating-button {
   position: fixed;
+  margin-top: 10px;
   margin-bottom: 15px;
+  height: 60px;
+  z-index: 999;
+} */
+
+.floating-button {
+  position: absolute;
+  bottom: 20px;
+  z-index: 999;
 }
 
 .image-button:hover {

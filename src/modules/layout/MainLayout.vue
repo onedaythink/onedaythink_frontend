@@ -1,7 +1,7 @@
 <template>
   <div class="v-app">
     <v-card>
-      <v-layout id="loginback" >
+      <v-layout id="loginback" class="main-container">
         <v-main>
           <br><br><br>
           <v-img
@@ -31,8 +31,8 @@ export default {
 
 <style>
 #loginback {
-  width: 360px;
-  height: 800px;
+  width: 420px;
+  height: 700px;
   margin: 0 auto;
   background-image: url("~@/assets/backgroundpaper.png");
   background-repeat: no-repeat;
@@ -54,4 +54,9 @@ export default {
 #think-field {
   background-color: #d1f0ee;
 }
+/* 
+.main-container {
+  width: 420px;
+  height: 700px;
+} */
 </style>

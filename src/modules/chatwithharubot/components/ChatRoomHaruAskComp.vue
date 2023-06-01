@@ -1,6 +1,6 @@
 <template>
     <v-container fluid>
-      <v-row>
+      <v-row class="back-header" style="margin-bottom: 0px;">
         <v-col cols="3" class="d-flex justify-start">
           <v-img @click="$router.go(-1)"
             src="@/assets/back_arrow.png"
@@ -249,7 +249,7 @@ async function receiveMessage(msg) {
   z-index: 100;
   transform: translate(-50%, -50%);
   padding: 20px;
-  width: 500px;
+  width: 400px;
   text-align: center;
   background: #f2f2f2;
   box-shadow: 0 3px 0 rgba(0, 0, 0, .2);

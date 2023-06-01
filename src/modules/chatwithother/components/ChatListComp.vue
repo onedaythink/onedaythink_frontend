@@ -1,10 +1,10 @@
 <template>
     <template v-if="chatRooms.length > 0">
-        <v-card class="mx-auto" v-for="(chatRoom, index) in chatRooms" :key="index">
-            <v-row>
+        <v-card class="mx-auto opinion-card" v-for="(chatRoom, index) in chatRooms" :key="index">
+            <v-row class="test">
                 <template v-if="chatRoom.lastMessage != null && chatRoom.lastMessage != ''">
                     <v-col cols="3" style="display: flex;  flex-direction: column; align-items: center; text-align: center;"> 
-                        <v-img class="align-end text-white" src="https://i.ibb.co/jfvCkSZ/basicprofile.jpg" cover rounded
+                        <v-img class="align-end text-white" :src=findImage(chatRoom.fromUserImgPath) cover rounded
                             style="border-radius: 50%; width: 50px; height: 50px; margin-top: 20px;">
                         </v-img>
                         <template v-if="chatRoom.fromUserNo == userStore.getLoginUser.userNo">
@@ -20,7 +20,7 @@
                         <v-card-text>
                             <div>{{ chatRoom.sendNickname }} : {{ chatRoom.lastMessage }} </div>
                         </v-card-text>
-                        <v-card-actions class="button">
+                        <v-card-actions class="button ddd">
                             <v-btn @click="goToChatRoomOther(chatRoom)" variant="outlined" color="yellow-accent-4"
                                 class="btn-bold">입장</v-btn>
                             <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold"
@@ -30,7 +30,7 @@
                 </template>
                 <template v-else>
                     <v-col cols="3" style="text-align: center;">
-                        <v-img class="align-end text-white" src="https://i.ibb.co/jfvCkSZ/basicprofile.jpg" cover rounded
+                        <v-img class="align-end text-white" :src=findImage(chatRoom.fromUserImgPath) cover rounded
                             style="border-radius: 50%; width: 50px; height: 50px;  margin-top: 20px;">
                         </v-img>
                         <template v-if="chatRoom.fromUserNo == userStore.getLoginUser.userNo">
@@ -53,7 +53,7 @@
                                 <div>"{{ chatRoom.fromNickname }} 님이 회원님과 대화하고싶어해요!" </div>
                             </v-card-text>
                         </template>
-                        <v-card-actions class="button">
+                        <v-card-actions class="button ddd">
                             <v-btn @click="goToChatRoomOther(chatRoom)" variant="outlined" color="yellow-accent-4"
                                 class="btn-bold">입장</v-btn>
                             <v-btn variant="outlined" color="pink-lighten-4" class="btn-bold"
@@ -175,12 +175,6 @@ function init(chatRoom) {
       chatRoom.lastMessage = chatMsg.chatMsgContent; // Assuming the message is stored in the 'message' property
       chatRoom.sendNickname = chatMsg.sendNickname;
 
-      // Force Vue to update the view by triggering a re-render
-      // This step may depend on the reactivity system you're using (Vue 2 or Vue 3)
-      // For Vue 2, you can use Vue.set or Object.assign to trigger reactivity
-      // Vue.set(chatRooms, index, Object.assign({}, chatRoom));
-      // For Vue 3, you can use the composition API to achieve reactivity
-      // chatRooms.value[index] = { ...chatRoom };
     },  { id: subscriptionId });
 
     // Store the chat room subscription ID in the activeSubscriptions array
@@ -196,6 +190,19 @@ onBeforeUnmount(() => {
     //     }
     // })
 })
+
+// userImg 호출
+function findImage(userImg) {
+  if (userImg) {
+    console.log(userImg);
+    const convertedPath = userImg.replace(/\\/g, '/');
+    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
+  } else {
+    const defaultImg = 'src/main/resources/static/profileImages/default.png'
+    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${defaultImg}`;
+  }
+}
+
 
 // 모달 부분
 const showConfirmationDialog = ref(false)
@@ -216,7 +223,7 @@ function cancelExit() {
 }
 </script>
 
-<style>
+<style scoped>
 .btn-bold {
     font-weight: bold;
 }
@@ -238,11 +245,19 @@ function cancelExit() {
 }
 
 .buttton {
+}
+
+.ddd {
     align-items: center;
     display: flex;
     flex: none;
     min-height: 52px;
     padding: 0.5rem;
-    margin-left: 100px;
+    justify-content: center;
 }
+
+.opinion-card {
+    height: 110px;
+}
+
 </style>

@@ -14,13 +14,13 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 /* 스크롤바 관련 설정 */
 .subject-card-wrapper {
-  max-height: 500px;
+  height: 550px;
   overflow-y: auto;
   margin-top: 60px;
-  margin-bottom: 60px;
+  /* margin-bottom: 60px; */
 }
 
 /* 스크롤바 숨기기 */

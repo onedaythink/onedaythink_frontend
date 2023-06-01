@@ -1,7 +1,7 @@
 <template>
- <v-footer class="bg-D1F0EE">
+ <v-footer class="bg-D1F0EE footer">
     <v-row justify="center" no-gutters>
-      <v-col class="text-center mt-4" cols="12">
+      <v-col class="text-center" cols="12">
         PROJECT, <strong>ONEDAYTHINK.</strong> 2023.
       </v-col>
     </v-row>
@@ -23,4 +23,8 @@ export default {
 .bg-D1F0EE {
     background-color: #eaf8f8;
   }
+
+.footer {
+  height: 80px;
+}
 </style>

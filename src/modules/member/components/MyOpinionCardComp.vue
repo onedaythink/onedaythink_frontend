@@ -22,10 +22,17 @@
     <v-row>
       <v-col cols="8" class="button " style=" justify-content: flex-end; ">
         <v-btn class="thinkhelper-btn no-border" @click="helper">
-          <img src="@/assets/onedaythink_haru0.png" alt="Light bulb icon" style="height:24px; width:24px;">
+        <img :src="require('@/assets/light1.jpg')" alt="Light bulb icon" style="height:30px; width:50px;">
           생각 도우미
         </v-btn>
       </v-col>
+<!-- 
+      <v-col cols="8" class="button " style="justify-content: center; display: flex;">
+      <v-btn class="thinkhelper-btn no-border" @click="helper">
+        <img :src="require('@/assets/light1.jpg')" alt="Light bulb icon" style="height:30px; width:50px;">
+        생각 도우미!
+      </v-btn>
+    </v-col> -->
     <div class="loading-box" v-if="loading">
           <div class="circles">
             <i></i>
@@ -236,6 +243,8 @@ onMounted(async () => {
     transform: scale(1.3)
   }
 }
+
+
 
 </style>
 

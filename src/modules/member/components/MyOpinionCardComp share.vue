@@ -69,10 +69,10 @@ function save() {
 
 
 function share() {
-  if (opinion.isPublic == 'y') {
-    opinion.isPublic = 'n';
-  } else if (opinion.isPublic == 'n') {
-    opinion.isPublic = 'y';
+  if (opinion.value.isPublic == 'y') {
+    opinion.value.isPublic = 'n';
+  } else if (opinion.value.isPublic == 'n') {
+    opinion.value.isPublic = 'y';
   }
   save();
 }
@@ -141,7 +141,7 @@ onMounted(async () => {
 
 
 
-<style>
+<style scoped>
 #mythink{
   background-image: url("~@/assets/checkbackground.png");
 }
