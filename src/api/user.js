@@ -51,12 +51,22 @@ async function $deleteUser(userData){
     }
 }
 
+// 회원 프로필 이미지 수정
+async function $updateUserProfile(formData){
+    try {
+        const axios = createFormAxiosInstance()
+        return await axios.post('mypage/users/updateprofile', formData)
+    }
+    catch (err) {
+        console.log('error msg : ', err)
+    }
+}
+
 // 회원수정
 async function $updateUser(userData){
     try {
-        const axios = createFormAxiosInstance()
-        console.log(userData)
-        return await axios.post('mypage/users/update', userData)
+        const axios = createJsonAxiosInstance()
+        return await axios.post('mypage/users/updateprofile', userData)
     }
     catch (err) {
         console.log('error msg : ', err)
@@ -74,22 +84,6 @@ async function $getUsers(){
     }
 }
 
-// 프로필 이미지 업로드
-async function $uploadProfile(fileData) {
-    try {
-      const axios = createFormAxiosInstance();
-      let config = {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      };
-      return await axios.post('users/uploadAvatar', fileData, config);
-    } catch (err) {
-      console.log('error msg : ', err);
-    }
-  }
-
-
 
 export { $loginUser, $registerUser, $checkUserId, $checkNickname, 
-        $getUsers, $deleteUser, $updateUser, $uploadProfile}
+        $getUsers, $deleteUser, $updateUser, $updateUserProfile }
