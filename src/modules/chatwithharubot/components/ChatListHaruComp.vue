@@ -5,9 +5,9 @@
         <template v-if="haruChatRoom.userNo == 0">
           <v-col cols="3">
             <v-img class="align-end text-white" :src="haruChatRoom.haruImg" cover rounded
-              style="border-radius: 50%; width: 70px; height: 70px;">
+              style="border-radius: 50%; width: 70px; height: 70px; margin-top: 20px;">
             </v-img>
-            <v-card-text style="font-size: 13px;">
+            <v-card-text style="font-size: 13px;text-align: center;">
               {{ haruChatRoom.haruName }}
             </v-card-text>
           </v-col>
@@ -63,7 +63,7 @@
     </v-dialog>
   </template>
   <template v-else>
-    <div>활성화된 채팅방이 존재하지 않습니다.</div>
+    <div style="text-align: center; color: gray;">활성화된 채팅방이 존재하지 않습니다.</div>
   </template>
 </template>
 
