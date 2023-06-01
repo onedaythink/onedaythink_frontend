@@ -12,8 +12,15 @@
         </v-btn>
         <input type="file" accept="image/png" ref="fileInput" style="display: none" @change="onFileChange">
       </div>
+    </div>
+      <div>
         <v-btn class="profile-image-container" @click="imgRollback();"> 
-          이미지 되돌리기
+          이미지를 되돌려요
+       </v-btn>
+      </div>
+      <div>
+       <v-btn class="profile-image-container" @click="imgRollbackDefault();"> 
+          기본 이미지를 사용해요
        </v-btn> 
     </div>
     <br>
@@ -84,7 +91,7 @@
       v-model="isPasswordEditable"
       label="비밀번호 수정"
     ></v-checkbox>
-    <v-btn color="info" @click="updateUser" class="submit">확인</v-btn>
+    <!-- <v-btn color="info" @click="updateUser" class="submit">확인</v-btn> -->
   </v-container>
 </template>
 
@@ -101,7 +108,9 @@ export default {
 
 <script setup>
 import { useUserStore } from '@/store/user';
-import { $updateUser, $checkNickname, $getUsers } from '@/api/user'
+// import { $updateUser, $checkNickname, $getUsers, $updateUserProfile } from '@/api/user'
+import { $checkNickname, $getUsers, $updateUserProfile } from '@/api/user'
+
 import { onMounted, nextTick, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -139,21 +148,13 @@ let fileInput = ref(null)
 const originalUserImgOrigin = ref('')
 const originalUserImgPath = ref('')
 
+// 프로필 이미지 변경
 async function onFileChange(e) {
   selectedFile.value = e.target.files[0];
 
-  const currentTime = new Date().toISOString().slice(0,19).replace(/-/g, "").replace(/:/g, "").replace("T", ""); // 현재 시간을 YYYYMMDDHHmmss 형식으로 받습니다.
-  const ranNum = Math.floor(Math.random() * 90000 + 10000); // 랜덤 숫자를 생성합니다.
-
-  const newFilename = `${currentTime}${ranNum}.png`; // 새로운 파일 이름을 현재의 시간과 랜덤 숫자로 설정합니다. 이런 방식으로 파일 이름의 중복을 피할 수 있습니다.
-  // 새로운 파일 이름을 userImgOrigin 값으로 설정합니다.
-  userData.value.userImgOrigin = newFilename;
-
-  // userImgPath의 값은 selectedImageUrl + 새로운 png 파일명으로 수정합니다.
-  userData.value.userImgPath = selectedImageUrl.value + newFilename;
-
   let formData = new FormData();
-  formData.append('upfile', selectedFile.value, newFilename); // 서버로 보내는 파일의 이름을 변경합니다.
+  formData.append('userNo', userStore.getLoginUser.userNo);
+  formData.append('upfile', selectedFile.value); // 서버로 보내는 파일의 이름을 원래 이름 그대로 유지합니다.
 
   const reader = new FileReader();
   reader.onload = function(event) {
@@ -162,37 +163,48 @@ async function onFileChange(e) {
   reader.readAsDataURL(selectedFile.value);
 
   try {
-    const response = await $updateUser(formData);   // Call your API to upload the file
-    if (response.data && response.data.url) {      // Check if the response has the data property and url property
-      userData.value.userImgPath = response.data.url; // Assuming response.data.url contains the image URL
+    const response = await $updateUserProfile(formData);   // API를 호출하여 파일을 업로드합니다.
+    if (response.data && response.data.userOriginImg) { // 응답에 data 속성과 filename 속성이 있는지 확인합니다.
+
+      // 응답의 data.userOriginImg 새 이미지 파일의 이름을 포함한다고 가정합니다.
+      userData.value.userImgOrigin = response.data.userOriginImg; // 사용자 데이터의 userImgOrigin 값을 새 파일 이름으로 설정합니다.
+
+      // userImgPath의 값은 server response로부터 받은 새로운 이미지 경로로 수정합니다.
+      userData.value.userImgPath = response.data.userImgPath;
     } else {
-      throw new Error('The response does not contain a data property with a url property.');
+      throw new Error('userOriginImg 또는 userImgPath 속성을 찾을 수 없음.');
     }
   } catch (error) {
-    console.error('Error while uploading the image:', error);
+    console.error('이미지 업로드 중 오류 발생:', error);
   }
 }
 
 function openFileInput() {
-  // 저장된 원본 이미지의 정보를 저장합니다.
+  // 저장된 원본 이미지의 정보를 저장
   originalUserImgOrigin.value = userData.value.userImgOrigin;
   originalUserImgPath.value = userData.value.userImgPath;
   fileInput.value.click()
 }
 
 function imgRollback() {
-  // 원본 이미지 정보로 롤백합니다.
+  // 원본 이미지 정보로 롤백
   userData.value.userImgOrigin = originalUserImgOrigin.value;
   userData.value.userImgPath = originalUserImgPath.value;
 }
 
-function isClear() {
-    if (checkNickname.value && passwordValueCheck.value && passwordDoubleCheck.value || passwordConfirmation.value === null) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+function imgRollbackDefault() {
+  // 기본 이미지 정보로 롤백
+  userData.value.userImgOrigin = 'default.png';
+  userData.value.userImgPath = 'src/main/resources/static/profileImages/default.png';
+}
+
+// function isClear() {
+//     if (checkNickname.value && passwordValueCheck.value && passwordDoubleCheck.value || passwordConfirmation.value === null) {
+//       return true;
+//     } else {
+//       return false;
+//     }
+//   }
 
 function checkDuplicateNickname() {
     // 닉네임 중복 체크 로직 구현
@@ -229,26 +241,26 @@ function pwdDoubleCheck() {
   getUsers.value = res.userData
 }
 
-async function updateUser() {
-  try {
-    if (isClear() && userData.value.userImgPath !== originalUserImgPath.value) {
-      // Check if the image upload was successful before updating the user data
+// async function updateUser() {
+//   try {
+//     if (isClear() && userData.value.userImgPath !== originalUserImgPath.value) {
+//       // Check if the image upload was successful before updating the user data
       
-      let formData = new FormData();
-      formData.append('upfile', selectedFile.value); 
-      for (let key in userData.value) {
-        formData.append(key, userData.value[key]);
-      }
+//       let formData = new FormData();
+//       formData.append('upfile', selectedFile.value); 
+//       for (let key in userData.value) {
+//         formData.append(key, userData.value[key]);
+//       }
 
-      await $updateUser(formData);  // 수정된 formData 전송
-      getUsers(); 
-    } else {
-      window.alert('작성한 내용을 다시 확인해주세요.');
-    }
-  } catch (err) {
-    console.log(err);
-  }
-}
+//       await $updateUser(userData);  // 수정된 formData 전송
+//       getUsers(); 
+//     } else {
+//       window.alert('작성한 내용을 다시 확인해주세요.');
+//     }
+//   } catch (err) {
+//     console.log(err);
+//   }
+// }
 
 onMounted( async () => {
   await nextTick()
