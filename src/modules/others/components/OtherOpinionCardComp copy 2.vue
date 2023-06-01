@@ -27,13 +27,6 @@
                             <v-btn @click="createChatRoom(opinion.userOpiNo)" variant="outlined" color="blue-lighten-4"
                                 class="btn-bold small">대화하고싶어요</v-btn>
                         </template>
-
-                        <!-- 알람 모달창: 스낵바 -->
-                        <transition name="slide">
-                            <div v-if="snackbar" class="custom-snackbar">
-                                {{ message }}
-                            </div>
-                        </transition>
                     </v-card-actions>
                 </v-col>
             </v-row>
@@ -78,10 +71,6 @@ const userStore = useUserStore()
 const subjectStore = useSubjectStore()
 const opinion_list = ref({})
 
-// 알림창 모달
-let snackbar = ref(false)
-let message = ref('')
-
 async function getOpinionsByCreateAt() {
     await $getOpinionsByCreateAt(subjectStore.getSubject.subNo, userStore.getLoginUser.userNo)
         .then(res => {
@@ -109,19 +98,6 @@ async function createChatRoom(userOpiNo) {
         })
         .catch(err => console.log(err))
 }
-
-// async function createChatRoom(userOpiNo) {
-//   await $createChatRoom(userOpiNo, userStore.getLoginUser.userNo, userStore.getLoginUser.nickname)
-//     .then(res => {
-//       console.log(res.data)
-//       message.value = res.data.msg 
-//       snackbar.value = true 
-//       setTimeout(() => {
-//         snackbar.value = false 
-//       }, 3000)
-//     })
-//     .catch(err => console.log(err))
-// }
 
 function goToChatRoomOther(chatRoom) {
     // 채팅방 연결
@@ -157,34 +133,4 @@ onMounted(async () => {
     padding: 8px;
     text-transform: none;
 }
-</style>
-
-<style scoped>
-
-/* 스낵바 설정 */
-.custom-snackbar {
-    background-color: #43a047;
-    color: white;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 16px;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    z-index: 1000;
-    width: calc(70%);
-    /* margin-left: -10px;
-    margin-right: -10px; */
-  }
-
-  .slide-enter-active,
-  .slide-leave-active {
-    transition: all 0.3s ease;
-  }
-  .slide-enter,
-  .slide-leave-to {
-    opacity: 0;
-    transform: translateY(30px);
-  }
 </style>

@@ -6,16 +6,34 @@
         <v-row>
 
           <v-checkbox :checked="opinion.isPublic === 'y'" @change="updateIsPublic" label="타인과 공유"></v-checkbox>
+
           <v-btn color="light-blue-lighten-5" class="mx-auto mr-2" @click="save">저장</v-btn>
         </v-row>
+
+        <transition name="slide">
+            <div v-if="snackbar" class="custom-snackbar" :timeout="3000">
+              저장되었습니다.
+            </div>
+          </transition>
 
       </v-col>
     </v-row>
 
     <v-row>
       <v-col cols="8" class="button " style=" justify-content: flex-end; ">
-      <v-btn class="thinkhelper-btn no-border" @click="helper">생각 도우미</v-btn>
-    </v-col>
+        <v-btn class="thinkhelper-btn no-border" @click="helper">
+          <img src="@/assets/onedaythink_haru0.png" alt="Light bulb icon" style="height:24px; width:24px;">
+          생각 도우미
+        </v-btn>
+      </v-col>
+    <div class="loading-box" v-if="loading">
+          <div class="circles">
+            <i></i>
+            <i></i>
+            <i></i>
+          </div>
+          <p> 하루가 대신 생각하고 있어요! <br><span style="color:#877b78; font-size: 7px;">{{ test_text }}</span></p>
+    </div>
     </v-row>
     <v-row>
       <v-col cols="12" class="textarea">
@@ -61,6 +79,8 @@ function updateIsPublic(event) {
   opinion.value.isPublic = event.target.checked ? 'y' : 'n';
 }
 
+const snackbar = ref(false);
+
 function save() {
   opinion.value.userOpiNo = myOpinion.value.userOpiNo;
   opinion.value.opinion = op.value;
@@ -70,16 +90,19 @@ function save() {
   $addOpinion(opinion.value)
     .then((res) => {
       getMyOpinion(opinion.value.userNo, opinion.value.createAt, opinion.value.isPublic);
+    
+      // Show snackbar
+      snackbar.value = true;
+
+      // Set snackbar to false after 3 seconds
+      setTimeout(() => {
+        snackbar.value = false;
+      }, 2000);
     })
     .catch((err) => {
       console.log(err);
     });
 }
-
-
-// function share() {
-//   opinion.value.isPublic = !opinion.value.isPublic;
-// }
 
 async function getMyOpinion() {
   await $getOpinion(userStore.getLoginUser.userNo, yyyymmdd)
@@ -92,8 +115,13 @@ async function getMyOpinion() {
     .catch((err) => console.log(err));
 }
 
+// 로딩창 표시 여부를 위한 ref 생성
+const loading = ref(false);
+
 // 생각 도우미
 async function helper() {
+  loading.value = true;
+
   console.log(op.value);
   const configuration = new Configuration({
     apiKey: API_KEY,
@@ -117,10 +145,8 @@ async function helper() {
     opHelper.value = completion;
   }
   await runPrompt();
+  loading.value = false; // 생각 도우미 작업 완료 후 로딩창 비활성화
 }
-
-
-
 
 onMounted(async () => {
   await nextTick()
@@ -128,8 +154,6 @@ onMounted(async () => {
 });
 
 </script>
-
-
 
 <style>
 #mythink {
@@ -161,5 +185,82 @@ onMounted(async () => {
 
 .button {
   margin-left: 0px;
+}
+
+.loading-box {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 100;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  width: 350px;
+  text-align: center;
+  background: #f2f2f2;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, .2);
+}
+
+.loading-box .circles {
+  padding-top: 10px;
+}
+
+.loading-box .circles i {
+  animation: scaleBounce .3s alternate infinite;
+  display: inline-block;
+  margin: 0 4px;
+  width: 10px;
+  height: 10px;
+  background: #00a5e5;
+  border-radius: 50em;
+}
+
+.loading-box .circles i:nth-child(2) {
+  animation-delay: .1s;
+}
+
+.loading-box .circles i:nth-child(3) {
+  animation-delay: .2s;
+}
+
+.loading-box p {
+  margin-top: 20px;
+  font-size: 18px;
+}
+
+@keyframes scaleBounce {
+  from {
+    transform: scale(.7)
+  }
+
+  to {
+    transform: scale(1.3)
+  }
+}
+
+</style>
+
+
+<style scoped>
+
+/* 스낵바 설정 */
+.custom-snackbar {
+  background-color: #43a047; 
+  color: white;  
+  position: absolute;  
+  bottom: 50px;  
+  left: 50%; 
+  transform: translate(-50%, 0); 
+  padding: 16px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  z-index: 1000; 
+}
+
+.slide-enter-active, .slide-leave-active {
+  transition: all .3s ease;
+}
+.slide-enter, .slide-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
 }
 </style>
