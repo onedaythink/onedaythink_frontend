@@ -2,7 +2,7 @@
     <template v-if="opinion_list.length > 0">
         <v-card v-for="(opinion, index) in opinion_list" :key="index">
             <v-row>
-                <v-col cols="3">
+                <v-col cols="3" class="ds">
                     <v-img class="align-end text-white" :src=findImage(opinion.userImgPath) cover rounded
                         style="border-radius: 50%; width: 70px; height: 70px;">
                     </v-img>
@@ -35,7 +35,7 @@
     <template v-else>
         <v-card>
             <v-row>
-                <v-col cols="3">
+                <v-col cols="3" class="ds">
                     <v-img class="align-end text-white" src="https://cdn.vuetifyjs.com/images/cards/docks.jpg" cover rounded
                         style="border-radius: 50%; width: 70px; height: 70px;">
                     </v-img>
@@ -150,5 +150,9 @@ onMounted(async () => {
 
 .like-talk-box {
     justify-content: space-evenly;
+}
+
+.ds {
+    max-width: 30%;
 }
 </style>

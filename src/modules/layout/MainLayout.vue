@@ -14,22 +14,22 @@
         </v-main>
       </v-layout>
     </v-card>
- <!-- <footer-comp></footer-comp> -->
+ <footer-comp></footer-comp>
   </div>
 </template>
 
 <script>
-//import FooterComp from "@/modules/layout/components/FooterComp.vue";
+import FooterComp from "@/modules/layout/components/FooterComp.vue";
 
 export default {
   name: "MainLayout",
-  // components: {
-  //   FooterComp,
-  // },
+  components: {
+    FooterComp,
+  }
 };
 </script>
 
-<style>
+<style scoped>
 #loginback {
   width: 420px;
   height: 700px;
