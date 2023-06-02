@@ -39,11 +39,11 @@
     ></v-text-field>
 
     <v-text-field
-      v-model="newUserUpdate.nickname"
+      v-model="userData.nickname"
       color="primary"
       label="닉네임"
       variant="underlined"
-    >{{ userData.nickname }}</v-text-field>
+    ></v-text-field>
     <div v-if="checkNickname == null"></div>
     <div v-else-if="!checkNickname" >중복된 닉네임이 존재합니다.</div>
     <div v-else>사용 가능한 닉네임입니다.</div>
@@ -71,7 +71,7 @@
       :type="showPassword ? 'text' : 'password'"
       @click:append="showPassword = !showPassword"
       @keyup="pwdCheck"
-    >{}</v-text-field>
+    ></v-text-field>
 
     <div v-if="passwordValueCheck != null && !passwordValueCheck">유효한 비밀번호가 아닙니다. 비밀번호는 소문자와 숫자를 합쳐서 8글자에서 15글자 이내로 작성해주세요</div>
    
@@ -88,8 +88,8 @@
 
     <div v-if="passwordDoubleCheck != null && !passwordDoubleCheck">비밀번호가 일치하지 않습니다.</div>
 
-    <v-btn class="submit" color="info" @click="updateUser()">확인</v-btn>
-    
+
+    <v-btn color="info" @click="updateUser" class="submit">확인</v-btn>
   </v-container>
 </template>
 
@@ -116,11 +116,12 @@ const userData = ref({}) // 유저 데이터 정보
 
 // 유저 정보 업데이트
 const newUserUpdate = ref({
-  nickname: userData.value.nickname,
-  email: userData.value.email,
+  nickname: '',
+  email: '',
   userPwd: '',
   userOriginImg: '',
   userImgPath: ''
+  
 }) 
 
 // 로그인 정보
@@ -206,13 +207,13 @@ function imgRollbackDefault() {
   userData.value.userImgPath = 'src/main/resources/static/profileImages/default.png';
 }
 
-// function isClear() {
-//   if (checkNickname.value && passwordValueCheck.value && passwordDoubleCheck.value && checkEmail.value) {
-//     return true;
-//   } else {
-//     return false;
-//   }
-// }
+function isClear() {
+  if (checkNickname.value && passwordValueCheck.value && passwordDoubleCheck.value && checkEmail.value) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 function checkDuplicateNickname() {
     // 닉네임 중복 체크 로직 구현
@@ -233,7 +234,7 @@ function checkDuplicateEmail() {
   // 이메일 중복 체크 로직 구현
   $checkEmail(userData.value)
   .then(res => {
-    if (res.data != null && res.data !='' ) {
+    if (res.data != null && res.data !='') {
       console.log(res.data)
       checkEmail.value = false
     } else {
@@ -266,55 +267,29 @@ async function getUsers() {
 }
 
 async function updateUser() {
-
-  console.log(newUserUpdate.value)
-
-  let formData = new FormData();
-  formData.append('userNo', userStore.getLoginUser.userNo);
-  formData.append('nickname', newUserUpdate.value.nickname);
-  formData.append('email', newUserUpdate.value.email);
-  formData.append('userPwd', newUserUpdate.value.userPwd);
-  formData.append('userOriginImg', userData.value.userOriginImg);
-  formData.append('userImgPath', userData.value.userImgPath);
-  console.log(newUserUpdate.value)
-  
-  try {
-    const response = await $updateUser(formData);
-    console.log(formData)
-    if (response.formData) {
-
-      userData.value.userId = response.data.userId;
-      userData.value.userPwd = response.data.userPwd;
-      userData.value.email = response.data.email;
-      userData.value.userImgOrigin = response.data.userOriginImg;
-      userData.value.userImgPath = response.data.userImgPath;
-
-      snackbar.value = "회원정보가 수정 되었습니다.";
-      setTimeout(() => {
+  if (isClear()) {
+    $updateUser(newUserUpdate.value)
+    .then(res => {
+      if (res.data == 1) {
+        snackbar.value = "회원정보가 수정 되었습니다.";
+        setTimeout(() => {
         snackbar.value = false;
+        }, 2000);
+      }
+    })
+    .catch(err => console.log(err))
+  } else {
+      snackbar.value  = "작성이 미완성되었습니다.";
+      setTimeout(() => {
+      snackbar.value = false;
       }, 2000);
-      
-    } else {
-      throw new Error('왜 안됨 fuck!!');
-    }
-    }
-  catch (error) {
-    console.error('회원정보 수정 중 오류 발생:', error);
   }
 }
 
-  // } else {
-  //     snackbar.value  = "작성이 미완성되었습니다.";
-  //     setTimeout(() => {
-  //     snackbar.value = false;
-  //     }, 2000);
-  // }
-
-onMounted(async () => {
+onMounted( async () => {
   await nextTick()
   userData.value = userStore.getLoginUser
   getUsers
-  // userData.value = newUserUpdate.value
 })
 
 
