@@ -192,7 +192,7 @@ const data_user = {
       {
         label: '회원 수',
         data: [totalUserCount.value, totalblacklistCount.value, totalSignOutCount.value],
-        backgroundColor: ['red', 'orange', 'yellow'],
+        backgroundColor: ['#877b78', 'orange', '#FBF0A0'],
       },
     ],
   };
@@ -203,7 +203,7 @@ const data_user = {
       {
         label: '채팅방 수',
         data: [totalChatRoomsCount.value, liveChatRoomsCount.value, deadChatRoomsCount.value],
-        backgroundColor: ['red', 'orange', 'yellow'],
+        backgroundColor: ['#877b78', 'orange', '#FBF0A0'],
       },
     ],
   };
@@ -214,7 +214,7 @@ const data_user = {
       {
         label: '논제 수',
         data: [totalSubjectCount.value, unUseSubjectCount.value, usedSubjectCount.value],
-        backgroundColor: ['red', 'orange', 'yellow'],
+        backgroundColor: ['#877b78', 'orange', '#FBF0A0'],
       },
     ],
   };

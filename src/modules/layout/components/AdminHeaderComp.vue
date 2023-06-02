@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar fixed color="#D9D9D9" app>
+  <v-app-bar fixed color="#f2f2f2" app>
     <v-container fluid>
       <v-row no-gutters class="d-flex align-center">
         <v-col cols="auto" class="logo-container">
@@ -40,9 +40,14 @@ export default {
 </script>
 
 <style scoped>
-
+@font-face {
+    font-family: 'IBMPlexSansKR-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-07@1.0/IBMPlexSansKR-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
 .v-app-bar {
-  height: 113px;
+  height: 80px;
 }
 
 .logo-container {
@@ -52,22 +57,21 @@ export default {
 .logo-image {
   height: 75px;
   margin-left: 34px;
-  margin-top: 70px;
+  margin-top: 20px;
 }
 
 .text {
-  font-family: "IBM Plex Sans";
+  font-family: 'IBMPlexSansKR-Regular';
+  font-weight: 700;
   font-style: normal;
-  font-weight: 400;
-  font-size: 25px;
+  font-size: 20px;
   line-height: 175px;
-  color: #000000;
+  color: #877b78;
   text-decoration: none;
 }
 
 .menu-item {
   margin-left: 2vw;
-  margin-top: 45px;
 }
 
 .menu-item:last-child {

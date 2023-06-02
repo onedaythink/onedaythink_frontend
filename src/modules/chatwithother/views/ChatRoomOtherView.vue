@@ -159,13 +159,14 @@ function openReportModal() {
 }
 
 //신고하기
-
 async function createReport() {
+  console.log("신고하기 값", chatRoomNo.value, reportReason.value);
   await $createReport(chatRoomNo.value, reportReason.value)
     .then(res => {
-      console.log(res.data)
+      console.log(res.data);
+      reportDialog.value = false; // 성공 시 reportDialog 닫기
     })
-    .catch(err => console.log(err))
+    .catch(err => console.log(err));
 }
 
 
