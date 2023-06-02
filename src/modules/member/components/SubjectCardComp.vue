@@ -41,9 +41,12 @@ function formattedDate() {
   const month = dateParts[1];
   const day = dateParts[2];
   const weekday = dateParts[3];
-  const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
-  const weekdayKor = weekdays[Number(weekday)]
-  foramtDate.value = `${year}년 ${month}월 ${day}일 ${weekdayKor}요일`;
+  // const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+  // const weekdayKor = weekdays[Number(weekday)]
+  // console.log(weekday)
+  // console.log(weekdays)
+  // console.log(weekdayKor)
+  foramtDate.value = `${year}년 ${month}월 ${day}일 ${weekday}`;
 }
 
 const subjectStore = useSubjectStore()

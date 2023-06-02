@@ -2,9 +2,8 @@
     <template v-if="opinion_list.length > 0">
         <v-card v-for="(opinion, index) in opinion_list" :key="index">
             <v-row>
-                <v-col cols="3" class="ds">
-                    <v-img class="align-end text-white" :src=findImage(opinion.userImgPath) cover rounded
-                        style="border-radius: 50%; width: 70px; height: 70px;">
+                <v-col cols="3" class="dsssss">
+                    <v-img class="align-end text-white xxx" :src=findImage(opinion.userImgPath) cover rounded>
                     </v-img>
                     <v-card-text>
                         {{ opinion.nickname }}
@@ -42,9 +41,8 @@
     <template v-else>
         <v-card>
             <v-row>
-                <v-col cols="3" class="ds">
-                    <v-img class="align-end text-white" src="https://cdn.vuetifyjs.com/images/cards/docks.jpg" cover rounded
-                        style="border-radius: 50%; width: 70px; height: 70px;">
+                <v-col cols="3" class="dsssss">
+                    <v-img class="align-end text-white xxx" src="https://cdn.vuetifyjs.com/images/cards/docks.jpg" cover rounded>
                     </v-img>
                     <v-card-text>
                         하루봇
@@ -160,6 +158,7 @@ onMounted(async () => {
     display: flex;
     flex-wrap: wrap;
     flex: 1 1 auto;
+    margin:0px;
     margin-left: 5px;
 }
 
@@ -206,7 +205,17 @@ onMounted(async () => {
     justify-content: space-evenly;
 }
 
-.ds {
+.dsssss{
     max-width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.xxx{
+    border-radius: 50%; 
+    width: 70px; 
+    height: 70px
 }
 </style>
