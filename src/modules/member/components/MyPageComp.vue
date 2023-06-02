@@ -61,7 +61,7 @@
             class="d-flex align-center justify-center"
           ></v-img>
 
-          <v-card-title>{{ opinion.createAt }}</v-card-title>
+          <v-card-title>{{ formattedDate(opinion.createAt) }}</v-card-title>
           <v-card-subtitle style="white-space: pre-wrap;">{{ opinion.content }}</v-card-subtitle>
           <v-card-actions> 어떤 생각을 했을까?
             <v-spacer></v-spacer>
@@ -81,9 +81,11 @@
                       완료되었습니다.
                     </div>
                   </transition>
-                <v-btn type="submit" class="mr-3 mb-3" variant="outlined" color="blue" @click="save(opinion)">다시 생각해요</v-btn>
-                <v-btn type="submit" class="mr-3 mb-3" variant="outlined" color="green" @click="share(opinion)">{{ buttonLabel }}</v-btn>
-                <v-btn type="submit" class="mr-3 mb-3" variant="outlined" color="pink" @click="opDelete(opinion)">생각을 비워요</v-btn>             
+                <div class="btn-container">
+                  <v-btn type="submit" class="mypage-btn" variant="outlined" color="blue" @click="save(opinion)">다시 생각해요</v-btn>
+                  <v-btn type="submit" class="mypage-btn" variant="outlined" color="green" @click="share(opinion)">{{ buttonLabel }}</v-btn>
+                  <v-btn type="submit" class="mypage-btn" variant="outlined" color="pink" @click="opDelete(opinion)">생각을 비워요</v-btn>             
+                </div>
               </v-card-text>
             </div>
           </v-expand-transition>
@@ -119,6 +121,8 @@ import { onMounted, nextTick, ref, computed } from 'vue';
 import { $deleteUser } from '@/api/user';
 import { useRouter } from 'vue-router';
 
+import { format } from 'date-fns';
+
 const user = ref({}) // 유저정보
 const show = ref(false)
 
@@ -137,6 +141,10 @@ const myOpinion = ref({ // 의견 수정, 비활성화
 const snackbar = ref(false); // 스낵바
 
 const buttonLabel = ref('생각을 숨길래요'); // 버튼 문구 변수
+
+function formattedDate(createAt) {
+  return format(new Date(createAt), 'yyyy년 MM월 dd일');
+}
 
 // subjectImg 호출
 async function getMyOpinion() {
@@ -341,6 +349,18 @@ onMounted(async () => {
   border-radius: 5px;
   margin-bottom: 20px;
   z-index: 1000; 
+}
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.mypage-btn {
+  width: 90px;
+  font-size: 11px;
+  margin: 0px;
 }
 
 .slide-enter-active, .slide-leave-active {

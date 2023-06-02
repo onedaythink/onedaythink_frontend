@@ -73,6 +73,6 @@ font-style: normal;
 
 .btn-main {
   text-decoration: blink;
-  color:chocolate;
+  color:#877b78;
 }
 </style>

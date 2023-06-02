@@ -1,6 +1,6 @@
 <template>
   <div class="v-app">
-    <v-card>
+    <v-card flat="True">
       <v-layout id="loginback" class="main-container">
         <v-main>
           <br><br><br>
