@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12" class="textarea">
-        <v-textarea id="mythink" name="input-7-1" label="나의 생각" auto-grow v-model="op"></v-textarea>
+        <v-textarea  variant="filled" no-resize="True" id="mythink" name="input-7-1" label="나의 생각" auto-grow v-model="op"></v-textarea>
         <v-row>
 
           <v-checkbox :checked="opinion.isPublic === 'y'" @change="updateIsPublic" label="타인과 공유"></v-checkbox>
@@ -37,7 +37,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" class="textarea">
-        <v-textarea name="helper-7-1" bg-color="blue-lighten-5" label="생각 도우미" auto-grow v-model="opHelper"></v-textarea>
+        <v-textarea variant="filled" no-resize="True" name="helper-7-1" bg-color="blue-lighten-5" label="생각 도우미" auto-grow v-model="opHelper"></v-textarea>
       </v-col>
     </v-row>
   </v-container>

@@ -55,7 +55,7 @@
   <!-- Message input -->
   <v-row class="textArea">
     <v-col cols="12">
-      <v-textarea v-model="userMessage" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup.shift.enter="inputBlank" @keyup.enter="sendMessage" ></v-textarea>
+      <v-textarea v-model="userMessage"  variant="filled" no-resize="True" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup.shift.enter="inputBlank" @keyup.enter="sendMessage" ></v-textarea>
     </v-col>
   </v-row>
   <v-row class="button">
