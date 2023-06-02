@@ -121,7 +121,7 @@ async function helper() {
 
   console.log(op.value);
   const configuration = new Configuration({
-    apiKey: API_KEY,
+    apiKey: API_KEY
   });
   const openai = new OpenAIApi(configuration);
   console.log(subjectContent);
