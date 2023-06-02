@@ -54,10 +54,11 @@
       <div class="mypage-card mt-10" v-for="opinion, idx in paginatedOpinions" :key="idx">
         <v-card class="mx-auto" max-width="344">
           <v-img
-             :src= findImage(opinion.subImgPath)
-              width="200px"
-              height="160px"
-              cover
+            :src= findImage(opinion.subImgPath)
+            width="445px"
+            height="160px"
+            contain
+            class="d-flex align-center justify-center"
           ></v-img>
 
           <v-card-title>{{ opinion.createAt }}</v-card-title>
@@ -80,9 +81,9 @@
                       완료되었습니다.
                     </div>
                   </transition>
-                <v-btn type="submit" class="mr-3 mb-3" style="background-color: #a8d8ea;" @click="save(opinion)">다시 생각해요</v-btn>
-                <v-btn type="submit" class="mr-3 mb-3" style="background-color: #fce38a;" @click="share(opinion)">{{ buttonLabel }}</v-btn>
-                <v-btn type="submit" class="mr-3 mb-3" style="background-color: #e2a3b7;" @click="opDelete(opinion)">생각을 비워요</v-btn>             
+                <v-btn type="submit" class="mr-3 mb-3" variant="outlined" color="blue" @click="save(opinion)">다시 생각해요</v-btn>
+                <v-btn type="submit" class="mr-3 mb-3" variant="outlined" color="yellow" @click="share(opinion)">{{ buttonLabel }}</v-btn>
+                <v-btn type="submit" class="mr-3 mb-3" variant="outlined" color="pink" @click="opDelete(opinion)">생각을 비워요</v-btn>             
               </v-card-text>
             </div>
           </v-expand-transition>
@@ -310,6 +311,18 @@ onMounted(async () => {
 
 .v-btn:active {
   box-shadow: 0px 0px 50px rgba(115, 142, 212, 0.5) !important;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
 }
 </style>
 

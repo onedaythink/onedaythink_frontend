@@ -180,19 +180,10 @@ async function onFileChange(e) {
   }
 }
 
-//   // 저장된 원본 이미지의 정보를 저장
-// function openFileInput() {
-//   originalUserImgOrigin.value = userData.value.userImgOrigin;
-//   originalUserImgPath.value = userData.value.userImgPath;
-//   fileInput.value.click()
-// }
-
-// 저장된 원본 이미지의 정보를 저장
+  // 저장된 원본 이미지의 정보를 저장
 function openFileInput() {
-  if (userData.value) {  // userData 객체가 있는지 확인합니다.
-    originalUserImgOrigin.value = userData.value.userImgOrigin;
-    originalUserImgPath.value = userData.value.userImgPath;
-  }
+  originalUserImgOrigin.value = userData.value.userImgOrigin;
+  originalUserImgPath.value = userData.value.userImgPath;
   fileInput.value.click()
 }
 
