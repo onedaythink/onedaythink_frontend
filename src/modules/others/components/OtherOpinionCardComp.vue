@@ -35,25 +35,10 @@
     </template>
 
     <template v-else>
-        <v-card>
-            <v-row>
-                <v-col cols="3" class="dsssss">
-                    <v-img class="align-end text-white xxx" src="https://cdn.vuetifyjs.com/images/cards/docks.jpg" cover
-                        rounded>
-                    </v-img>
-                    <v-card-text>
-                        하루봇
-                        <br>
-                        ♥
-                    </v-card-text>
-                </v-col>
-                <v-col cols="9">
-                    <v-card-text>
-                        <div>당신의 의견을 작성해주세요!</div>
-                    </v-card-text>
-                </v-col>
-            </v-row>
-        </v-card>
+                <div style="text-align: center; color: gray;">첫 번째로 당신의 의견을 작성해 보세요!</div>
+           
+             
+             
     </template>
     <!-- 알람 모달창: 스낵바 -->
     <transition name="slide">

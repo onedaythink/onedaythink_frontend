@@ -36,6 +36,7 @@ export default {
 } */
 
 .floating-button {
+  margin-left: 18px;
   position: absolute;
   bottom: 20px;
   z-index: 999;
