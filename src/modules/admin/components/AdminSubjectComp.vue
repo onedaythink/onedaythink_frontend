@@ -33,8 +33,18 @@
                 <v-btn color="#E692BC" dark rounded @click="makeImg">이미지 생성</v-btn>
                 <v-btn class="mt-3 mb-3" color="#FFE486" dark rounded @click="addSubject">논제 완료</v-btn>
               </div>
+
             </v-card>
           </v-col>
+          <v-dialog v-model="showConfirmationDialog" max-width="500px">
+            <v-card>
+              <v-card-title class="headline">정말로 논제를 넣으시겠습니까?</v-card-title>
+              <v-card-actions>
+                <v-btn color="red" text @click="confirmExit">확인</v-btn>
+                <v-btn text @click="cancelExit">취소</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
           <v-col cols="12" md="6">
 
             <v-card class="mb-5 pa-3 flat tile" style="margin-top: 50px">
@@ -81,7 +91,7 @@ export default {
 
 import { ref, onMounted, nextTick } from 'vue'
 import { $getSubjects, $deleteSubject, $postAdminSubject } from '@/api/subject';
-
+const showConfirmationDialog = ref(false)
 const subject = {
   // value: '',
   content: '',
@@ -154,8 +164,8 @@ async function makeImg() {
   });
   const openai = new OpenAIApi(configuration);
   console.log(openai);
-  
-async function runPrompt() {
+
+  async function runPrompt() {
     const response = await openai.createCompletion({
       model: "text-davinci-003",
       prompt: "다음 주제에 어울리는 실제 사진같은 그림을 그리고 싶은데, 그 그림에 어울리는 아이디어를 자세하게 영어로 번역해서 답변해줘. 주제:" + test_text.value,
@@ -224,15 +234,16 @@ onMounted(async () => {
   await nextTick()
 })
 
+function confirmExit() {
+  postAdminSubject(test_text.value, selectedImage.value);
+  showConfirmationDialog.value = false;
+
+}
+
 // 논제 저장
 function addSubject() {
-  console.log("test0312" + selectedImage.value);
-  postAdminSubject(test_text.value, selectedImage.value);
-
-
-  if (confirm("논제를 정말 넣으시겠습니까?")) {
-    //   location.reload();
-  }
+  
+  showConfirmationDialog.value = true
 }
 </script>
 
