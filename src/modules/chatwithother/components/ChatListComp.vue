@@ -254,7 +254,7 @@ function cancelExit() {
     flex: none;
     min-height: 52px;
     padding: 0.5rem;
-    justify-content: center;
+    justify-content: flex-end;
 }
 
 .opinion-card {

@@ -13,8 +13,9 @@
     </v-row>
     <v-row>
       <v-col cols="8" class="button">
-        <v-btn class="mx-auto mr-2" @click="helper">생각 도우미</v-btn>
-
+        <div  class="helpbtn" style="justify-content: start;"> 
+        <v-btn  @click="helper">생각 도우미</v-btn>
+      </div>
       </v-col>
     </v-row>
     <v-row>
