@@ -75,10 +75,10 @@ async function $updateUserProfile(formData){
 }
 
 // 회원수정
-async function $updateUser(userData){
+async function $updateUser(newUserUpdate){
     try {
-        const axios = createJsonAxiosInstance()
-        return await axios.post('mypage/users/updateprofile', userData)
+        const axios = createFormAxiosInstance()
+        return await axios.post('mypage/users/updateprofile', newUserUpdate)
     }
     catch (err) {
         console.log('error msg : ', err)
