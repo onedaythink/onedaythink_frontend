@@ -16,7 +16,7 @@
             <i></i>
             <i></i>
           </div>
-          <p>AI가 질문에 대한 대답을 고민하고 있습니다. <br><span style="color:#877b78; font-size: 7px;">{{ test_text }}</span></p>
+          <p style="color:#877b78; font-size: 4px;">하루가 질문에 대한 대답을 고민하고 있습니다. <br><span >{{ test_text }}</span></p>
       </div>
     <v-card>  
       <v-card-actions class="topic-btn">
@@ -242,7 +242,7 @@ async function receiveMessage(msg) {
 
 
 
-.loading-box {
+  .loading-box {
   position: fixed;
   left: 50%;
   top: 50%;
@@ -251,7 +251,7 @@ async function receiveMessage(msg) {
   padding: 20px;
   width: 400px;
   text-align: center;
-  background: #f2f2f2;
+  background: #fffeef;
   box-shadow: 0 3px 0 rgba(0, 0, 0, .2);
 }
 
@@ -265,7 +265,7 @@ async function receiveMessage(msg) {
   margin: 0 4px;
   width: 10px;
   height: 10px;
-  background: #00a5e5;
+  background: #ffe101;
   border-radius: 50em;
 }
 
