@@ -75,7 +75,7 @@
             <div v-show="show">
               <v-divider></v-divider>
               <v-card-text >
-                <v-textarea v-model="opinion.opinion"></v-textarea>
+                <v-textarea  variant="filled" no-resize="True" v-model="opinion.opinion"></v-textarea>
                    <transition name="slide">
                     <div v-if="snackbar" class="custom-snackbar">
                       완료되었습니다.
@@ -358,10 +358,11 @@ onMounted(async () => {
 }
 
 .mypage-btn {
-  width: 90px;
+  width: 100px;
   font-size: 11px;
   margin: 0px;
 }
+
 
 .slide-enter-active, .slide-leave-active {
   transition: all .3s ease;
