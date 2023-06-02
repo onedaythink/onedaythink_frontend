@@ -4,15 +4,18 @@
             <v-row class="test">
                 <template v-if="chatRoom.lastMessage != null && chatRoom.lastMessage != ''">
                     <v-col cols="3" class="chat-user-img"> 
-                        <v-img class="align-end text-white" :src=findImage(chatRoom.fromUserImgPath) cover rounded
-                            style="border-radius: 50%; width: 50px; height: 50px; margin-top: 20px;">
-                        </v-img>
                         <template v-if="chatRoom.fromUserNo == userStore.getLoginUser.userNo">
+                            <v-img class="align-end text-white" :src=findImage(chatRoom.toUserImgPath) cover rounded
+                            style="border-radius: 50%; width: 50px; height: 50px; margin-top: 20px;">
+                            </v-img>
                             <v-card-text>
                                 {{ chatRoom.toNickname }}
                             </v-card-text>
                         </template>
                         <template v-else>
+                            <v-img class="align-end text-white" :src=findImage(chatRoom.fromUserImgPath) cover rounded
+                              style="border-radius: 50%; width: 50px; height: 50px; margin-top: 20px;">
+                           </v-img>
                             {{ chatRoom.fromNickname }}
                         </template>
                     </v-col>
@@ -254,11 +257,11 @@ function cancelExit() {
     flex: none;
     min-height: 52px;
     padding: 0.5rem;
-    justify-content: flex-end;
+    justify-content: center;
 }
 
 .opinion-card {
-    height: 110px;
+    height: 120px;
 }
 
 .chat-user-img {
