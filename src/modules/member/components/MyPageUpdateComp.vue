@@ -18,7 +18,7 @@
           이미지를 되돌리기
        </v-btn>
        <v-btn class="profile-button" variant="outlined" color="green" @click="imgRollbackDefault();"> 
-          기본 이미지
+          기본 이미지로 설정
        </v-btn> 
     </div>
     <br>
@@ -45,10 +45,10 @@
       variant="underlined"
     ></v-text-field>
     <div v-if="checkNickname == null"></div>
-    <div v-else-if="!checkNickname">중복된 닉네임이 존재합니다.</div>
+    <div v-else-if="!checkNickname" >중복된 닉네임이 존재합니다.</div>
     <div v-else>사용 가능한 닉네임입니다.</div>
     <v-btn color="primary" @click="checkDuplicateNickname" class="small">닉네임 중복확인</v-btn>
-
+    <br>
     <v-text-field
       v-model="userData.email"
       color="primary"
@@ -60,6 +60,7 @@
     <div v-else>사용 가능한 이메일입니다.</div>
     <v-btn color="primary" @click="checkDuplicateEmail" class="small">이메일 중복확인</v-btn>
 
+    
     <br><br>
     <v-text-field
       v-model="newUserUpdate.userPwd"
@@ -247,12 +248,12 @@ function checkDuplicateEmail() {
 const passwordRegex = /^(?=.*\d)(?=.*[a-z]).{8,15}$/;
 const passwordValueCheck = ref(null)
 function pwdCheck() {
-    passwordValueCheck.value = passwordRegex.test(userData.value.userPwd);
+    passwordValueCheck.value = passwordRegex.test(newUserUpdate.value.userPwd);
     console.log(passwordValueCheck.value)
 }
 const passwordDoubleCheck = ref(null)
 function pwdDoubleCheck() {
-  if (userData.value.userPwd === passwordConfirmation.value || passwordConfirmation.value === null) {  
+  if (newUserUpdate.value.userPwd === passwordConfirmation.value) {  
     passwordDoubleCheck.value = true
   } else {
     passwordDoubleCheck.value = false
@@ -270,7 +271,7 @@ async function updateUser() {
     $updateUser(newUserUpdate.value)
     .then(res => {
       if (res.data == 1) {
-        snackbar.value = "회원정보 수정이 완료되었습니다.";
+        snackbar.value = "회원정보가 수정 되었습니다.";
         setTimeout(() => {
         snackbar.value = false;
         }, 2000);
