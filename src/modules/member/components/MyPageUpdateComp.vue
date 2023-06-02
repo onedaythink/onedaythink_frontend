@@ -13,14 +13,12 @@
         <input type="file" accept="image/png" ref="fileInput" style="display: none" @change="onFileChange">
       </div>
     </div>
-      <div>
-        <v-btn class="profile-image-container" @click="imgRollback();"> 
-          이미지를 되돌려요
+      <div class="button-container">
+        <v-btn class="profile-button" variant="outlined" color="orange" @click="imgRollback();"> 
+          이미지를 되돌리기
        </v-btn>
-      </div>
-      <div>
-       <v-btn class="profile-image-container" @click="imgRollbackDefault();"> 
-          기본 이미지를 사용해요
+       <v-btn class="profile-button" variant="outlined" color="green" @click="imgRollbackDefault();"> 
+          기본 이미지
        </v-btn> 
     </div>
     <br>
@@ -33,7 +31,38 @@
     ></v-text-field>
 
     <v-text-field
-      v-model="userData.userPwd"
+      v-model="userData.userName"
+      color="primary"
+      label="이름"
+      variant="underlined"
+      disabled
+    ></v-text-field>
+
+    <v-text-field
+      v-model="userData.nickname"
+      color="primary"
+      label="닉네임"
+      variant="underlined"
+    ></v-text-field>
+    <div v-if="checkNickname == null"></div>
+    <div v-else-if="!checkNickname">중복된 닉네임이 존재합니다.</div>
+    <div v-else>사용 가능한 닉네임입니다.</div>
+    <v-btn color="primary" @click="checkDuplicateNickname" class="small">닉네임 중복확인</v-btn>
+
+    <v-text-field
+      v-model="userData.email"
+      color="primary"
+      label="이메일"
+      variant="underlined"
+    ></v-text-field>
+    <div v-if="checkEmail == null"></div>
+    <div v-else-if="!checkEmail">중복된 이메일이 존재합니다.</div>
+    <div v-else>사용 가능한 이메일입니다.</div>
+    <v-btn color="primary" @click="checkDuplicateEmail" class="small">이메일 중복확인</v-btn>
+
+    <br><br>
+    <v-text-field
+      v-model="newUserUpdate.userPwd"
       color="primary"
       label="비밀번호"
       variant="underlined"
@@ -41,7 +70,6 @@
       :type="showPassword ? 'text' : 'password'"
       @click:append="showPassword = !showPassword"
       @keyup="pwdCheck"
-      disabled
     ></v-text-field>
 
     <div v-if="passwordValueCheck != null && !passwordValueCheck">유효한 비밀번호가 아닙니다. 비밀번호는 소문자와 숫자를 합쳐서 8글자에서 15글자 이내로 작성해주세요</div>
@@ -51,7 +79,6 @@
       color="primary"
       label="비밀번호 확인"
       variant="underlined"
-      :disabled="!isPasswordEditable"
       :append-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
       :type="showPassword ? 'text' : 'password'"
       @click:append="showPassword = !showPassword"
@@ -59,38 +86,8 @@
     ></v-text-field>
 
     <div v-if="passwordDoubleCheck != null && !passwordDoubleCheck">비밀번호가 일치하지 않습니다.</div>
-      <v-btn color="primary" @click="checkDuplicateNickname" class="small">중복확인</v-btn>
-   
-      <v-text-field
-      v-model="userData.nickname"
-      color="primary"
-      label="닉네임"
-      variant="underlined"
-    ></v-text-field>
-    <div v-if="checkNickname == null"></div>
-    <div v-else-if="!checkNickname">중복된 닉네임이 존재합니다.</div>
-    <div v-else>사용 가능한 닉네임입니다.</div>
 
-    <v-text-field
-      v-model="userData.userName"
-      color="primary"
-      label="이름"
-      variant="underlined"
-      disabled
-    ></v-text-field>
 
-    <v-text-field
-      v-model="userData.email"
-      color="primary"
-      label="이메일"
-      variant="underlined"
-      disabled
-    ></v-text-field>
-
-    <v-checkbox
-      v-model="isPasswordEditable"
-      label="비밀번호 수정"
-    ></v-checkbox>
     <v-btn color="info" @click="updateUser" class="submit">확인</v-btn>
   </v-container>
 </template>
@@ -108,23 +105,34 @@ export default {
 
 <script setup>
 import { useUserStore } from '@/store/user';
-// import { $updateUser, $checkNickname, $getUsers, $updateUserProfile } from '@/api/user'
-import { $checkNickname, $getUsers, $updateUserProfile } from '@/api/user'
+import { $updateUser, $checkNickname, $checkEmail, $getUsers, $updateUserProfile } from '@/api/user'
+// import { $checkNickname, $getUsers, $updateUserProfile } from '@/api/user'
 
 import { onMounted, nextTick, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+const userData = ref({}) // 유저 데이터 정보
+
+// 유저 정보 업데이트
+const newUserUpdate = ref({
+  nickname: '',
+  email: '',
+  userPwd: '',
+  userOriginImg: '',
+  userImgPath: ''
+  
+}) 
+
 // 로그인 정보
-const userStore = useUserStore() // 회원탈퇴 관련
+const userStore = useUserStore()
 
-const userData = userStore.getLoginUser
-
-const router = useRouter() // 회원탈퇴 알림창 관련
-
-const isPasswordEditable = ref(false)
+const router = useRouter()
 
 const passwordConfirmation = ref(null)
 const checkNickname = ref(null)
+const checkEmail = ref(null)
+
+const snackbar = ref(false); // 스낵바
 
 // userImg 호출
 function findUserImage(userImg) {
@@ -164,7 +172,6 @@ async function onFileChange(e) {
 
   try {
     const response = await $updateUserProfile(formData);   // API를 호출하여 파일을 업로드합니다.
-    console.log(response.data)
     if (response.data && response.data.userOriginImg) { // 응답에 data 속성과 filename 속성이 있는지 확인합니다.
 
       // 응답의 data.userOriginImg 새 이미지 파일의 이름을 포함한다고 가정합니다.
@@ -180,49 +187,63 @@ async function onFileChange(e) {
   }
 }
 
-//   // 저장된 원본 이미지의 정보를 저장
-// function openFileInput() {
-//   originalUserImgOrigin.value = userData.value.userImgOrigin;
-//   originalUserImgPath.value = userData.value.userImgPath;
-//   fileInput.value.click()
-// }
-
-// 저장된 원본 이미지의 정보를 저장
 function openFileInput() {
-  if (userData.value) {  // userData 객체가 있는지 확인합니다.
-    originalUserImgOrigin.value = userData.value.userImgOrigin;
-    originalUserImgPath.value = userData.value.userImgPath;
-  }
+  // 저장된 원본 이미지의 정보를 저장
+  originalUserImgOrigin.value = userData.value.userImgOrigin;
+  originalUserImgPath.value = userData.value.userImgPath;
   fileInput.value.click()
 }
 
-  // 변경 전 이미지 정보로 롤백
 function imgRollback() {
+  // 원본 이미지 정보로 롤백
   userData.value.userImgOrigin = originalUserImgOrigin.value;
   userData.value.userImgPath = originalUserImgPath.value;
 }
 
-  // 기본 이미지 정보로 롤백
 function imgRollbackDefault() {
+  // 기본 이미지 정보로 롤백
   userData.value.userImgOrigin = 'default.png';
   userData.value.userImgPath = 'src/main/resources/static/profileImages/default.png';
 }
 
+function isClear() {
+  if (checkNickname.value && passwordValueCheck.value && passwordDoubleCheck.value && checkEmail.value) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function checkDuplicateNickname() {
     // 닉네임 중복 체크 로직 구현
-    $checkNickname(userData)
+    $checkNickname(userData.value)
     .then(res => {
-      if (res.data != null) {
-        checkNickname.value = true
-      } else {
+      if (res.data != null && res.data !='') {
+        console.log(res.data)
         checkNickname.value = false
+      } else {
+        checkNickname.value = true
       }
     })
     .catch(err => console.log(err))
     router
   }
 
-// 비밀번호 체크
+function checkDuplicateEmail() {
+  // 이메일 중복 체크 로직 구현
+  $checkEmail(userData.value)
+  .then(res => {
+    if (res.data != null && res.data !='') {
+      console.log(res.data)
+      checkEmail.value = false
+    } else {
+      checkEmail.value = true
+    }
+  })
+  .catch(err => console.log(err))
+  router
+}
+
 const passwordRegex = /^(?=.*\d)(?=.*[a-z]).{8,15}$/;
 const passwordValueCheck = ref(null)
 function pwdCheck() {
@@ -237,42 +258,37 @@ function pwdDoubleCheck() {
     passwordDoubleCheck.value = false
   }
 }
-  // user 데이터 가져오기
-  async function getUsers() {
-  $getUsers(userData.value.userNo).then(res => {
-    userStore.setLoginUser(res.data)
-  })
-  .catch(err => console.log(err))
-  }
 
-// 회원정보 수정내역 저장(미구현)
+// user 데이터 가져오기
+async function getUsers() {
+  const res = await $getUsers(userData.value.userNo);
+  getUsers.value = res.userData
+}
+
 async function updateUser() {
-  // Create a FormData object
-  let formData = new FormData();
-  formData.append('userNo', userStore.getLoginUser.userNo);
-  formData.append('userPwd', userStore.getLoginUser.userNo);
-  formData.append('upfile', selectedFile.value); 
-
-    for (let key in userData.value) { 
-    formData.append(key, userData.value[key]);
-  }
-  console.log('formData:', formData);
-
-  try {
-    const response = await $updateUserProfile(formData);
-    if (response && response.status === 200) {
-      console.log('User update successful!');
-      getUsers()
-    } else {
-      throw new Error(`Request failed with status code ${response.status}`);
-    }
-  } catch (err) {
-    console.error('Error updating user:', err);
+  if (isClear()) {
+    $updateUser(newUserUpdate.value)
+    .then(res => {
+      if (res.data == 1) {
+        snackbar.value = "회원정보 수정이 완료되었습니다.";
+        setTimeout(() => {
+        snackbar.value = false;
+        }, 2000);
+      }
+    })
+    .catch(err => console.log(err))
+  } else {
+      snackbar.value  = "작성이 미완성되었습니다.";
+      setTimeout(() => {
+      snackbar.value = false;
+      }, 2000);
   }
 }
 
 onMounted( async () => {
   await nextTick()
+  userData.value = userStore.getLoginUser
+  getUsers
 })
 
 
@@ -285,6 +301,16 @@ onMounted( async () => {
 .submit {
   float: right;
 }
+
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+  }
+
+  .profile-button {
+    margin: 0 5px;
+  }
 .profile-image-container {
   display: flex;
   justify-content: center;
@@ -293,5 +319,27 @@ onMounted( async () => {
 .profile-image {
   display: flex;
   align-items: center;
+}
+
+/* 스낵바 설정 */
+.custom-snackbar {
+  background-color: #43a047; 
+  color: white;  
+  position: absolute;  
+  bottom: 50px;  
+  left: 50%; 
+  transform: translate(-50%, 0); 
+  padding: 16px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  z-index: 1000; 
+}
+
+.slide-enter-active, .slide-leave-active {
+  transition: all .3s ease;
+}
+.slide-enter, .slide-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
 }
 </style>

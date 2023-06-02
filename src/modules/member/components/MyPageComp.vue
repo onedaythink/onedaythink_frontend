@@ -82,7 +82,7 @@
                     </div>
                   </transition>
                 <v-btn type="submit" class="mr-3 mb-3" variant="outlined" color="blue" @click="save(opinion)">다시 생각해요</v-btn>
-                <v-btn type="submit" class="mr-3 mb-3" variant="outlined" color="yellow" @click="share(opinion)">{{ buttonLabel }}</v-btn>
+                <v-btn type="submit" class="mr-3 mb-3" variant="outlined" color="green" @click="share(opinion)">{{ buttonLabel }}</v-btn>
                 <v-btn type="submit" class="mr-3 mb-3" variant="outlined" color="pink" @click="opDelete(opinion)">생각을 비워요</v-btn>             
               </v-card-text>
             </div>
