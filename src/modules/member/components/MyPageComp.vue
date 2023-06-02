@@ -53,10 +53,11 @@
     <template v-if="myOpinionList.length > 0">
       <div class="mypage-card mt-10" v-for="opinion, idx in paginatedOpinions" :key="idx">
         <v-card class="mx-auto" max-width="344">
-          <v-img
+          <v-img class="subImag mx-auto"
              :src= findImage(opinion.subImgPath)
-              width="200px"
-              height="160px"
+              width="280px"
+              height="250px"
+              contain
               cover
           ></v-img>
 
@@ -75,9 +76,11 @@
               <v-divider></v-divider>
               <v-card-text >
                 <v-textarea v-model="opinion.opinion"></v-textarea>
-                <v-btn type="submit" class="mr-2" @click="save(opinion)">다시 생각해요</v-btn>
-                <v-btn type="submit" class="mr-2" @click="share(opinion)">생각을 숨길래요</v-btn>
-                <v-btn type="submit" class="mr-2" @click="opDelete(opinion)">생각을 비워요</v-btn>
+                <div class="d-flex justify-end">
+                <v-btn color="yellow-lighten-5" type="submit" class="mr-2" @click="share(opinion)">비공개</v-btn>
+                <v-btn color="yellow-lighten-5" type="submit" class="mr-2" @click="save(opinion)">수정</v-btn>
+                <v-btn color="yellow-lighten-5" type="submit" class="mr-2" @click="opDelete(opinion)">삭제</v-btn>
+                </div>
               </v-card-text>
             </div>
           </v-expand-transition>

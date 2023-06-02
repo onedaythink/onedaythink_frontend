@@ -37,7 +37,7 @@
     <footer-comp></footer-comp>
   </div>
 
-  <v-dialog v-model="openModal" max-width="500px">
+  <v-dialog v-model="openModal" max-width="400px">
     <v-card>
       <v-card-title>알림</v-card-title>
       <v-btn @click="beforeAllEditNotify">전체삭제</v-btn>
