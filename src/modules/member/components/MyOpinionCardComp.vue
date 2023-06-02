@@ -40,11 +40,7 @@
           <p> 하루가 생각하고 있어요! <br><span style="color:#f4fcfd; font-size: 7px;">{{ test_text }}</span></p>
     </div>
     </v-row>
-    <v-row>
-      <v-col cols="12" class="textarea">
-        <v-textarea variant="filled" no-resize="True" name="helper-7-1" bg-color="blue-lighten-5" label="생각 도우미" auto-grow v-model="opHelper"></v-textarea>
-      </v-col>
-    </v-row>
+  
   </v-container>
 </template>
 
