@@ -3,7 +3,7 @@
         <v-card class="mx-auto opinion-card" v-for="(chatRoom, index) in chatRooms" :key="index">
             <v-row class="test">
                 <template v-if="chatRoom.lastMessage != null && chatRoom.lastMessage != ''">
-                    <v-col cols="3" style="display: flex;  flex-direction: column; align-items: center; text-align: center;"> 
+                    <v-col cols="3" class="chat-user-img"> 
                         <v-img class="align-end text-white" :src=findImage(chatRoom.fromUserImgPath) cover rounded
                             style="border-radius: 50%; width: 50px; height: 50px; margin-top: 20px;">
                         </v-img>
@@ -29,7 +29,7 @@
                     </v-col>
                 </template>
                 <template v-else>
-                    <v-col cols="3" style="text-align: center;">
+                    <v-col cols="3" class="chat-user-img">
                         <v-img class="align-end text-white" :src=findImage(chatRoom.fromUserImgPath) cover rounded
                             style="border-radius: 50%; width: 50px; height: 50px;  margin-top: 20px;">
                         </v-img>
@@ -260,4 +260,7 @@ function cancelExit() {
     height: 110px;
 }
 
+.chat-user-img {
+    display: flex;  flex-direction: column; align-items: center; text-align: center;
+}
 </style>
