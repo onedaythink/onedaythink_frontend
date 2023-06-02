@@ -2,45 +2,35 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12" class="textarea">
-        <v-textarea id="mythink" name="input-7-1" label="나의 생각" auto-grow v-model="op"></v-textarea>
+        <div class="textarea-wrapper">
+          <v-textarea id="mythink" name="input-7-1" label="나의 생각" auto-grow v-model="op"></v-textarea>
+        </div>
         <v-row>
-
           <v-checkbox :checked="opinion.isPublic === 'y'" @change="updateIsPublic" label="타인과 공유"></v-checkbox>
-
           <v-btn color="light-blue-lighten-5" class="mx-auto mr-2" @click="save">저장</v-btn>
         </v-row>
-
         <transition name="slide">
-            <div v-if="snackbar" class="custom-snackbar" :timeout="3000">
-              저장되었습니다.
-            </div>
-          </transition>
-
+          <div v-if="snackbar" class="custom-snackbar" :timeout="3000">
+            저장되었습니다.
+          </div>
+        </transition>
       </v-col>
     </v-row>
-
     <v-row>
-      <v-col cols="8" class="button " style=" justify-content: flex-end; ">
-        <v-btn class="thinkhelper-btn no-border" @click="helper">
-        <img :src="require('@/assets/light1.jpg')" alt="Light bulb icon" style="width: 10%;">
+      <v-col cols="8" class=" " >
+        <v-btn class="thinkhelper-btn no-border  d-flex justify-end" @click="helper">
+          <img :src="require('@/assets/light1.jpg')" alt="Light bulb icon" style="width: 10%;">
           생각 도우미
         </v-btn>
       </v-col>
-<!-- 
-      <v-col cols="8" class="button " style="justify-content: center; display: flex;">
-      <v-btn class="thinkhelper-btn no-border" @click="helper">
-        <img :src="require('@/assets/light1.jpg')" alt="Light bulb icon" style="height:30px; width:50px;">
-        생각 도우미!
-      </v-btn>
-    </v-col> -->
-    <div class="loading-box" v-if="loading">
-          <div class="circles">
-            <i></i>
-            <i></i>
-            <i></i>
-          </div>
-          <p> 하루가 대신 생각하고 있어요! <br><span style="color:#877b78; font-size: 7px;">{{ test_text }}</span></p>
-    </div>
+      <div class="loading-box" v-if="loading">
+        <div class="circles">
+          <i></i>
+          <i></i>
+          <i></i>
+        </div>
+        <p> 하루가 대신 생각하고 있어요! <br><span style="color:#877b78; font-size: 7px;">{{ test_text }}</span></p>
+      </div>
     </v-row>
     <v-row>
       <v-col cols="12" class="textarea">
@@ -163,7 +153,27 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.textarea-wrapper {
+  position: relative;
+}
 
+.textarea-wrapper:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("~@/assets/checkbackground.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: -1;
+}
+
+.textarea-wrapper .v-textarea {
+  background: none;
+  padding: 0;
+}
 #mythink {
   background-image: url("~@/assets/checkbackground.png");
 }

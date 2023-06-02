@@ -18,7 +18,7 @@
                     </v-card-text>
                     <v-card-actions class="like-talk-box">
                         <v-btn @click="likeControll(opinion.userOpiNo)" variant="outlined" color="pink" class="small">좋아요
-                            </v-btn>
+                        </v-btn>
                         <template v-if="false">
                             <v-btn @click="goToChatRoomOther(opinion.chatRoom)" variant="outlined" color="blue-lighten-4"
                                 class="btn-bold small">채팅방 입장</v-btn>
@@ -35,10 +35,8 @@
     </template>
 
     <template v-else>
-                <div style="text-align: center; color: gray;">첫 번째로 당신의 의견을 작성해 보세요!</div>
-           
-             
-             
+        <div style="text-align: center; color: gray;">Loading...</div>
+        <!-- <div style="text-align: center; color: gray;">첫 번째로 당신의 의견을 작성해 보세요!</div> -->
     </template>
     <!-- 알람 모달창: 스낵바 -->
     <transition name="slide">

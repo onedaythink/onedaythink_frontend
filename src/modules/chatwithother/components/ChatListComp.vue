@@ -75,7 +75,8 @@
         </v-dialog>
     </template>
     <template v-else>
-        <div style="text-align:center;">활성화된 채팅방이 존재하지 않습니다.</div>
+        <div style="text-align: center; color: gray;">Loading...</div>
+        <!-- <div style="text-align:center;">활성화된 채팅방이 존재하지 않습니다.</div> -->
     </template>
 </template>
 

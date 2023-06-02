@@ -12,11 +12,11 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="8" class="button">
-        <div  class="helpbtn" style="justify-content: start;"> 
+
+        <div class="helpbtn"> 
         <v-btn  @click="helper">생각 도우미</v-btn>
       </div>
-      </v-col>
+
     </v-row>
     <v-row>
       <v-col cols="12" class="textarea">
