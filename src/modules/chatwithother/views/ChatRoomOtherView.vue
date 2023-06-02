@@ -1,17 +1,18 @@
 <template>
   <v-container fluid class="subject-card-wrapper">
     <v-row class="topMenuBar" style="margin-bottom: 0px;">
-      <v-col cols="3" class="d-flex justify-start">
-        <v-img @click="$router.go(-1)" src="@/assets/back_arrow.png" class="back-arrow"></v-img>
-       
-        
+      <v-col cols="2" class="d-flex justify-start">
+        <v-img @click="$router.go(-1)" src="@/assets/back_arrow.png" class="back-arrow"></v-img> 
       </v-col>
+      <v-col cols="8" class="text-center">
+        <h3 class="grey--text">{{ otherName }}님과의 대화</h3>
+      </v-col>
+      <v-col cols="2">
       <v-spacer></v-spacer><v-spacer></v-spacer>
       <v-btn @click="openReportModal()" class="report-btn">
           신고하기
         </v-btn>
-    </v-row>
-<br>
+      </v-col>
     <!-- Add the modal for reporting -->
     <v-dialog v-model="reportDialog" max-width="290" persistent>
       <v-card>
@@ -31,10 +32,8 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-row>
-      <v-col cols="12" class="text-center">
-        <h3 class="grey--text">{{ otherName }}님과의 대화</h3>
-      </v-col>
+   
+     
     </v-row>
     <v-card>
       <v-card-actions class="topic-btn">
@@ -345,17 +344,12 @@ onBeforeUnmount(() => {
 }
 
 .chat-message-mint {
-  background-color: #d1f0ee;
+  background-color: #d3f1ef;
   border-radius: 6px;
 }
 
 .chat-message-yellow {
-  background-color: #f5d76e;
-  border-radius: 6px;
-}
-
-.chat-message-mint {
-  background-color: #d1f0ee;
+  background-color: #fff8abe6;
   border-radius: 6px;
 }
 
@@ -402,7 +396,7 @@ onBeforeUnmount(() => {
 
 /* 전송 버튼 스타일 */
 .send-btn {
-  background-color: #FED800;
+  background-color: #feed00;
   color: #2C2C2C;
   border-radius: 5px;
   margin-right: 10px;

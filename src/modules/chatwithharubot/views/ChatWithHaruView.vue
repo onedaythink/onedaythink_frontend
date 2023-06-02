@@ -1,6 +1,6 @@
 <template>
     <div class="button-wrapper">
-     <v-btn variant="outlined" color="blue-lighten-3" class="btn-bold" router-link to="/haruselect">하루봇들과 대화하기♥</v-btn>   
+     <v-btn variant="outlined" color="blue-lighten-3" class="btn-bold" router-link to="/haruselect">하루봇들과 대화하기</v-btn>   
     </div>
     <div class="subject-card-wrapper">
         <chat-list-haru-comp></chat-list-haru-comp>

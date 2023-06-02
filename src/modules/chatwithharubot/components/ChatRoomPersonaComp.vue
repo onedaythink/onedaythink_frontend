@@ -160,8 +160,10 @@ function createWebSocketConnection() {
         messages.value.push({
           sender: { nickname: item.nickname, haruName:item.haruName, avatarUrl: item.haruImgPath },
           content: item.chatMsgContent,
-          time: currentTime
+          time: getCurrentTime()
         });
+
+
        }
       })
       // 스크롤을 가장 아랫부분으로 내리기
@@ -365,19 +367,15 @@ onMounted(async () => {
 }
 
 .chat-message-mint {
-  background-color: #eaeff0;
+  background-color: #e7f9f8;
   border-radius: 6px;
 }
 
 .chat-message-yellow {
-  background-color: #fff28e;
+  background-color: #fff8abe6;
   border-radius: 6px;
 }
 
-.chat-message-mint {
-    background-color: #f0fffb;
-    border-radius: 6px;
-  }
   .chat-card-wrapper::-webkit-scrollbar {
     width: 8px;
   }
@@ -400,7 +398,7 @@ onMounted(async () => {
 
   /* 생각주제 버튼 스타일 */
   .topic-btn {
-    background-color: #fffef7;
+    background-color: #fffdeb;
     color: #2C2C2C;
     border-radius: 3px;
   }

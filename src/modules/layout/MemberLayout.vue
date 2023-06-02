@@ -4,7 +4,7 @@
       <v-layout class="right-sidebar">
         <v-app-bar color="white">
           <v-app-bar-title>
-            <v-img class="logo" src="@/assets/headerlogo.png" alt="하루생각"></v-img>
+               <router-link to="/home" class="text">  <v-img class="logo" src="@/assets/headerlogo.png" alt="하루생각"></v-img></router-link>
           </v-app-bar-title>
           <v-spacer></v-spacer>
           <v-btn icon style="font-size: 16px; color:#877b78" @click="modalSwitch">
