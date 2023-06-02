@@ -2,6 +2,7 @@
   <v-container fluid>
     <v-row>
       <v-col cols="12" class="textarea">
+
         <div class="textarea-wrapper">
           <v-textarea id="mythink" name="input-7-1" label="나의 생각" auto-grow v-model="op"></v-textarea>
         </div>
@@ -9,6 +10,7 @@
           <v-checkbox :checked="opinion.isPublic === 'y'" @change="updateIsPublic" label="타인과 공유"></v-checkbox>
           <v-btn color="light-blue-lighten-5" class="mx-auto mr-2" @click="save">저장</v-btn>
         </v-row>
+        <br>
         <transition name="slide">
           <div v-if="snackbar" class="custom-snackbar" :timeout="3000">
             저장되었습니다.
@@ -17,12 +19,19 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="8" class=" " >
-        <v-btn class="thinkhelper-btn no-border  d-flex justify-end" @click="helper">
-          <img :src="require('@/assets/light1.jpg')" alt="Light bulb icon" style="width: 10%;">
+      <v-col cols="12" class="textarea">
+        <v-textarea name="helper-7-1" bg-color="light-blue-lighten-5" label="생각 도우미" auto-grow v-model="opHelper"></v-textarea>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="3"></v-col>
+      <v-col cols="5" class="button d-flex justify-center">
+        <v-btn class="thinkhelper-btn" @click="helper">
+        <img :src="require('@/assets/light1.jpg')" alt="Light bulb icon" style="width: 20%;">
           생각 도우미
         </v-btn>
       </v-col>
+      <v-col cols="3"></v-col>
 
     <div class="loading-box" v-if="loading">
           <div class="circles">
@@ -30,14 +39,10 @@
             <i></i>
             <i></i>
           </div>
-          <p> 하루가 대신 생각하고 있어요! <br><span style="color:#877b78; font-size: 7px;">{{ test_text }}</span></p>
+          <p> 하루가 생각하고 있어요! <br><span style="color:#f4fcfd; font-size: 7px;">{{ test_text }}</span></p>
     </div>
     </v-row>
-    <v-row>
-      <v-col cols="12" class="textarea">
-        <v-textarea name="helper-7-1" bg-color="blue-lighten-5" label="생각 도우미" auto-grow v-model="opHelper"></v-textarea>
-      </v-col>
-    </v-row>
+  
   </v-container>
 </template>
 
@@ -178,12 +183,13 @@ onMounted(async () => {
 #mythink {
   background-image: url("~@/assets/checkbackground.png");
 }
+
+/* border: none !important; */
+  /* background-color: transparent !important; */
+  /* box-shadow: none !important; */
+  /* padding: 0 !important; */
 .thinkhelper-btn {
-  border: none !important;
-  background-color: transparent !important;
-  box-shadow: none !important;
-  padding: 0 !important;
- 
+  width: 150px;
 }
 
 .thinkhelper-btn:hover {
@@ -202,9 +208,8 @@ onMounted(async () => {
   margin-left: -10px;
 }
 
-.button {
+.button d-flex justify-center{
   grid-area: content;
-    /* justify-content: center; */
     white-space: nowrap;
   margin-left: 0px;
 }
@@ -218,7 +223,7 @@ onMounted(async () => {
   padding: 20px;
   width: 350px;
   text-align: center;
-  background: #f2f2f2;
+  background: #fffffb;
   box-shadow: 0 3px 0 rgba(0, 0, 0, .2);
 }
 
