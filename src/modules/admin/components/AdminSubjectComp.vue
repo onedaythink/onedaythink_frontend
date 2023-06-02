@@ -154,6 +154,7 @@ async function makeImg() {
   });
   const openai = new OpenAIApi(configuration);
   console.log(openai);
+  
 async function runPrompt() {
     const response = await openai.createCompletion({
       model: "text-davinci-003",

@@ -18,7 +18,7 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-btn @click="likeControll(opinion.userOpiNo)" variant="outlined" color="pink" class="small">좋아요
-                            ♥</v-btn>
+                            </v-btn>
                         <template v-if="false">
                             <v-btn @click="goToChatRoomOther(opinion.chatRoom)" variant="outlined" color="blue-lighten-4"
                                 class="btn-bold small">채팅방 입장</v-btn>
