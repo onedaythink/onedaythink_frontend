@@ -232,6 +232,7 @@ function cancelExit() {
     display: flex;
     flex-wrap: wrap;
     flex: 1 1 auto;
+    margin:0px;
     margin-left: 5px;
 }
 

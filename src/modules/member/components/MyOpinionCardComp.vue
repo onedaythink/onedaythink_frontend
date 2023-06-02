@@ -162,7 +162,7 @@ onMounted(async () => {
 
 </script>
 
-<style>
+<style scoped>
 #mythink {
   background-image: url("~@/assets/checkbackground.png");
 }
