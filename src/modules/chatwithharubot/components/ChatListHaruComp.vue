@@ -187,6 +187,6 @@ onMounted(async () => {
   flex: none;
   min-height: 52px;
   padding: 0.5rem;
-  margin-left: 100px;
+  justify-content: center;
 }
 </style>

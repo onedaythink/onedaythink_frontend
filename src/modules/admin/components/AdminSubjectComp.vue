@@ -274,8 +274,9 @@ function addSubject() {
   padding: 20px;
   width: 500px;
   text-align: center;
-  background: #f2f2f2;
+  background: white;
   box-shadow: 0 3px 0 rgba(0, 0, 0, .2);
+  border-radius: 10px;
 }
 
 .loading-box .circles {
@@ -288,7 +289,7 @@ function addSubject() {
   margin: 0 4px;
   width: 10px;
   height: 10px;
-  background: #00a5e5;
+  background: #ffd760;
   border-radius: 50em;
 }
 

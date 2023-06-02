@@ -17,7 +17,13 @@
         <v-spacer></v-spacer>
         <v-col cols="auto" class="menu-item">
           <!-- CSS class="text"를 적용하기 위해 router -to 대신 @click 이벤트 적용 -->
-          <router-link to="/login" class="text sdsdsd" @click.prevent="logout()" style="align-items: center;">로그아웃</router-link>
+          <router-link 
+          to="/login" 
+          class="text sdsdsd" 
+          @click.prevent="logout()" 
+          style="align-items: center;"
+          >
+          로그아웃</router-link>
         </v-col>
       </v-row>
     </v-container>

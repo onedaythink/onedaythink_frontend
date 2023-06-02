@@ -53,15 +53,15 @@
     <template v-if="myOpinionList.length > 0">
       <div class="mypage-card mt-10" v-for="opinion, idx in paginatedOpinions" :key="idx">
         <v-card class="mx-auto" max-width="344">
-          <v-img class="subImag mx-auto"
-             :src= findImage(opinion.subImgPath)
-              width="280px"
-              height="250px"
-              contain
-              cover
+          <v-img
+            :src= findImage(opinion.subImgPath)
+            width="445px"
+            height="160px"
+            contain
+            class="d-flex align-center justify-center"
           ></v-img>
 
-          <v-card-title>{{ opinion.createAt }}</v-card-title>
+          <v-card-title>{{ formattedDate(opinion.createAt) }}</v-card-title>
           <v-card-subtitle style="white-space: pre-wrap;">{{ opinion.content }}</v-card-subtitle>
           <v-card-actions> 어떤 생각을 했을까?
             <v-spacer></v-spacer>
@@ -76,10 +76,15 @@
               <v-divider></v-divider>
               <v-card-text >
                 <v-textarea v-model="opinion.opinion"></v-textarea>
-                <div class="d-flex justify-end">
-                <v-btn color="yellow-lighten-5" type="submit" class="mr-2" @click="share(opinion)">비공개</v-btn>
-                <v-btn color="yellow-lighten-5" type="submit" class="mr-2" @click="save(opinion)">수정</v-btn>
-                <v-btn color="yellow-lighten-5" type="submit" class="mr-2" @click="opDelete(opinion)">삭제</v-btn>
+                   <transition name="slide">
+                    <div v-if="snackbar" class="custom-snackbar">
+                      완료되었습니다.
+                    </div>
+                  </transition>
+                <div class="btn-container">
+                  <v-btn type="submit" class="mypage-btn" variant="outlined" color="blue" @click="save(opinion)">다시 생각해요</v-btn>
+                  <v-btn type="submit" class="mypage-btn" variant="outlined" color="green" @click="share(opinion)">{{ buttonLabel }}</v-btn>
+                  <v-btn type="submit" class="mypage-btn" variant="outlined" color="pink" @click="opDelete(opinion)">생각을 비워요</v-btn>             
                 </div>
               </v-card-text>
             </div>
@@ -116,6 +121,8 @@ import { onMounted, nextTick, ref, computed } from 'vue';
 import { $deleteUser } from '@/api/user';
 import { useRouter } from 'vue-router';
 
+import { format } from 'date-fns';
+
 const user = ref({}) // 유저정보
 const show = ref(false)
 
@@ -130,6 +137,14 @@ const op = ref('') // 의견 수정, 비활성화
 const myOpinion = ref({ // 의견 수정, 비활성화
   opinion : ''
 })
+
+const snackbar = ref(false); // 스낵바
+
+const buttonLabel = ref('생각을 숨길래요'); // 버튼 문구 변수
+
+function formattedDate(createAt) {
+  return format(new Date(createAt), 'yyyy년 MM월 dd일');
+}
 
 // subjectImg 호출
 async function getMyOpinion() {
@@ -219,6 +234,15 @@ async function save(opinion) {
   try {
     await $updateOpinion(opinion)
     getMyOpinionList(opinion.userNo, opinion.createAt)
+    
+    // Show snackbar
+    snackbar.value = true;
+
+    // Set snackbar to false after 3 seconds
+    setTimeout(() => {
+      snackbar.value = false;
+    }, 2000);
+
   } catch (err) {
     console.log(err)
   }
@@ -228,13 +252,24 @@ async function save(opinion) {
 async function share(opinion) {
   if (opinion.isPublic == 'y') {
     opinion.isPublic = 'n';
+    buttonLabel.value = '생각을 공유할래요';  // 공유를 비활성화 할 경우 이 문구로 변경
   } else if (opinion.isPublic == 'n') {
     opinion.isPublic = 'y';
+    buttonLabel.value = '생각을 숨길래요';  // 공유를 활성화 할 경우 이 문구로 변경
   }
   try {
     console.log(opinion)
     await $updateOpinion(opinion)
     getMyOpinionList(opinion.userNo, opinion.createAt)
+
+  // Show snackbar
+  snackbar.value = true;
+
+  // Set snackbar to false after 3 seconds
+  setTimeout(() => {
+    snackbar.value = false;
+  }, 2000);
+
   } catch (err) {
     console.log(err)
   }
@@ -251,6 +286,15 @@ async function opDelete(opinion) {
     console.log(opinion)
     await $deleteOpinion(opinion)
     getMyOpinionList(opinion.userNo, opinion.createAt)
+
+  // Show snackbar
+  snackbar.value = true;
+
+  // Set snackbar to false after 3 seconds
+  setTimeout(() => {
+    snackbar.value = false;
+  }, 2000);
+
   } catch (err) {
     console.log(err)
   }
@@ -275,5 +319,55 @@ onMounted(async () => {
 
 .v-btn:active {
   box-shadow: 0px 0px 50px rgba(115, 142, 212, 0.5) !important;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+</style>
+
+
+<style scoped>
+
+/* 스낵바 설정 */
+.custom-snackbar {
+  background-color: #43a047; 
+  color: white;  
+  position: absolute;  
+  bottom: 50px;  
+  left: 50%; 
+  transform: translate(-50%, 0); 
+  padding: 16px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  z-index: 1000; 
+}
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.mypage-btn {
+  width: 90px;
+  font-size: 11px;
+  margin: 0px;
+}
+
+.slide-enter-active, .slide-leave-active {
+  transition: all .3s ease;
+}
+.slide-enter, .slide-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
 }
 </style>

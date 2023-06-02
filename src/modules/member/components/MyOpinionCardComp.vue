@@ -23,14 +23,15 @@
           생각 도우미
         </v-btn>
       </v-col>
-      <div class="loading-box" v-if="loading">
-        <div class="circles">
-          <i></i>
-          <i></i>
-          <i></i>
-        </div>
-        <p> 하루가 대신 생각하고 있어요! <br><span style="color:#877b78; font-size: 7px;">{{ test_text }}</span></p>
-      </div>
+
+    <div class="loading-box" v-if="loading">
+          <div class="circles">
+            <i></i>
+            <i></i>
+            <i></i>
+          </div>
+          <p> 하루가 대신 생각하고 있어요! <br><span style="color:#877b78; font-size: 7px;">{{ test_text }}</span></p>
+    </div>
     </v-row>
     <v-row>
       <v-col cols="12" class="textarea">
