@@ -22,7 +22,7 @@
     <v-row>
       <v-col cols="8" class="button " style=" justify-content: flex-end; ">
         <v-btn class="thinkhelper-btn no-border" @click="helper">
-        <img :src="require('@/assets/light1.jpg')" alt="Light bulb icon" style="height:30px; width:50px;">
+        <img :src="require('@/assets/light1.jpg')" alt="Light bulb icon" style="width: 10%;">
           생각 도우미
         </v-btn>
       </v-col>
@@ -124,7 +124,7 @@ async function helper() {
 
   console.log(op.value);
   const configuration = new Configuration({
-    apiKey: API_KEY,
+    apiKey: API_KEY
   });
   const openai = new OpenAIApi(configuration);
   console.log(subjectContent);
@@ -156,6 +156,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+
 #mythink {
   background-image: url("~@/assets/checkbackground.png");
 }
@@ -184,6 +185,9 @@ onMounted(async () => {
 }
 
 .button {
+  grid-area: content;
+    /* justify-content: center; */
+    white-space: nowrap;
   margin-left: 0px;
 }
 

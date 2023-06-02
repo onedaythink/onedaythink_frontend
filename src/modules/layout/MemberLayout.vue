@@ -24,7 +24,7 @@
                 to="/chatwithharubot"></v-list-item>
               <v-list-item prepend-icon="mdi-face" title="나의 공간" value="myPage" to="/mypage"></v-list-item>
               <br>
-              <v-btn  class="my-btn" @click="logout()"><router-link to="/login">로그아웃</router-link></v-btn>
+              <v-btn  class="my-btn sdsdsd" @click="logout()"><router-link to="/login">로그아웃</router-link></v-btn>
             </v-list>
           </layout>
         </v-navigation-drawer>
@@ -37,7 +37,7 @@
     <footer-comp></footer-comp>
   </div>
 
-  <v-dialog v-model="openModal" max-width="500px">
+  <v-dialog v-model="openModal" max-width="400px">
     <v-card>
       <v-card-title>알림</v-card-title>
       <v-btn @click="beforeAllEditNotify">전체삭제</v-btn>
@@ -231,7 +231,7 @@ function modalSwitch() {
 
 </script>
 
-<style>
+<style scoped>
 
 .my-btn {
   all: unset;
@@ -263,5 +263,10 @@ function modalSwitch() {
   position: relative;
   width: 420px;
   height: 700px;
+}
+
+.sdsdsd {
+  text-decoration: blink;
+    color: brown;
 }
 </style>
