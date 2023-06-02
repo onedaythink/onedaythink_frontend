@@ -4,7 +4,7 @@
       <v-layout class="right-sidebar">
         <v-app-bar color="white">
           <v-app-bar-title>
-               <router-link to="/home" class="text">  <v-img class="logo" src="@/assets/headerlogo.png" alt="하루생각"></v-img></router-link>
+            <v-img class="logo" src="@/assets/headerlogo.png" alt="하루생각" @click="goToHome"></v-img>
           </v-app-bar-title>
           <v-spacer></v-spacer>
           <v-btn icon style="font-size: 16px; color:#877b78" @click="modalSwitch">
@@ -16,15 +16,22 @@
         <v-navigation-drawer v-model="drawer" location="right" temporary>
           <layout justify-center>
             <v-list style="display: flex; flex-direction: column;">
-              <v-list-item prepend-icon="mdi-face" title="오늘의 생각" value="memberMainView" to="/home"></v-list-item>
-              <v-list-item prepend-icon="mdi-face" title="타인의 생각" value="ohterOpinionView" to="/others"></v-list-item>
-              <v-list-item prepend-icon="mdi-face" title="타인과의 대화" value="chatWithOther"
+              <v-list-item class="dddddd" prepend-icon="mdi-face" title="오늘의 생각" value="memberMainView" to="/home"></v-list-item>
+              <v-list-item class="dddddd" prepend-icon="mdi-face" title="타인의 생각" value="ohterOpinionView" to="/others"></v-list-item>
+              <v-list-item class="dddddd" prepend-icon="mdi-face" title="타인과의 대화" value="chatWithOther"
                 to="/chatwithother"></v-list-item>
-              <v-list-item prepend-icon="mdi-face" title="하루봇과의 대화" value="chatWithHaru"
+              <v-list-item class="dddddd" prepend-icon="mdi-face" title="하루봇과의 대화" value="chatWithHaru"
                 to="/chatwithharubot"></v-list-item>
-              <v-list-item prepend-icon="mdi-face" title="나의 공간" value="myPage" to="/mypage"></v-list-item>
+              <v-list-item class="dddddd" prepend-icon="mdi-face" title="나의 공간" value="myPage" to="/mypage"></v-list-item>
               <br>
-              <v-btn  class="my-btn" @click="logout()"><router-link to="/login">로그아웃</router-link></v-btn>
+              <button 
+              class="my-btn" 
+              @click="logout()">
+                  <router-link 
+                  class="sdsdsd"
+                  to="/login">로그아웃
+                  </router-link>
+                </button>
             </v-list>
           </layout>
         </v-navigation-drawer>
@@ -86,8 +93,14 @@ export default {
     group() {
       this.drawer = false
     },
+  },
+  methods: {
+    goToHome() {
+      this.$router.push('/home');
+    }
   }
 }
+
 </script>
 
 <script setup>
@@ -225,7 +238,7 @@ function modalSwitch() {
 
 </script>
 
-<style>
+<style scoped>
 
 .my-btn {
   all: unset;
@@ -258,4 +271,27 @@ function modalSwitch() {
   width: 420px;
   height: 700px;
 }
+
+.sdsdsd {
+  text-decoration: blink;
+  color: brown;
+  align-items: center;
+  display: flex;
+  transition: transform, opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.dddddd{
+  background-color: rgb(252, 252, 252);
+}
+
+.sdsdsd:hover{
+  background-color: #f6f4f4;
+}
+
+.dddddd:hover{
+  background-color: #f6f4f4;
+}
+
 </style>

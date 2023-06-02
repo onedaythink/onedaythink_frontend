@@ -87,7 +87,7 @@
         <span>{{ item }}&nbsp;</span>
       </template>
     </v-card>
-    <v-textarea v-model="userMessage" ref="userMessageInput" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup="sentenceCompeletion" @keyup.enter="sendMessage"></v-textarea>
+    <v-textarea v-model="userMessage"  variant="filled" no-resize="True" ref="userMessageInput" outlined placeholder="메시지 입력" class="mb-2 message-input" @keyup="sentenceCompeletion" @keyup.enter="sendMessage"></v-textarea>
   </v-col>
 </v-row>
 <v-row class="sendButtonRow">

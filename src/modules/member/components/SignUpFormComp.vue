@@ -111,24 +111,27 @@ import { useRouter } from 'vue-router';
   }
 
   function checkDuplicateId() {
-    $checkUserId(userData)
+    console.log(userData)
+    $checkUserId(userData.value)
     .then(res => {
-      if (res.data != null) {
-        checkUserId.value = true
-      } else {
+      if (res.data != null && res.data !='') {
+        console.log(res.data)
         checkUserId.value = false
+      } else {
+        checkUserId.value = true
       }
     })
     .catch(err => console.log(err))
   }
   function checkDuplicateNickname() {
     // 닉네임 중복 체크 로직 구현
-    $checkNickname(userData)
+    $checkNickname(userData.value)
     .then(res => {
-      if (res.data != null) {
-        checkNickname.value = true
-      } else {
+      if (res.data != null && res.data !='') {
+        console.log(res.data)
         checkNickname.value = false
+      } else {
+        checkNickname.value = true
       }
     })
     .catch(err => console.log(err))

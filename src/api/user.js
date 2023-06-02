@@ -30,10 +30,22 @@ async function $checkUserId(userData){
     }
 }
 
+// 닉네임 중복 체크 구현
 async function $checkNickname(userData){
     try {
     const axios = createJsonAxiosInstance()
         return await axios.post('auth/signup/nickname-check', userData)
+    }
+    catch (err) {
+        console.log('error msg : ', err)
+    }
+}
+
+// 이메일 중복 체크 구현
+async function $checkEmail(userData){
+    try {
+    const axios = createJsonAxiosInstance()
+        return await axios.post('user/newUserUpdate/email-check', userData)
     }
     catch (err) {
         console.log('error msg : ', err)
@@ -86,4 +98,4 @@ async function $getUsers(){
 
 
 export { $loginUser, $registerUser, $checkUserId, $checkNickname, 
-        $getUsers, $deleteUser, $updateUser, $updateUserProfile }
+        $checkEmail, $getUsers, $deleteUser, $updateUser, $updateUserProfile }
