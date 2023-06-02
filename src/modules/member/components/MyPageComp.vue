@@ -75,9 +75,14 @@
               <v-divider></v-divider>
               <v-card-text >
                 <v-textarea v-model="opinion.opinion"></v-textarea>
-                <v-btn type="submit" class="mr-2" @click="save(opinion)">다시 생각해요</v-btn>
-                <v-btn type="submit" class="mr-2" @click="share(opinion)">생각을 숨길래요</v-btn>
-                <v-btn type="submit" class="mr-2" @click="opDelete(opinion)">생각을 비워요</v-btn>
+                   <transition name="slide">
+                    <div v-if="snackbar" class="custom-snackbar">
+                      완료되었습니다.
+                    </div>
+                  </transition>
+                <v-btn type="submit" class="mr-3 mb-3" style="background-color: #a8d8ea;" @click="save(opinion)">다시 생각해요</v-btn>
+                <v-btn type="submit" class="mr-3 mb-3" style="background-color: #fce38a;" @click="share(opinion)">{{ buttonLabel }}</v-btn>
+                <v-btn type="submit" class="mr-3 mb-3" style="background-color: #e2a3b7;" @click="opDelete(opinion)">생각을 비워요</v-btn>             
               </v-card-text>
             </div>
           </v-expand-transition>
@@ -127,6 +132,10 @@ const op = ref('') // 의견 수정, 비활성화
 const myOpinion = ref({ // 의견 수정, 비활성화
   opinion : ''
 })
+
+const snackbar = ref(false); // 스낵바
+
+const buttonLabel = ref('생각을 숨길래요'); // 버튼 문구 변수
 
 // subjectImg 호출
 async function getMyOpinion() {
@@ -216,6 +225,15 @@ async function save(opinion) {
   try {
     await $updateOpinion(opinion)
     getMyOpinionList(opinion.userNo, opinion.createAt)
+    
+    // Show snackbar
+    snackbar.value = true;
+
+    // Set snackbar to false after 3 seconds
+    setTimeout(() => {
+      snackbar.value = false;
+    }, 2000);
+
   } catch (err) {
     console.log(err)
   }
@@ -225,13 +243,24 @@ async function save(opinion) {
 async function share(opinion) {
   if (opinion.isPublic == 'y') {
     opinion.isPublic = 'n';
+    buttonLabel.value = '생각을 공유할래요';  // 공유를 비활성화 할 경우 이 문구로 변경
   } else if (opinion.isPublic == 'n') {
     opinion.isPublic = 'y';
+    buttonLabel.value = '생각을 숨길래요';  // 공유를 활성화 할 경우 이 문구로 변경
   }
   try {
     console.log(opinion)
     await $updateOpinion(opinion)
     getMyOpinionList(opinion.userNo, opinion.createAt)
+
+  // Show snackbar
+  snackbar.value = true;
+
+  // Set snackbar to false after 3 seconds
+  setTimeout(() => {
+    snackbar.value = false;
+  }, 2000);
+
   } catch (err) {
     console.log(err)
   }
@@ -248,6 +277,15 @@ async function opDelete(opinion) {
     console.log(opinion)
     await $deleteOpinion(opinion)
     getMyOpinionList(opinion.userNo, opinion.createAt)
+
+  // Show snackbar
+  snackbar.value = true;
+
+  // Set snackbar to false after 3 seconds
+  setTimeout(() => {
+    snackbar.value = false;
+  }, 2000);
+
   } catch (err) {
     console.log(err)
   }
@@ -272,5 +310,31 @@ onMounted(async () => {
 
 .v-btn:active {
   box-shadow: 0px 0px 50px rgba(115, 142, 212, 0.5) !important;
+}
+</style>
+
+
+<style scoped>
+
+/* 스낵바 설정 */
+.custom-snackbar {
+  background-color: #43a047; 
+  color: white;  
+  position: absolute;  
+  bottom: 50px;  
+  left: 50%; 
+  transform: translate(-50%, 0); 
+  padding: 16px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  z-index: 1000; 
+}
+
+.slide-enter-active, .slide-leave-active {
+  transition: all .3s ease;
+}
+.slide-enter, .slide-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
 }
 </style>

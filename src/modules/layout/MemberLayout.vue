@@ -4,7 +4,7 @@
       <v-layout class="right-sidebar">
         <v-app-bar color="white">
           <v-app-bar-title>
-            <v-img class="logo" src="@/assets/headerlogo.png" alt="하루생각"></v-img>
+            <v-img class="logo" src="@/assets/headerlogo.png" alt="하루생각" @click="goToHome"></v-img>
           </v-app-bar-title>
           <v-spacer></v-spacer>
           <v-btn icon style="font-size: 16px; color:#877b78" @click="modalSwitch">
@@ -86,8 +86,14 @@ export default {
     group() {
       this.drawer = false
     },
+  },
+  methods: {
+    goToHome() {
+      this.$router.push('/home');
+    }
   }
 }
+
 </script>
 
 <script setup>
