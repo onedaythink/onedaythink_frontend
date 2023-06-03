@@ -63,14 +63,24 @@
               <template v-if="message.content != 'messageDate'">
                 <v-col cols="12">
                   <!-- Removed the v-divider element -->
-                  <div class="d-flex" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">
+                  <div class="d-flex" style="align-items: center;" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">
+                    <div v-if="message.sender.nickname !== myName">
+                      <v-img class="align-end text-white" :src=findImage(message.userImgPath) cover rounded
+                            style="border-radius: 50%; width: 40px; height: 40px;">
+                      </v-img>
+                    </div>
                     <div>
                       <v-card class="mx-2"
                         :class="message.sender.nickname === myName ? 'chat-message-yellow' : 'chat-message-mint'" tile>
-                        <v-card-text>
+                        <v-card-text class="text-box">
                           {{ message.content }}
                         </v-card-text>
                       </v-card>
+                    </div>
+                    <div v-if="message.sender.nickname === myName">
+                      <v-img class="align-end text-white" :src=findImage(message.userImgPath) cover rounded
+                            style="border-radius: 50%; width: 40px; height: 40px;">
+                      </v-img>
                     </div>
                   </div>
                   <div>
@@ -146,13 +156,14 @@ reportDialog.value = false;
 
 
 const getCurrentTime = () => {
-  const now = new Date();
-  const hours = now.getHours();
-  const minutes = now.getMinutes();
-  const ampm = hours >= 12 ? "pm" : "am";
-  const hour = hours % 12;
-  const time = `${ampm} ${hour}:${minutes < 10 ? "0" + minutes : minutes}`;
-  return time;
+  return format(new Date(), 'yyyy-MM-dd HH:mm:ss');
+
+  // const hours = now.getHours();
+  // const minutes = now.getMinutes();
+  // const ampm = hours >= 12 ? "pm" : "am";
+  // const hour = hours % 12;
+  // const time = `${ampm} ${hour}:${minutes < 10 ? "0" + minutes : minutes}`;
+  // return time;
 };
 
 async function scrollToLatestMessage() {
@@ -202,6 +213,7 @@ function loadChatHistory() {
             sender: { nickname: myName, avatarUrl: "" },
             content: chatMsg.chatMsgContent,
             time: formattedDate(chatMsg.chatCreateAt),
+            userImgPath : chatMsg.userImgPath
           });
         } else {
           console.log(otherName)
@@ -210,6 +222,7 @@ function loadChatHistory() {
             sender: { nickname: chatMsg.sendNickname, avatarUrl: "" },
             content: chatMsg.chatMsgContent,
             time: formattedDate(chatMsg.chatCreateAt),
+            userImgPath : chatMsg.userImgPath
           });
         }
       });
@@ -282,7 +295,8 @@ function createWebSocketConnection() {
         messages.value.push({
           sender: { nickname: myName, avatarUrl: "" },
           content: chatMsg.chatMsgContent,
-          time: currentTime
+          time: formattedDate(currentTime),
+          userImgPath : chatMsg.userImgPath
         });
       } else {
         otherName.value = chatMsg.sendNickname
@@ -290,17 +304,20 @@ function createWebSocketConnection() {
         messages.value.push({
           sender: { nickname: writer, avatarUrl: "" },
           content: chatMsg.chatMsgContent,
-          time: currentTime
+          time: formattedDate(currentTime),
+          userImgPath : chatMsg.userImgPath
         });
       }
       scrollToLatestMessage();
     });
 
     //3. send(path, header, message)로 메세지를 보낼 수 있음
+    const currentTime = getCurrentTime();
     const sendData = JSON.stringify({
       chatRoomNo: chatRoomNo.value,
       chatSendUserNo: userStore.getLoginUser.userNo,
-      sendNickname: myName
+      sendNickname: myName,
+      chatCreateAt: currentTime
     })
     stomp.send('/pub/chat/enter', {}, sendData)
   });
@@ -332,7 +349,8 @@ const sendMessage = () => {
       chatRoomNo: chatRoomNo.value,
       chatSendUserNo: userStore.getLoginUser.userNo,
       sendNickname: myName,
-      chatMsgContent: userMessage.value
+      chatMsgContent: userMessage.value,
+      userImgPath : userStore.getLoginUser.userImgPath
     })
     userMessage.value = '';
     console.log(sendData)
@@ -355,6 +373,16 @@ onBeforeUnmount(() => {
     }
 })
 
+function findImage(userImg) {
+  if (userImg) {
+    console.log(userImg);
+    const convertedPath = userImg.replace(/\\/g, '/');
+    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
+  } else {
+    const defaultImg = 'src/main/resources/static/profileImages/default.png'
+    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${defaultImg}`;
+  }
+}
 
 </script>
 
@@ -469,4 +497,9 @@ onBeforeUnmount(() => {
   color: #555555;
   border-radius:80px;
 }
+
+.text-box {
+  padding: 0.5rem;
+}
+
 </style>

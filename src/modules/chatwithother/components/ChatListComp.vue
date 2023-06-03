@@ -16,7 +16,9 @@
                             <v-img class="align-end text-white" :src=findImage(chatRoom.fromUserImgPath) cover rounded
                               style="border-radius: 50%; width: 50px; height: 50px; margin-top: 20px;">
                            </v-img>
-                            {{ chatRoom.fromNickname }}
+                           <v-card-text>
+                                {{ chatRoom.fromNickname }}
+                            </v-card-text>
                         </template>
                     </v-col>
                     <v-col cols="9">
@@ -42,7 +44,9 @@
                             </v-card-text>
                         </template>
                         <template v-else>
-                            {{ chatRoom.fromNickname }}
+                            <v-card-text>
+                                {{ chatRoom.fromNickname }}
+                            </v-card-text>
                         </template>
                     </v-col>
                     <v-col cols="9">
