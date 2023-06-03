@@ -57,6 +57,7 @@ import { useChatStore } from '@/store/chat'
 import { useUserStore } from '@/store/user'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { findImage } from "@/api/index";
 
 const userStore = useUserStore()
 const subjectStore = useSubjectStore()
@@ -69,7 +70,7 @@ let message = ref('')
 async function getOpinionsByCreateAt() {
     await $getOpinionsByCreateAt(subjectStore.getSubject.subNo, userStore.getLoginUser.userNo)
         .then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             opinion_list.value = res.data
         })
         .catch(err => console.log(err))
@@ -97,7 +98,7 @@ async function likeControll(userOpiNo) {
 async function createChatRoom(userOpiNo) {
     await $createChatRoom(userOpiNo, userStore.getLoginUser.userNo, userStore.getLoginUser.nickname)
         .then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             message.value = res.data.msg
             snackbar.value = true
             setTimeout(() => {
@@ -116,16 +117,16 @@ function goToChatRoomOther(chatRoom) {
 }
 
 // userImg 호출
-function findImage(userImg) {
-    if (userImg) {
-        console.log(userImg);
-        const convertedPath = userImg.replace(/\\/g, '/');
-        return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
-    } else {
-        const defaultImg = 'src/main/resources/static/profileImages/default.png'
-        return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${defaultImg}`;
-    }
-}
+// function findImage(userImg) {
+//     if (userImg) {
+//         // console.log(userImg);
+//         const convertedPath = userImg.replace(/\\/g, '/');
+//         return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
+//     } else {
+//         const defaultImg = 'src/main/resources/static/profileImages/default.png'
+//         return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${defaultImg}`;
+//     }
+// }
 
 
 

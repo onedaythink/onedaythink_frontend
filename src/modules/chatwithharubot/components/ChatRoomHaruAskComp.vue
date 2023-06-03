@@ -81,6 +81,7 @@ export default {
 import { ref, nextTick } from "vue";
 import { useUserStore } from '@/store/user';
 import { $questionForHaru } from '@/api/flask';
+import { findImage } from "@/api/index";
   
 
 const userStore = useUserStore()
@@ -155,16 +156,16 @@ async function receiveMessage(msg) {
     scrollToLatestMessage();
 }
 
-function findImage(userImg) {
-  if (userImg) {
-    console.log(userImg);
-    const convertedPath = userImg.replace(/\\/g, '/');
-    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
-  } else {
-    const defaultImg = 'src/main/resources/static/profileImages/default.png'
-    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${defaultImg}`;
-  }
-}
+// function findImage(userImg) {
+//   if (userImg) {
+//     console.log(userImg);
+//     const convertedPath = userImg.replace(/\\/g, '/');
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
+//   } else {
+//     const defaultImg = 'src/main/resources/static/profileImages/default.png'
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${defaultImg}`;
+//   }
+// }
 
 </script>
 <style scoped>

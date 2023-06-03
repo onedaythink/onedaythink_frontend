@@ -1,16 +1,19 @@
 import axios from 'axios';
 
 function createAxiosInstance() {
+    const BASE_URL = process.env.VUE_APP_BASE_URL_IP_ADDRESS;
+    console.log(BASE_URL)
     return axios.create({
         withCredentials: true,
-        baseURL: 'http://127.0.0.1:8080/onedaythink/api/v1/'
+        baseURL: `http://${BASE_URL}:8080/onedaythink/api/v1/`
     })
 }
 
 function createFlaskAxiosInstance() {
+  const BASE_URL = process.env.VUE_APP_BASE_URL_IP_ADDRESS;
   return axios.create({
       withCredentials: true,
-      baseURL: 'http://127.0.0.1:5000/'
+      baseURL: `http://${BASE_URL}:5000/`
   })
 }
 
@@ -41,5 +44,16 @@ function createJsonAxiosInstance (userInfo) {
 
     return instance
   }
+
+  function findImage(userImg) {
+    const BASE_URL = process.env.VUE_APP_BASE_URL_IP_ADDRESS;
+    if (userImg) {
+      const convertedPath = userImg.replace(/\\/g, '/');
+      return `http://${BASE_URL}:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
+    } else {
+      const defaultImg = 'src/main/resources/static/profileImages/default.png'
+      return `http://${BASE_URL}:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${defaultImg}`;
+    }
+  } 
   
-  export {createJsonAxiosInstance, createFormAxiosInstance, createJsonFlaskAxiosInstance }
+  export {createJsonAxiosInstance, createFormAxiosInstance, createJsonFlaskAxiosInstance, findImage}

@@ -85,11 +85,11 @@ import { useRouter } from 'vue-router';
 
   function onSubmit() {
     if (!form.value) return;
-    
+
     // loading.value = true;
 
     // setTimeout(() => (loading.value = false), 2000);
-    console.log(loginInfo.value)
+    // console.log(loginInfo.value)
     $loginUser(loginInfo.value).then(res => {
       if(res.data != '' && res.data != null) {
         userStore.setLoginUser(res.data)

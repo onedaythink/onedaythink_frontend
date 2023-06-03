@@ -90,7 +90,7 @@ const haruChatStore = useHaruChatStore()
 async function goToChatRoomHaru(haruChatRoom) {
   haruChatStore.setHaruChatRoom(haruChatRoom)
   haruChatStore.setChatRoomNo(haruChatRoom.chatRoomNo)
-  console.log(haruChatRoom)
+  // console.log(haruChatRoom)
   getSelectedCahr(haruChatRoom.chatRoomNo)
 }
 
@@ -99,7 +99,7 @@ const userStore = useUserStore()
 function getHaruChatRooms() {
   $getHaruChatRooms(userStore.getLoginUser.userNo)
     .then(res => {
-      console.log(res.data)
+      // console.log(res.data)
       haruChatRooms.value = res.data
     })
     .catch(err =>
@@ -125,7 +125,7 @@ async function getSelectedCahr(chatRoomNo) {
 function closeChatRoom(chatRoomNo) {
   $closeHaruChatRoom(chatRoomNo)
     .then(res => {
-      console.log(res.data)
+      // console.log(res.data)
       getHaruChatRooms()
     })
     .catch(err => console.log(err))

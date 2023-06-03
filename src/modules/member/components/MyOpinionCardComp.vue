@@ -125,12 +125,12 @@ const loading = ref(false);
 async function helper() {
   loading.value = true;
 
-  console.log(op.value);
+  // console.log(op.value);
   const configuration = new Configuration({
     apiKey: API_KEY
   });
   const openai = new OpenAIApi(configuration);
-  console.log(subjectContent);
+  // console.log(subjectContent);
   subjectContent.value = subjectStore.getSubject.content;
 
   async function runPrompt() {
@@ -142,9 +142,9 @@ async function helper() {
       temperature: 0.2,
     });
 
-    console.log('- completion:\n' + response.data.choices[0].text);
+    // console.log('- completion:\n' + response.data.choices[0].text);
     const completion = response.data.choices[0].text;
-    console.log("testaslkdjasldj/" + completion);
+    // console.log("testaslkdjasldj/" + completion);
     opHelper.value = completion;
   }
   await runPrompt();

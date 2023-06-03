@@ -19,7 +19,7 @@ export const useHaruChatStore = defineStore('haruchat', () => {
 
   function setChatRoomNo(chatRoomNumber){ 
     chatRoomNo.value = chatRoomNumber
-    console.log("chatRoomNo : "+chatRoomNo.value)
+    // console.log("chatRoomNo : "+chatRoomNo.value)
   }
 
   function setHaruChatRoom (current_chatRoom){

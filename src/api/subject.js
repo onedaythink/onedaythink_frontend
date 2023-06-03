@@ -39,7 +39,7 @@ async function $postAdminSubject(test_text,newVal){
             content: test_text,
             subImgPath: newVal
         }
-        console.log(data)
+        // console.log(data)
         return await axios.post('subjects', data);        
     } catch(err){
         console.log(err);

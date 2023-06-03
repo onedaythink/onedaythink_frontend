@@ -143,9 +143,9 @@ const snackbar = ref(false); // 스낵바
 
 // userImg 호출
 function findUserImage(userImg) {
-  console.log(userImg)
+  // console.log(userImg)
   if (userImg) {
-    console.log(userImg);
+    // console.log(userImg);
     const convertedPath = userImg.replace(/\\/g, '/');
     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
   } else {
@@ -236,7 +236,7 @@ function checkDuplicateNickname() {
     $checkNickname(newUserUpdate.value)
     .then(res => {
       if (res.data != null && res.data !='') {
-        console.log(res.data)
+        // console.log(res.data)
         checkNickname.value = false
       } else {
         checkNickname.value = true
@@ -251,7 +251,7 @@ function checkDuplicateEmail() {
   $checkEmail(newUserUpdate.value)
   .then(res => {
     if (res.data != null && res.data !='' ) {
-      console.log(res.data)
+      // console.log(res.data)
       checkEmail.value = false
     } else {
       checkEmail.value = true
@@ -265,7 +265,7 @@ const passwordRegex = /^(?=.*\d)(?=.*[a-z]).{8,15}$/;
 const passwordValueCheck = ref(null)
 function pwdCheck() {
     passwordValueCheck.value = passwordRegex.test(newUserUpdate.value.userPwd);
-    console.log(passwordValueCheck.value)
+    // console.log(passwordValueCheck.value)
 }
 const passwordDoubleCheck = ref(null)
 
@@ -286,13 +286,13 @@ async function getUser(user) {
 function blankCheckInputFormData(formData, label, data){
   if (data != '' && data != null && data != 'null') {
     formData.append(label, data);
-    console.log(`check : ${data}`)
+    // console.log(`check : ${data}`)
   }
 }
 
 async function updateUser() {
 
-  console.log(newUserUpdate.value)
+  // console.log(newUserUpdate.value)
 
   let formData = new FormData();
   blankCheckInputFormData(formData,'userNo', userStore.getLoginUser.userNo)
@@ -301,7 +301,7 @@ async function updateUser() {
   blankCheckInputFormData(formData,'userPwd', newUserUpdate.value.userPwd)
   blankCheckInputFormData(formData,'userOriginImg', userData.userOriginImg)
   blankCheckInputFormData(formData,'userImgPath', userData.userImgPath)
-  console.log(newUserUpdate.value)
+  // console.log(newUserUpdate.value)
   
   $updateUser(formData)
   .then(res => {

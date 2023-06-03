@@ -101,6 +101,7 @@ import { ref, nextTick, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useChatStore } from '@/store/chat';
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
+import { findImage } from "@/api/index";
 
 const router = useRouter()
 const chatRooms = ref([])
@@ -109,7 +110,7 @@ function goToChatRoomOther(chatRoom) {
     // 채팅방 연결
     const chatStore = useChatStore()
     chatStore.setChatRoom(chatRoom)
-    console.log(chatRoom)
+    // console.log(chatRoom)
     router.push({ path: '/chatroomother' });
 }
 
@@ -119,7 +120,7 @@ function closeChatRoom(chatRoomNo){
 
     $closeChatRoom(chatRoomNo)
         .then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             getChatRooms()
         })
         .catch(err => console.log(err))
@@ -150,7 +151,7 @@ function getChatRooms() {
 watch(chatRooms, (newChatRooms) => {
   newChatRooms.forEach((room) => {
     watch(() => room.lastMessage, (newValue) => {
-      console.log(`Updated lastMessage in chatRoomNo ${room.chatRoomNo}:`, newValue);
+    //   console.log(`Updated lastMessage in chatRoomNo ${room.chatRoomNo}:`, newValue);
     });
   });
 }, { deep: true });
@@ -161,7 +162,7 @@ function init(chatRoom) {
   const stompClient = ref(null);
   const socket = new SockJS('http://localhost:8080/onedaythink/stomp/ws');
   const stomp = Stomp.over(socket);
-  console.log(chatRoom.chatRoomNo);
+//   console.log(chatRoom.chatRoomNo);
 
   // Check if a subscription already exists for the chat room
   if (activeSubscriptions.includes(chatRoom.chatRoomNo)) {
@@ -174,9 +175,9 @@ function init(chatRoom) {
     const subscriptionId = `sub-${chatRoom.chatRoomNo}`;
     // 채팅방 구독(subscribe) 요청
     const subscription = stomp.subscribe(`/sub/chat/room/${chatRoom.chatRoomNo}`, (res) => {
-      console.log(res);
+    //   console.log(res);
       const chatMsg = JSON.parse(res.body); // 구독하게 되면 받아오게 되는 메세지
-      console.log(chatMsg);
+    //   console.log(chatMsg);
       const writer = chatMsg.sendNickname;
 
       // Update the lastMessage property of the chatRoom
@@ -200,16 +201,16 @@ onBeforeUnmount(() => {
 })
 
 // userImg 호출
-function findImage(userImg) {
-  if (userImg) {
-    console.log(userImg);
-    const convertedPath = userImg.replace(/\\/g, '/');
-    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
-  } else {
-    const defaultImg = 'src/main/resources/static/profileImages/default.png'
-    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${defaultImg}`;
-  }
-}
+// function findImage(userImg) {
+//   if (userImg) {
+//     // console.log(userImg);
+//     const convertedPath = userImg.replace(/\\/g, '/');
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
+//   } else {
+//     const defaultImg = 'src/main/resources/static/profileImages/default.png'
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${defaultImg}`;
+//   }
+// }
 
 
 // 모달 부분

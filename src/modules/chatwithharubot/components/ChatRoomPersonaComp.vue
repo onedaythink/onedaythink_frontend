@@ -123,6 +123,7 @@ import { useUserStore } from '@/store/user';
 import { useHaruChatStore } from '@/store/haruchat';
 import { useSubjectStore } from "@/store/subject";
 import { $getHaruChatMessages, $sendMessage} from '@/api/haruChat';
+import { findImage } from "@/api/index";
 
 const userStore = useUserStore()
 const myName = userStore.getLoginUser.nickname
@@ -283,7 +284,7 @@ const sendMessage = async () => {
       const haruPrompt = {}
       const haruNo = []
 
-      console.log(selectedChar.value)
+      // console.log(selectedChar.value)
       for(const item of selectedChar.value) {
         if (target.value.includes(item.haruName)) {
           haruName[item.haruNo] = item.haruName
@@ -297,7 +298,7 @@ const sendMessage = async () => {
 
       $sendMessage(sendData)
       .then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         for(const item of res.data) {
           messages.value.push({
           sender: { nickname: item.nickname, haruName:item.haruName,  avatarUrl: item.haruImgPath},
@@ -357,16 +358,16 @@ onMounted(async () => {
   getSelectedChar();
 });
 
-function findImage(userImg) {
-  if (userImg) {
-    console.log(userImg);
-    const convertedPath = userImg.replace(/\\/g, '/');
-    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
-  } else {
-    const defaultImg = 'src/main/resources/static/profileImages/default.png'
-    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${defaultImg}`;
-  }
-}
+// function findImage(userImg) {
+//   if (userImg) {
+//     // console.log(userImg);
+//     const convertedPath = userImg.replace(/\\/g, '/');
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
+//   } else {
+//     const defaultImg = 'src/main/resources/static/profileImages/default.png'
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${defaultImg}`;
+//   }
+// }
 
 </script>
 

@@ -74,7 +74,7 @@ const opinion_list = ref({})
 async function getOpinionsByCreateAt() {
     await $getOpinionsByCreateAt(subjectStore.getSubject.subNo, userStore.getLoginUser.userNo)
         .then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             opinion_list.value = res.data
         })
         .catch(err => console.log(err))
@@ -93,7 +93,7 @@ async function likeControll(userOpiNo) {
 async function createChatRoom(userOpiNo) {
     await $createChatRoom(userOpiNo, userStore.getLoginUser.userNo, userStore.getLoginUser.nickname)
         .then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             window.alert(res.data.msg)
         })
         .catch(err => console.log(err))

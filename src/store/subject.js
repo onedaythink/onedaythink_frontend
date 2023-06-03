@@ -16,7 +16,7 @@ export const useSubjectStore = defineStore('subejct', () => {
   }
   function setSubject (currnet_subject) {
     subject.value = currnet_subject
-    console.log(subject.value)
+    // console.log(subject.value)
   }
 
   return { getSubject, setSubject, removeSubject }

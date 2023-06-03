@@ -137,6 +137,8 @@ import { $getChatMessages } from '@/api/chat';
 import { $createReport } from "@/api/report";
 import { useSubjectStore } from "@/store/subject";
 import { format } from 'date-fns'
+import { findImage } from "@/api/index";
+
 
 const userStore = useUserStore()
 const subjectStore = useSubjectStore()
@@ -178,10 +180,10 @@ function openReportModal() {
 
 //신고하기
 async function createReport() {
-  console.log("신고하기 값", chatRoomNo.value, reportReason.value);
+  // console.log("신고하기 값", chatRoomNo.value, reportReason.value);
   await $createReport(chatRoomNo.value, reportReason.value)
     .then(res => {
-      console.log(res.data);
+      // console.log(res.data);
       reportDialog.value = false; // 성공 시 reportDialog 닫기
     })
     .catch(err => console.log(err));
@@ -196,7 +198,7 @@ function loadChatHistory() {
   $getChatMessages(chatRoomNo.value)
     .then(res => {
       chatHistory.value = res.data
-      console.log(res.data)
+      // console.log(res.data)
       // for문을 돌면서 해당 메세지의 sendUserNo 이 `나` 일 경우 오른쪽,
       // 상대방일 경우 왼쪽에 추가
       chatHistory.value.forEach(chatMsg => {
@@ -216,7 +218,7 @@ function loadChatHistory() {
             userImgPath : chatMsg.userImgPath
           });
         } else {
-          console.log(otherName)
+          // console.log(otherName)
           // otherName.value = chatMsg.sendNickname
           messages.value.push({
             sender: { nickname: chatMsg.sendNickname, avatarUrl: "" },
@@ -277,9 +279,9 @@ function createWebSocketConnection() {
 
     // 채팅방 구독(subscribe) 요청
     subscription.value = stomp.subscribe(`/sub/chat/room/${chatRoomNo.value}`, (res) => {
-      console.log(res);
+      // console.log(res);
       const chatMsg = JSON.parse(res.body); // 구독하게 되면 받아오게 되는 메세지
-      console.log(chatMsg);
+      // console.log(chatMsg);
       const writer = chatMsg.sendNickname;
 
       let checkDate = checkedDate(chatMsg.chatCreateAt)
@@ -337,14 +339,14 @@ const sendMessage = () => {
   // userMessage가 비어있으면 함수를 종료합니다.
   if (userMessage.value == null || userMessage.value.trim() == "") {
     userMessage.value = ''
-    console.log(userMessage.value)
+    // console.log(userMessage.value)
     return;
 
   } else {
-    console.log(userMessage.value)
+    // console.log(userMessage.value)
     // messages 배열에 새로운 메시지를 추가합니다.
     // const currentTime = getCurrentTime();
-    console.log(myName + ":" + userMessage.value);
+    // console.log(myName + ":" + userMessage.value);
     const sendData = JSON.stringify({
       chatRoomNo: chatRoomNo.value,
       chatSendUserNo: userStore.getLoginUser.userNo,
@@ -353,7 +355,7 @@ const sendMessage = () => {
       userImgPath : userStore.getLoginUser.userImgPath
     })
     userMessage.value = '';
-    console.log(sendData)
+    // console.log(sendData)
     stomp.send('/pub/chat/message', {}, sendData)
   }
   // 스크롤을 최신 메시지로 이동시킵니다.
@@ -373,16 +375,16 @@ onBeforeUnmount(() => {
     }
 })
 
-function findImage(userImg) {
-  if (userImg) {
-    console.log(userImg);
-    const convertedPath = userImg.replace(/\\/g, '/');
-    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
-  } else {
-    const defaultImg = 'src/main/resources/static/profileImages/default.png'
-    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${defaultImg}`;
-  }
-}
+// function findImage(userImg) {
+//   if (userImg) {
+//     // console.log(userImg);
+//     const convertedPath = userImg.replace(/\\/g, '/');
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
+//   } else {
+//     const defaultImg = 'src/main/resources/static/profileImages/default.png'
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${defaultImg}`;
+//   }
+// }
 
 </script>
 

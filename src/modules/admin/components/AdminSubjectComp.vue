@@ -119,7 +119,7 @@ async function getSubjects() {
     .then(res => {
       if (res.data != null || res.data != '') {
         subjectList.value = res.data
-        console.log(subjectList.value);
+        // console.log(subjectList.value);
       }
       sj.value = subjectList.value.subject
       // console.log(sj.value);
@@ -128,12 +128,12 @@ async function getSubjects() {
 
 // 논제 선택 삭제
 async function deleteSubject() {
-  console.log(selectedSubject.value)
+  // console.log(selectedSubject.value)
   await $deleteSubject(selectedSubject.value)
     .then(res => {
       if (res.data != null || res.data != '') {
         subject.value = res.data
-        console.log(subject.value);
+        // console.log(subject.value);
         getSubjects()
       }
       sj.value = subject.value.subject
@@ -158,12 +158,12 @@ const selectedImage = ref(null)
 //이미지 생성 버튼
 async function makeImg() {
   loading.value = true
-  console.log(test_text.value);
+  // console.log(test_text.value);
   const configuration = new Configuration({
     apiKey: API_KEY,
   });
   const openai = new OpenAIApi(configuration);
-  console.log(openai);
+  // console.log(openai);
 
   async function runPrompt() {
     const response = await openai.createCompletion({
@@ -172,7 +172,7 @@ async function makeImg() {
       max_tokens: 700,
       temperature: 0.2,
     });
-    console.log('- completion:\n' + response.data.choices[0].text);
+    // console.log('- completion:\n' + response.data.choices[0].text);
     const completion = response.data.choices[0].text;
     sentence.value = completion;
 
@@ -181,7 +181,7 @@ async function makeImg() {
 
   //이미지 생성 dallePrompt
   async function dallePrompt() {
-    console.log("dalle에 전달 된 키워드 값 :" + sentence.value);
+    // console.log("dalle에 전달 된 키워드 값 :" + sentence.value);
     const apiKey = API_KEY;
 
     const inputText = sentence.value;
@@ -223,7 +223,7 @@ async function makeImg() {
 function postAdminSubject(test_text, imgUrl) {
   $postAdminSubject(test_text, imgUrl)
     .then(res => {
-      console.log(res.data)
+      // console.log(res.data)
       getSubjects();
     }).catch(err => {
       console.log(err)
@@ -244,7 +244,7 @@ async function confirmExit() {
     imageUrl.value = [];
     selectedImage.value = null;
     
-    console.log("됐삼");
+    // console.log("됐삼");
   } catch (error) {
     console.error(error);
   }
