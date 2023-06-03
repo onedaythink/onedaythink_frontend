@@ -96,6 +96,8 @@ import { useRouter } from 'vue-router';
       userPwd: null
   })
 
+  const showPassword = ref(false)
+
   const passwordConfirmation = ref(null)
   const terms = ref(false)
 

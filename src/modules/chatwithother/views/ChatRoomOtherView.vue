@@ -146,13 +146,14 @@ reportDialog.value = false;
 
 
 const getCurrentTime = () => {
-  const now = new Date();
-  const hours = now.getHours();
-  const minutes = now.getMinutes();
-  const ampm = hours >= 12 ? "pm" : "am";
-  const hour = hours % 12;
-  const time = `${ampm} ${hour}:${minutes < 10 ? "0" + minutes : minutes}`;
-  return time;
+  return format(new Date(), 'yyyy-MM-dd HH:mm:ss');
+
+  // const hours = now.getHours();
+  // const minutes = now.getMinutes();
+  // const ampm = hours >= 12 ? "pm" : "am";
+  // const hour = hours % 12;
+  // const time = `${ampm} ${hour}:${minutes < 10 ? "0" + minutes : minutes}`;
+  // return time;
 };
 
 async function scrollToLatestMessage() {
@@ -282,7 +283,7 @@ function createWebSocketConnection() {
         messages.value.push({
           sender: { nickname: myName, avatarUrl: "" },
           content: chatMsg.chatMsgContent,
-          time: currentTime
+          time: formattedDate(currentTime)
         });
       } else {
         otherName.value = chatMsg.sendNickname
@@ -290,17 +291,19 @@ function createWebSocketConnection() {
         messages.value.push({
           sender: { nickname: writer, avatarUrl: "" },
           content: chatMsg.chatMsgContent,
-          time: currentTime
+          time: formattedDate(currentTime)
         });
       }
       scrollToLatestMessage();
     });
 
     //3. send(path, header, message)로 메세지를 보낼 수 있음
+    const currentTime = getCurrentTime();
     const sendData = JSON.stringify({
       chatRoomNo: chatRoomNo.value,
       chatSendUserNo: userStore.getLoginUser.userNo,
-      sendNickname: myName
+      sendNickname: myName,
+      chatCreateAt: currentTime
     })
     stomp.send('/pub/chat/enter', {}, sendData)
   });
