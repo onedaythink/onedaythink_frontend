@@ -55,7 +55,7 @@
                     <th class="tesx-left">선택</th>
                     <th class="tesx-left">순번</th>
                     <th class="tesx-left">논제내용</th>
-                    <th class="tesx-left">이미지</th>
+                    <th class="tesx-left"></th>
                     <th class="tesx-left">논제 사용 일자</th>
                   </tr>
                 </thead>
@@ -224,6 +224,7 @@ function postAdminSubject(test_text, imgUrl) {
   $postAdminSubject(test_text, imgUrl)
     .then(res => {
       console.log(res.data)
+      getSubjects();
     }).catch(err => {
       console.log(err)
     })
@@ -234,16 +235,26 @@ onMounted(async () => {
   await nextTick()
 })
 
-function confirmExit() {
-  postAdminSubject(test_text.value, selectedImage.value);
-  showConfirmationDialog.value = false;
-
+async function confirmExit() {
+  try {
+    await postAdminSubject(test_text.value, selectedImage.value);
+    showConfirmationDialog.value = false;
+    // 화면 초기화
+    test_text.value = '';
+    imageUrl.value = [];
+    selectedImage.value = null;
+    
+    console.log("됐삼");
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 // 논제 저장
 function addSubject() {
   
-  showConfirmationDialog.value = true
+  
+  showConfirmationDialog.value = true;
 }
 </script>
 
