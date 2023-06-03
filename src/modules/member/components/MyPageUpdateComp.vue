@@ -7,7 +7,7 @@
         
         <v-btn icon size="70" v-bind="props" @click="openFileInput(); editProfile = true">
           <v-avatar v-if="userData.userImgPath && userData.userImgPath !== ''" size="70">
-            <img :src="findUserImage(userData.userImgPath)">
+            <img :src="findUserImage(userData.userImgPath)"   style="object-fit: cover; width: 100%; height: 100%;" >
           </v-avatar>
         </v-btn>
         <input type="file" accept="image/png" ref="fileInput" style="display: none" @change="onFileChange">
