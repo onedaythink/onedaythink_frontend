@@ -3,7 +3,6 @@
     <v-card>
       <v-row>
         <v-col cols="12">
-
           <p class="formatted-date">{{ foramtDate }} </p>
           <h4 class="mt-2">오늘의 사유</h4>
           <div class="mainbox">
