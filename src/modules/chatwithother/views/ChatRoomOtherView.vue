@@ -60,24 +60,31 @@
           <v-card-text>
             <!-- message -->
             <v-row v-for="message in messages" :key="message.id">
-              <v-col cols="12">
-                <!-- Removed the v-divider element -->
-                <div class="d-flex" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">
-                  <div>
-                    <v-card class="mx-2"
-                      :class="message.sender.nickname === myName ? 'chat-message-yellow' : 'chat-message-mint'" tile>
-                      <v-card-text>
-                        {{ message.content }}
-                      </v-card-text>
-                    </v-card>
+              <template v-if="message.content != 'messageDate'">
+                <v-col cols="12">
+                  <!-- Removed the v-divider element -->
+                  <div class="d-flex" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">
+                    <div>
+                      <v-card class="mx-2"
+                        :class="message.sender.nickname === myName ? 'chat-message-yellow' : 'chat-message-mint'" tile>
+                        <v-card-text>
+                          {{ message.content }}
+                        </v-card-text>
+                      </v-card>
+                    </div>
                   </div>
-                </div>
-                <div>
-                  <div class="d-flex grey--text"
-                    :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">{{
-                      message.sender.nickname }} {{ message.time }}</div>
-                </div>
-              </v-col>
+                  <div>
+                    <div class="d-flex grey--text"
+                      :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">{{
+                        message.sender.nickname }} {{ message.time }}</div>
+                  </div>
+                </v-col>
+              </template>
+              <template v-else>
+                <v-col cols=12>
+                  <div class="date-div">{{ message.time }}</div>
+                </v-col>
+              </template>
             </v-row>
           </v-card-text>
         </v-card>
@@ -170,6 +177,7 @@ async function createReport() {
 }
 
 
+const chatDate = ref('')
 
 const chatHistory = ref(null)
 
@@ -181,6 +189,14 @@ function loadChatHistory() {
       // for문을 돌면서 해당 메세지의 sendUserNo 이 `나` 일 경우 오른쪽,
       // 상대방일 경우 왼쪽에 추가
       chatHistory.value.forEach(chatMsg => {
+        let checkDate = checkedDate(chatMsg.chatCreateAt)
+        if(chatDate.value != checkDate) {
+          chatDate.value = checkDate
+          messages.value.push({
+            content: 'messageDate',
+            time: checkDate
+          });
+        }
         if (myName == chatMsg.sendNickname) {
           messages.value.push({
             sender: { nickname: myName, avatarUrl: "" },
@@ -226,6 +242,10 @@ function formattedDate(createAt) {
   return format(new Date(createAt), 'HH:mm');
 }
 
+function checkedDate(createAt) {
+  return format(new Date(createAt), 'yyyy년 MM월 dd일');
+}
+
 // WebSocket 연결 생성 함수
 function createWebSocketConnection() {
 
@@ -249,6 +269,14 @@ function createWebSocketConnection() {
       console.log(chatMsg);
       const writer = chatMsg.sendNickname;
 
+      let checkDate = checkedDate(chatMsg.chatCreateAt)
+        if(chatDate.value != checkDate) {
+          chatDate.value = checkDate
+          messages.value.push({
+            content: 'messageDate',
+            time: checkDate
+          });
+        }
       if (myName == writer) {
         const currentTime = getCurrentTime();
         messages.value.push({
@@ -431,4 +459,14 @@ onBeforeUnmount(() => {
     --v-layout-top: 0px !important; 
 } */
 
+.date-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f2f2f2;
+  font-weight: bold;
+  font-size: 14px;
+  color: #555555;
+  border-radius:80px;
+}
 </style>
