@@ -37,7 +37,7 @@
             <!-- Removed the v-divider element -->
             <div class="d-flex" style="align-items: center;" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">
               <div v-if="message.sender.nickname !== myName">
-                      <v-img class="align-end text-white" :src=findImage(message.userImgPath) cover rounded
+                      <v-img class="align-end text-white" :src="message.userImgPath" cover rounded
                             style="border-radius: 50%; width: 40px; height: 40px;">
                       </v-img>
               </div>
@@ -168,9 +168,10 @@ function createWebSocketConnection() {
         const currentTime = getCurrentTime();
         for(const item of msg) {
         messages.value.push({
-          sender: { nickname: item.nickname, haruName:item.haruName, avatarUrl: item.haruImgPath },
+          sender: { nickname: item.nickname, haruName:item.haruName},
           content: item.chatMsgContent,
-          time: getCurrentTime()
+          time: getCurrentTime(),
+          userImgPath : item.haruImgPath
         });
 
 
@@ -269,7 +270,8 @@ const sendMessage = async () => {
       messages.value.push({
         sender: { nickname: userStore.getLoginUser.nickname, avatarUrl: '' },
         content: userMessage.value,
-        time: currentTime
+        time: currentTime,
+        userImgPath : userStore.getLoginUser.userImgPath
       });
       const sendData = {
         // chatRoomNo 은 페이지에 접속 할 때, 스토어에 저장된 챗정보에서 가지고 와야 한다.
@@ -301,7 +303,8 @@ const sendMessage = async () => {
         for(const item of res.data) {
           messages.value.push({
           sender: { nickname: item.nickname, haruName:item.haruName,  avatarUrl: item.haruImgPath},
-          content: item.chatMsgContent
+          content: item.chatMsgContent,
+          userImgPath : item.haruImgPath
         });
         }
       })
@@ -325,7 +328,8 @@ async function loadChatMessageHistory() {
           messages.value.push({
           // sender: { nickname: item.haruName, avatarUrl: item.haruImgPath},
           sender: { nickname: item.nickname, haruName:item.haruName, avatarUrl: item.haruImgPath},
-          content: item.msgContent
+          content: item.msgContent,
+          userImgPath : item.haruImgPath
         });
       }
   })

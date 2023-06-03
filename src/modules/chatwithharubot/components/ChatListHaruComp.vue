@@ -87,12 +87,12 @@ const haruChatRooms = ref([])
 const haruChatStore = useHaruChatStore()
 
 // 채팅방 입장
-function goToChatRoomHaru(haruChatRoom) {
+async function goToChatRoomHaru(haruChatRoom) {
   haruChatStore.setHaruChatRoom(haruChatRoom)
   haruChatStore.setChatRoomNo(haruChatRoom.chatRoomNo)
   console.log(haruChatRoom)
   getSelectedCahr(haruChatRoom.chatRoomNo)
-  router.push({ path: '/chatroompersona' })
+  await router.push({ path: '/chatroompersona' })
 }
 
 const userStore = useUserStore()
