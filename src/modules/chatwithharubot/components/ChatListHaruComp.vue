@@ -189,4 +189,5 @@ onMounted(async () => {
   padding: 0.5rem;
   justify-content: center;
 }
+
 </style>

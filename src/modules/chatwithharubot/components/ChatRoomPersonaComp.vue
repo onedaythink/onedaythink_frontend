@@ -35,13 +35,23 @@
         <v-row v-for="message in messages" :key="message.id">
           <v-col cols="12">
             <!-- Removed the v-divider element -->
-            <div class="d-flex" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">
+            <div class="d-flex" style="align-items: center;" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">
+              <div v-if="message.sender.nickname !== myName">
+                      <v-img class="align-end text-white" :src=findImage(message.userImgPath) cover rounded
+                            style="border-radius: 50%; width: 40px; height: 40px;">
+                      </v-img>
+              </div>
               <div>
                 <v-card class="mx-2" :class="message.sender.nickname === myName ? 'chat-message-yellow' : 'chat-message-mint'" tile>
-                  <v-card-text>
+                  <v-card-text class="text-box">
                     {{ message.content }}
                   </v-card-text>
                 </v-card>
+              </div>
+              <div v-if="message.sender.nickname === myName">
+                      <v-img class="align-end text-white" :src=findImage(message.userImgPath) cover rounded
+                            style="border-radius: 50%; width: 40px; height: 40px;">
+                      </v-img>
               </div>
             </div>
             <div> 
@@ -345,6 +355,17 @@ onMounted(async () => {
   getSelectedChar();
 });
 
+function findImage(userImg) {
+  if (userImg) {
+    console.log(userImg);
+    const convertedPath = userImg.replace(/\\/g, '/');
+    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
+  } else {
+    const defaultImg = 'src/main/resources/static/profileImages/default.png'
+    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${defaultImg}`;
+  }
+}
+
 </script>
 
 <style scoped>
@@ -421,4 +442,8 @@ onMounted(async () => {
  .sendButtonRow{
     margin-top: -30px;
  }
+
+ .text-box {
+  padding: 0.5rem;
+}
 </style>
