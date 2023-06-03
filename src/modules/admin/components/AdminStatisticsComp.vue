@@ -5,8 +5,8 @@
           <v-card-title>회원 관리</v-card-title>
             <div class="chart-section">
               <v-list>
-                <v-list-item v-if="userList.length > 0">
-                  <v-list-item-content> ● 전체 회원 수 : {{ totalUserCount }} 명</v-list-item-content>
+                <v-list-item>
+                  <v-list-item-content v-if="userList.length > 0"> ● 전체 회원 수 : {{ totalUserCount }} 명</v-list-item-content>
                 </v-list-item>
                 <v-list-item>
                   <v-list-item-content v-if="userList.length > 0"> ● 이용제한 회원 수 : {{ totalblacklistCount }} 명</v-list-item-content>
@@ -26,17 +26,17 @@
           <v-card class="mb-5 pa-3" flat tile style="margin-top: 50px">
             <v-card-title>채팅방 관리</v-card-title>
             <div class="chart-section">
-              <v-list>
-                <v-list-item v-if="chatList.length > 0">
-                  <v-list-item-content> ● 전체 채팅방 수 : {{ totalChatRoomsCount }} 개</v-list-item-content>
-                </v-list-item>
-                <v-list-item>
-                  <v-list-item-content v-if="chatList.length > 0"> ● 활성화 채팅방 수 : {{ liveChatRoomsCount }} 개</v-list-item-content>
-                </v-list-item>
-                <v-list-item>
-                  <v-list-item-content v-if="chatList.length > 0"> ● 비활성화 채팅방 수 : {{ deadChatRoomsCount }} 개</v-list-item-content>
-                </v-list-item>
-              </v-list>
+                <v-list>
+                  <v-list-item>
+                    <v-list-item-content v-if="chatList.length > 0"> ● 전체 채팅방 수 : {{ totalChatRoomsCount }} 개</v-list-item-content>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-content v-if="chatList.length > 0"> ● 활성화 채팅방 수 : {{ liveChatRoomsCount }} 개</v-list-item-content>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-list-item-content v-if="chatList.length > 0"> ● 비활성화 채팅방 수 : {{ deadChatRoomsCount }} 개</v-list-item-content>
+                  </v-list-item>
+                </v-list>
               <div class="chart-container">
                 <canvas id="pie-chart_chatRoom" ref="chartRef_chatRoom"></canvas>
               </div>
@@ -45,28 +45,52 @@
         </v-col>
       </v-row>
 
+    <v-row class="mt-5">
       <v-col cols="12" md="6">
         <v-card class="pa-3" flat tile>
           <v-card-title>논제 관리</v-card-title>
           <div class="chart-section">
               <v-list>
-                <v-list-item v-if="subjectList.length> 0">
-              <v-list-item-content> ● 전체 논제 건수 : {{ totalSubjectCount }} 건</v-list-item-content>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-content v-if="subjectList.length> 0"> ● 미사용 논제 건수 : {{ unUseSubjectCount }} 건</v-list-item-content>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-content v-if="subjectList.length> 0"> ● 사용된 논제 수 : {{ usedSubjectCount }} 건</v-list-item-content>
-            </v-list-item>
-          </v-list>
+                <v-list-item>
+                  <v-list-item-content v-if="subjectList.length> 0"> ● 전체 논제 건수 : {{ totalSubjectCount }} 건</v-list-item-content>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-content v-if="subjectList.length> 0"> ● 미사용 논제 건수 : {{ unUseSubjectCount }} 건</v-list-item-content>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-content v-if="subjectList.length> 0"> ● 사용된 논제 수 : {{ usedSubjectCount }} 건</v-list-item-content>
+                </v-list-item>
+              </v-list>
           <div class="chart-container">
                 <canvas id="pie-chart_subject" ref="chartRef_subject"></canvas>
               </div>
           </div>
         </v-card>
-
       </v-col>
+
+      <v-col cols="12" md="6">
+        <v-card class="pa-3" flat tile>
+          <v-card-title>신고 관리</v-card-title>
+          <div class="chart-section">
+            <v-list>
+              <v-list-item>
+                <v-list-item-content v-if="reportList.length> 0"> ● 전체 신고 건수 : {{ totalReportCount }} 건</v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content v-if="reportList.length> 0"> ● 미처리 신고 건수 : {{ unprocessedReportCount }} 건</v-list-item-content>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-content v-if="reportList.length> 0"> ● 처리된 신고 건수 : {{ processedReportCount }} 건</v-list-item-content>
+              </v-list-item>
+            </v-list>
+          <div class="chart-container">
+                <canvas id="pie-chart_report" ref="chartRef_report"></canvas>
+              </div>
+          </div>
+        </v-card>
+      </v-col>
+    </v-row>
+
 </template>
 
 <script>
@@ -81,6 +105,7 @@ import { ref, onMounted, nextTick, computed, watch } from 'vue'
 import { $getUsers } from '@/api/user';
 import { $getChatRoomsAll } from '@/api/chat';
 import { $getSubjects } from '@/api/subject';
+import { $getReport } from '@/api/report';
 
 import { Chart, PieController, ArcElement, Tooltip, Legend } from 'chart.js';
 Chart.register(PieController, ArcElement, Tooltip, Legend);
@@ -90,6 +115,7 @@ Chart.register(PieController, ArcElement, Tooltip, Legend);
 const userList = ref([]);
 const chatList = ref([]);
 const subjectList = ref([]);
+const reportList = ref([]);
 
 
 // 전체 회원 조회
@@ -172,10 +198,39 @@ const usedSubjectCount = computed(() => {
   return subjectList.value.filter(subject => subject.subDate !== null).length;
 });
 
+// 전체 신고 조회
+async function getReports() {
+  await $getReport()
+    .then((res) => {
+      if (res.data != null || res.data != "") {
+        reportList.value = res.data;
+      }
+    })
+    .catch((err) => console.log(err));
+}
+
+// 전체 신고 수 계산
+const totalReportCount = computed(() => {
+  return reportList.value.length;
+});
+
+// 미처리된 신고 수 계산
+const unprocessedReportCount = computed(() => {
+  return reportList.value.filter(report => report.reportResult === 'w').length;
+});
+
+// 처리된 신고 수 계산
+const processedReportCount = computed(() => {
+  return reportList.value.filter(report => report.reportResult !== 'w').length;
+});
+
+
+
 
 const chartRef_user = ref(null);
 const chartRef_chatRoom = ref(null);
 const chartRef_subject = ref(null);
+const chartRef_report = ref(null);
 
 
 // 데이터 갱신
@@ -184,6 +239,7 @@ onMounted(async () => {
   getUsers();
   getChatRoomsAll();
   getSubjects();
+  getReports();
 
 
 const data_user = {
@@ -214,6 +270,17 @@ const data_user = {
       {
         label: '논제 수',
         data: [totalSubjectCount.value, unUseSubjectCount.value, usedSubjectCount.value],
+        backgroundColor: ['#877b78', 'orange', '#FBF0A0'],
+      },
+    ],
+  };
+
+  const data_report = {
+    labels: ['전체 신고', '미처리 신고', '처리된 신고'],
+    datasets: [
+      {
+        label: '논제 수',
+        data: [totalReportCount.value, unprocessedReportCount.value, processedReportCount.value],
         backgroundColor: ['#877b78', 'orange', '#FBF0A0'],
       },
     ],
@@ -273,6 +340,24 @@ const data_user = {
     },
   };
 
+  const config_report = {
+  type: 'pie',
+  data: data_report,
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: '신고 관리 차트',
+        },
+      },
+    },
+  };
+
   const pieChart_user = new Chart(chartRef_user.value.getContext('2d'), config_user);
 
   watch([totalUserCount, totalblacklistCount, totalSignOutCount], () => {
@@ -298,15 +383,26 @@ const data_user = {
   });
 
   const pieChart_subject = new Chart(chartRef_subject.value.getContext('2d'), config_subject);
-
   watch([totalSubjectCount, unUseSubjectCount, usedSubjectCount], () => {
     pieChart_subject.data.datasets[0].data = [
-      totalSubjectCount.value,
-      unUseSubjectCount.value,
-      usedSubjectCount.value,
+    totalSubjectCount.value,
+    unUseSubjectCount.value,
+    usedSubjectCount.value,
   ];
   pieChart_subject.update();
       
+});
+
+const pieChart_report = new Chart(chartRef_report.value.getContext('2d'), config_report);
+watch([totalReportCount, unprocessedReportCount, processedReportCount], () => {
+  pieChart_report.data.datasets[0].data = [
+    totalReportCount.value,
+    unprocessedReportCount.value,
+    processedReportCount.value,
+
+];
+pieChart_report.update();
+    
 });
 
 });
