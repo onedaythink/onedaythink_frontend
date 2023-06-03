@@ -24,7 +24,7 @@
             <div class="mx-auto text-center">
               <h3>{{ user.nickname }}</h3>
               <p class="text-caption mt-1">
-                {{ user.email }}
+                {{ user.email != 'null' && user.email != null ? user.email : ''}}
               </p>
               <v-divider class="my-3"></v-divider>
                 <v-btn rounded variant="text" router-link to="/mypageupdate"> 내 정보 수정하기 </v-btn>
@@ -61,8 +61,8 @@
             class="d-flex align-center justify-center"
           ></v-img>
 
-          <v-card-title>{{ formattedDate(opinion.createAt) }}</v-card-title>
-          <v-card-subtitle style="white-space: pre-wrap;">{{ opinion.content }}</v-card-subtitle>
+          <v-card-title style="font-size:14px; margin-top:20px; margin-bottom: 10px;">{{ formattedDate(opinion.createAt) }}</v-card-title>
+          <v-card-subtitle style="white-space: pre-wrap; margin-bottom: 10px;">{{ opinion.content }}</v-card-subtitle>
           <v-card-actions> 어떤 생각을 했을까?
             <v-spacer></v-spacer>
             <v-btn

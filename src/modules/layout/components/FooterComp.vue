@@ -15,7 +15,7 @@ export default {
 </script>
 
 <style scoped>
-@media (max-width: 767px) {
+@media (max-width: 420px) {
   .white--text {
     color: white;
   }

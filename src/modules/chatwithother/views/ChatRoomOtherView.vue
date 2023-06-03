@@ -119,6 +119,7 @@ import { useChatStore } from "@/store/chat";
 import { $getChatMessages } from '@/api/chat';
 import { $createReport } from "@/api/report";
 import { useSubjectStore } from "@/store/subject";
+import { format } from 'date-fns'
 
 const userStore = useUserStore()
 const subjectStore = useSubjectStore()
@@ -184,7 +185,7 @@ function loadChatHistory() {
           messages.value.push({
             sender: { nickname: myName, avatarUrl: "" },
             content: chatMsg.chatMsgContent,
-            time: chatMsg.chatCreateAt,
+            time: formattedDate(chatMsg.chatCreateAt),
           });
         } else {
           console.log(otherName)
@@ -192,7 +193,7 @@ function loadChatHistory() {
           messages.value.push({
             sender: { nickname: chatMsg.sendNickname, avatarUrl: "" },
             content: chatMsg.chatMsgContent,
-            time: chatMsg.chatCreateAt,
+            time: formattedDate(chatMsg.chatCreateAt),
           });
         }
       });
@@ -220,6 +221,10 @@ const stomp = Stomp.over(socket);
 //     otherName.value = chatRoom.fromNickname
 //   }
 // }
+
+function formattedDate(createAt) {
+  return format(new Date(createAt), 'HH:mm');
+}
 
 // WebSocket 연결 생성 함수
 function createWebSocketConnection() {
@@ -249,7 +254,7 @@ function createWebSocketConnection() {
         messages.value.push({
           sender: { nickname: myName, avatarUrl: "" },
           content: chatMsg.chatMsgContent,
-          time: currentTime,
+          time: currentTime
         });
       } else {
         otherName.value = chatMsg.sendNickname
@@ -257,7 +262,7 @@ function createWebSocketConnection() {
         messages.value.push({
           sender: { nickname: writer, avatarUrl: "" },
           content: chatMsg.chatMsgContent,
-          time: currentTime,
+          time: currentTime
         });
       }
       scrollToLatestMessage();
