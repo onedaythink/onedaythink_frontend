@@ -49,9 +49,9 @@
                 </v-card>
               </div>
               <div v-if="message.sender.nickname === myName">
-                      <v-img class="align-end text-white" :src=findImage(message.userImgPath) cover rounded
-                            style="border-radius: 50%; width: 40px; height: 40px;">
-                      </v-img>
+                  <v-img class="align-end text-white" :src=findImage(message.userImgPath) cover rounded
+                        style="border-radius: 50%; width: 40px; height: 40px;">
+                  </v-img>
               </div>
             </div>
             <div> 
@@ -192,8 +192,6 @@ const haruList = ref([])
 
 // 스토어에 저장되어 있는 선택된 페르소나를 haruChat 변수에 담는 함수
 function getSelectedChar() {
-  console.log(selectedChar.value)
-  console.log(haruChatStore.getSelectedChar)
   selectedChar.value = haruChatStore.getSelectedChar;
   const l = []
   for (let char in selectedChar.value) {

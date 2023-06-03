@@ -92,7 +92,6 @@ async function goToChatRoomHaru(haruChatRoom) {
   haruChatStore.setChatRoomNo(haruChatRoom.chatRoomNo)
   console.log(haruChatRoom)
   getSelectedCahr(haruChatRoom.chatRoomNo)
-  await router.push({ path: '/chatroompersona' })
 }
 
 const userStore = useUserStore()
@@ -109,14 +108,15 @@ function getHaruChatRooms() {
 }
 
 // 채팅방 입장 전 해당 채팅방과 연계되어 있는 하루봇 리스트를 조회해서 스토어에 담기
-function getSelectedCahr(chatRoomNo) {
-  $getSelectedCahr(chatRoomNo)
+async function getSelectedCahr(chatRoomNo) {
+  await $getSelectedCahr(chatRoomNo)
     .then(res => {
       const haruchatChar = res.data
       for (const h of haruchatChar) {
         h.userNo = userStore.getLoginUser.userNo
       }
       haruChatStore.setHaruchatChar(haruchatChar);
+      router.push({ path: '/chatroompersona'})
     })
     .catch(err => console.log(err))
 }
