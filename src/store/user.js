@@ -22,5 +22,10 @@ export const useUserStore = defineStore('user', () => {
     console.log(user.value)
   }
 
-  return { getLoginUser, setLoginUser, logout }
+  function setLoginUserImg(imgData) {
+    user.value.userOriginImg = imgData.userOriginImg,
+    user.value.userImgPath = imgData.userImgPath
+  }
+
+  return { getLoginUser, setLoginUser, logout , setLoginUserImg}
 })

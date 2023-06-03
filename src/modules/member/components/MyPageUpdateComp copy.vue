@@ -39,7 +39,7 @@
     ></v-text-field>
 
     <v-text-field
-      v-model="newUserUpdate.nickname"
+      v-model="userData.nickname"
       color="primary"
       label="닉네임"
       variant="underlined"
@@ -50,7 +50,7 @@
     <v-btn color="primary" @click="checkDuplicateNickname" class="small">닉네임 중복확인</v-btn>
     <br>
     <v-text-field
-      v-model="newUserUpdate.email"
+      v-model="userData.email"
       color="primary"
       label="이메일"
       variant="underlined"
@@ -88,8 +88,8 @@
 
     <div v-if="passwordDoubleCheck != null && !passwordDoubleCheck">비밀번호가 일치하지 않습니다.</div>
 
-    <v-btn class="submit" color="info" @click="updateUser()">확인</v-btn>
-    
+
+    <v-btn color="info" @click="updateUser" class="submit">확인</v-btn>
   </v-container>
 </template>
 
@@ -106,16 +106,13 @@ export default {
 
 <script setup>
 import { useUserStore } from '@/store/user';
-import { $updateUser, $checkNickname, $checkEmail, $updateUserProfile } from '@/api/user'
+import { $updateUser, $checkNickname, $checkEmail, $getUsers, $updateUserProfile } from '@/api/user'
 // import { $checkNickname, $getUsers, $updateUserProfile } from '@/api/user'
 
 import { onMounted, nextTick, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-// 로그인 정보
-const userStore = useUserStore()
-
-const userData = userStore.getLoginUser // 유저 데이터 정보
+const userData = ref({}) // 유저 데이터 정보
 
 // 유저 정보 업데이트
 const newUserUpdate = ref({
@@ -124,14 +121,11 @@ const newUserUpdate = ref({
   userPwd: '',
   userOriginImg: '',
   userImgPath: ''
+  
 }) 
 
-function newUserDateInput(){
-  newUserUpdate.value.nickname = userData.nickname != "null" ? userData.nickname : '';
-  newUserUpdate.value.email = userData.email != "null" ? userData.email : '';
-  // console.log(userData.nickname, userData.email)
-  // console.log(newUserUpdate.value)
-}
+// 로그인 정보
+const userStore = useUserStore()
 
 const router = useRouter()
 
@@ -182,14 +176,10 @@ async function onFileChange(e) {
     if (response.data && response.data.userOriginImg) { // 응답에 data 속성과 filename 속성이 있는지 확인합니다.
 
       // 응답의 data.userOriginImg 새 이미지 파일의 이름을 포함한다고 가정합니다.
-      // 사용자 데이터의 userImgOrigin 값을 새 파일 이름으로 설정합니다.
-      // userImgPath의 값은 server response로부터 받은 새로운 이미지 경로로 수정합니다.
-      const imgData = { 
-        userOriginImg : response.data.userOriginImg, 
-        userImgPath : response.data.userImgPath
-      }
-      userStore.setLoginUserImg(imgData)
+      userData.value.userImgOrigin = response.data.userOriginImg; // 사용자 데이터의 userImgOrigin 값을 새 파일 이름으로 설정합니다.
 
+      // userImgPath의 값은 server response로부터 받은 새로운 이미지 경로로 수정합니다.
+      userData.value.userImgPath = response.data.userImgPath;
     } else {
       throw new Error('userOriginImg 또는 userImgPath 속성을 찾을 수 없음.');
     }
@@ -200,40 +190,34 @@ async function onFileChange(e) {
 
 function openFileInput() {
   // 저장된 원본 이미지의 정보를 저장
-  originalUserImgOrigin.value = userData.userImgOrigin;
-  originalUserImgPath.value = userData.userImgPath;
+  originalUserImgOrigin.value = userData.value.userImgOrigin;
+  originalUserImgPath.value = userData.value.userImgPath;
   fileInput.value.click()
 }
 
 function imgRollback() {
   // 원본 이미지 정보로 롤백
-  const imgData = { 
-        userOriginImg : originalUserImgOrigin.value, 
-        userImgPath : originalUserImgPath.value
-      }
-    userStore.setLoginUserImg(imgData)
+  userData.value.userImgOrigin = originalUserImgOrigin.value;
+  userData.value.userImgPath = originalUserImgPath.value;
 }
 
 function imgRollbackDefault() {
   // 기본 이미지 정보로 롤백
-  const imgData = { 
-        userOriginImg : 'default.png', 
-        userImgPath : 'src/main/resources/static/profileImages/default.png'
-      }
-  userStore.setLoginUserImg(imgData)
+  userData.value.userImgOrigin = 'default.png';
+  userData.value.userImgPath = 'src/main/resources/static/profileImages/default.png';
 }
 
-// function isClear() {
-//   if (checkNickname.value && passwordValueCheck.value && passwordDoubleCheck.value && checkEmail.value) {
-//     return true;
-//   } else {
-//     return false;
-//   }
-// }
+function isClear() {
+  if (checkNickname.value && passwordValueCheck.value && passwordDoubleCheck.value && checkEmail.value) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 function checkDuplicateNickname() {
     // 닉네임 중복 체크 로직 구현
-    $checkNickname(newUserUpdate.value)
+    $checkNickname(userData.value)
     .then(res => {
       if (res.data != null && res.data !='') {
         console.log(res.data)
@@ -248,9 +232,9 @@ function checkDuplicateNickname() {
 
 function checkDuplicateEmail() {
   // 이메일 중복 체크 로직 구현
-  $checkEmail(newUserUpdate.value)
+  $checkEmail(userData.value)
   .then(res => {
-    if (res.data != null && res.data !='' ) {
+    if (res.data != null && res.data !='') {
       console.log(res.data)
       checkEmail.value = false
     } else {
@@ -268,7 +252,6 @@ function pwdCheck() {
     console.log(passwordValueCheck.value)
 }
 const passwordDoubleCheck = ref(null)
-
 function pwdDoubleCheck() {
   if (newUserUpdate.value.userPwd === passwordConfirmation.value) {  
     passwordDoubleCheck.value = true
@@ -278,53 +261,35 @@ function pwdDoubleCheck() {
 }
 
 // user 데이터 가져오기
-async function getUser(user) {
-  // const res = await $getUsers(userData.userNo);
-  userStore.setLoginUser(user)
-}
-
-function blankCheckInputFormData(formData, label, data){
-  if (data != '' && data != null && data != 'null') {
-    formData.append(label, data);
-    console.log(`check : ${data}`)
-  }
+async function getUsers() {
+  const res = await $getUsers(userData.value.userNo);
+  getUsers.value = res.userData
 }
 
 async function updateUser() {
-
-  console.log(newUserUpdate.value)
-
-  let formData = new FormData();
-  blankCheckInputFormData(formData,'userNo', userStore.getLoginUser.userNo)
-  blankCheckInputFormData(formData,'nickname', newUserUpdate.value.nickname)
-  blankCheckInputFormData(formData,'email', newUserUpdate.value.email)
-  blankCheckInputFormData(formData,'userPwd', newUserUpdate.value.userPwd)
-  blankCheckInputFormData(formData,'userOriginImg', userData.userOriginImg)
-  blankCheckInputFormData(formData,'userImgPath', userData.userImgPath)
-  console.log(newUserUpdate.value)
-  
-  $updateUser(formData)
-  .then(res => {
-    if(res.data != null && res.data != ''){
-      getUser(res.data)
-      snackbar.value = "회원정보가 수정 되었습니다.";
-      setTimeout(() => {
+  if (isClear()) {
+    $updateUser(newUserUpdate.value)
+    .then(res => {
+      if (res.data == 1) {
+        snackbar.value = "회원정보가 수정 되었습니다.";
+        setTimeout(() => {
         snackbar.value = false;
+        }, 2000);
+      }
+    })
+    .catch(err => console.log(err))
+  } else {
+      snackbar.value  = "작성이 미완성되었습니다.";
+      setTimeout(() => {
+      snackbar.value = false;
       }, 2000);
-      
-      window.alert("회원정보수정에 성공했습니다.")
-      router.push('/mypage')
-
-    } else {
-      console.error('회원정보 수정 중 오류 발생');
-    }
-  })
-  .catch(err => console.log(err))
+  }
 }
 
-onMounted(async () => {
+onMounted( async () => {
   await nextTick()
-  newUserDateInput()
+  userData.value = userStore.getLoginUser
+  getUsers
 })
 
 
