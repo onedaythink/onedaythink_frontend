@@ -462,7 +462,11 @@ onBeforeUnmount(() => {
 .date-div {
   display: flex;
   justify-content: center;
-  background-color: #E0E0E0;
+  align-items: center;
+  background-color: #f2f2f2;
+  font-weight: bold;
+  font-size: 14px;
+  color: #555555;
+  border-radius:80px;
 }
-
 </style>

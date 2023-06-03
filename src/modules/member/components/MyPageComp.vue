@@ -13,7 +13,7 @@
                 <img 
                   :src="findUserImage(user.userImgPath)" 
                   class="rounded-circle" 
-                  style="object-fit: cover;"
+                  style="object-fit: cover; width: 100%;"
                 >
               </v-avatar>
             </v-btn>
