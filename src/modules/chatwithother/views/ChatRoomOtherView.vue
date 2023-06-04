@@ -118,6 +118,15 @@
     <!-- <v-btn color="#FBF0A0" dark @click="receiveMessage">Receive</v-btn> -->
 
   </v-container>
+
+  <v-snackbar
+  v-model="showSnackbar"
+  color="success"
+  :timeout="3000"
+  class="snackbar-center"
+  @click="showSnackbar = false">
+  <span class="snackbar-content">신고가 완료되었습니다.</span>
+</v-snackbar>
 </template>
   
 <script>
@@ -177,17 +186,18 @@ function openReportModal() {
   reportDialog.value = true;
 }
 
-//신고하기
+const showSnackbar = ref(false); // 스낵바
+
 async function createReport() {
   // console.log("신고하기 값", chatRoomNo.value, reportReason.value);
   await $createReport(chatRoomNo.value, reportReason.value)
     .then(res => {
       // console.log(res.data);
       reportDialog.value = false; // 성공 시 reportDialog 닫기
+      showSnackbar.value = true; // 성공 시 Snackbar 표시
     })
     .catch(err => console.log(err));
 }
-
 
 const chatDate = ref('')
 
@@ -240,7 +250,6 @@ const stompClient = ref(null);
 const subscription = ref(null);
 const socket = getChatSocket()
 const stomp = Stomp.over(socket);
-
 
 function formattedDate(createAt) {
   return format(new Date(createAt), 'HH:mm');
@@ -489,6 +498,41 @@ onBeforeUnmount(() => {
   border-radius:80px;
 }
 
+.custom-snackbar {
+    background-color: #43a047; 
+    color: white;  
+    position: absolute;  
+    top: 50%;  
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    padding: 16px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    z-index: 1000; 
+    white-space: pre-wrap; 
+    text-align: center; 
+    display: flex;       
+    align-items: center; 
+    justify-content: center; 
+}
+
+.slide-enter-active, .slide-leave-active {
+  transition: all .3s ease;
+}
+.slide-enter, .slide-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+}
+.snackbar-content {
+  margin: auto;
+}
+.snackbar-center {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: auto !important;
+  top: 50%;
+}
 .text-box {
   padding: 0.5rem;
 }
