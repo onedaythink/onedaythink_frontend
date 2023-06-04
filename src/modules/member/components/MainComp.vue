@@ -38,7 +38,7 @@ import { $flaskTest } from '@/api/flask';
 function test() {
   $flaskTest()
   .then(res => {
-    console.log(res.data)
+    // console.log(res.data)
   })
   .catch(err => console.log(err))
 }

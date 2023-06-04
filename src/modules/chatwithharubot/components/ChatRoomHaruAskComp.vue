@@ -33,13 +33,18 @@
           <v-row v-for="message in messages" :key="message.id">
             <v-col cols="12">
               <!-- Removed the v-divider element -->
-              <div class="d-flex" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">
+              <div class="d-flex" style="align-items: center;" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">
                 <div>
                   <v-card class="mx-2" :class="message.sender.nickname === myName ? 'chat-message-yellow' : 'chat-message-mint'" tile>
-                    <v-card-text>
+                    <v-card-text class="text-box">
                       {{ message.content }}
                     </v-card-text>
                   </v-card>
+                </div>
+                <div v-if="message.sender.nickname === myName">
+                      <v-img class="align-end text-white" :src=findImage(message.userImgPath) cover rounded
+                            style="border-radius: 50%; width: 40px; height: 40px;">
+                      </v-img>
                 </div>
               </div>
               <div> 
@@ -76,6 +81,7 @@ export default {
 import { ref, nextTick } from "vue";
 import { useUserStore } from '@/store/user';
 import { $questionForHaru } from '@/api/flask';
+import { findImage } from "@/api/index";
   
 
 const userStore = useUserStore()
@@ -149,6 +155,17 @@ async function receiveMessage(msg) {
     // 스크롤을 최신 메시지로 이동시킵니다.
     scrollToLatestMessage();
 }
+
+// function findImage(userImg) {
+//   if (userImg) {
+//     console.log(userImg);
+//     const convertedPath = userImg.replace(/\\/g, '/');
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
+//   } else {
+//     const defaultImg = 'src/main/resources/static/profileImages/default.png'
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${defaultImg}`;
+//   }
+// }
 
 </script>
 <style scoped>
@@ -291,4 +308,8 @@ async function receiveMessage(msg) {
     transform: scale(1.3)
   }
 }
-  </style>
+.text-box {
+  padding: 0.5rem;
+}
+
+</style>

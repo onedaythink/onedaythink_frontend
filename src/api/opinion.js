@@ -40,7 +40,7 @@ async function $getMyOpinions(userNo){
 async function $addOpinion(currnet_opinion){
     try {
         const axios = createJsonAxiosInstance()
-        console.log(currnet_opinion.userNo)
+        // console.log(currnet_opinion.userNo)
         return await axios.post('opinions/'+currnet_opinion.userNo, currnet_opinion);        
     } catch (err) {
         console.log(err);
@@ -51,7 +51,7 @@ async function $addOpinion(currnet_opinion){
 async function $updateOpinion(opinion){
     try {
         const axios = createJsonAxiosInstance()
-        console.log(opinion.userNo)
+        // console.log(opinion.userNo)
         return await axios.post('opinions/mypage/update/'+opinion.userNo, opinion);        
     } catch (err) {
         console.log(err);
@@ -62,7 +62,7 @@ async function $updateOpinion(opinion){
 async function $deleteOpinion(opinion){
     try {
         const axios = createJsonAxiosInstance()
-        console.log(opinion.userNo)
+        // console.log(opinion.userNo)
         return await axios.post('opinions/mypage/delete/'+opinion.userNo, opinion);
     } catch (err) {
         console.log(err);

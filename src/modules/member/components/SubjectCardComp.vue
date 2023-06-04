@@ -3,7 +3,6 @@
     <v-card>
       <v-row>
         <v-col cols="12">
-
           <p class="formatted-date">{{ foramtDate }} </p>
           <h4 class="mt-2">오늘의 사유</h4>
           <div class="mainbox">
@@ -26,6 +25,7 @@ export default {
 import { $postMainSubject } from '@/api/subject';
 import { ref, onMounted, nextTick } from 'vue';
 import { useSubjectStore } from '@/store/subject';
+import { findImage } from '@/api/index';
 
 const foramtDate = ref('')
 function formattedDate() {
@@ -76,12 +76,12 @@ function postMainSubject() {
     })
 }
 
-function findImage(subjectImg) {
-  if (subjectImg != '') {
-  const convertedPath = subjectImg.replace(/\\/g, '/');
-  return `http://localhost:8080/onedaythink/api/v1/imgfind/subjectImg?subjectImgPath=${convertedPath}`;
-  }
-}
+// function findImage(subjectImg) {
+//   if (subjectImg != '') {
+//   const convertedPath = subjectImg.replace(/\\/g, '/');
+//   return `http://localhost:8080/onedaythink/api/v1/imgfind/subjectImg?subjectImgPath=${convertedPath}`;
+//   }
+// }
 
 onMounted(async () => {
   await nextTick()

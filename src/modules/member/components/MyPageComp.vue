@@ -123,6 +123,8 @@ import { useRouter } from 'vue-router';
 
 import { format } from 'date-fns';
 
+import { findImage } from "@/api/index";
+
 const user = ref({}) // 유저정보
 const show = ref(false)
 
@@ -164,24 +166,24 @@ const month = (today.getMonth() + 1).toString().padStart(2, '0');
 const date = today.getDate().toString().padStart(2, '0');
 const yyyymmdd = `${year}${month}${date}`;
 
-// subjectImg 호출
-function findImage(subjectImg) {
-  console.log(paginatedOpinions.value)
-  console.log(subjectImg)
-  if (subjectImg) {
-    console.log(subjectImg);
-    const convertedPath = subjectImg.replace(/\\/g, '/');
-    return `http://localhost:8080/onedaythink/api/v1/imgfind/subjectImg?subjectImgPath=${convertedPath}`;
-  } else {
-    return null;
-  }
-}
+// // subjectImg 호출
+// function findImage(subjectImg) {
+//   // console.log(paginatedOpinions.value)
+//   // console.log(subjectImg)
+//   if (subjectImg) {
+//     // console.log(subjectImg);
+//     const convertedPath = subjectImg.replace(/\\/g, '/');
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/subjectImg?subjectImgPath=${convertedPath}`;
+//   } else {
+//     return null;
+//   }
+// }
 
 // userImg 호출
 function findUserImage(userImg) {
-  console.log(userImg)
+  // console.log(userImg)
   if (userImg) {
-    console.log(userImg);
+    // console.log(userImg);
     const convertedPath = userImg.replace(/\\/g, '/');
     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
   } else {
@@ -258,7 +260,7 @@ async function share(opinion) {
     buttonLabel.value = '생각을 숨길래요';  // 공유를 활성화 할 경우 이 문구로 변경
   }
   try {
-    console.log(opinion)
+    // console.log(opinion)
     await $updateOpinion(opinion)
     getMyOpinionList(opinion.userNo, opinion.createAt)
 
@@ -283,7 +285,7 @@ async function opDelete(opinion) {
     opinion.withdraw = 'n';
   }
   try {
-    console.log(opinion)
+    // console.log(opinion)
     await $deleteOpinion(opinion)
     getMyOpinionList(opinion.userNo, opinion.createAt)
 

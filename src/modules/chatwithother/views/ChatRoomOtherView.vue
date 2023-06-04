@@ -63,14 +63,24 @@
               <template v-if="message.content != 'messageDate'">
                 <v-col cols="12">
                   <!-- Removed the v-divider element -->
-                  <div class="d-flex" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">
+                  <div class="d-flex" style="align-items: center;" :class="message.sender.nickname === myName ? 'justify-end' : 'justify-start'">
+                    <div v-if="message.sender.nickname !== myName">
+                      <v-img class="align-end text-white" :src=findImage(message.userImgPath) cover rounded
+                            style="border-radius: 50%; width: 40px; height: 40px;">
+                      </v-img>
+                    </div>
                     <div>
                       <v-card class="mx-2"
                         :class="message.sender.nickname === myName ? 'chat-message-yellow' : 'chat-message-mint'" tile>
-                        <v-card-text>
+                        <v-card-text class="text-box">
                           {{ message.content }}
                         </v-card-text>
                       </v-card>
+                    </div>
+                    <div v-if="message.sender.nickname === myName">
+                      <v-img class="align-end text-white" :src=findImage(message.userImgPath) cover rounded
+                            style="border-radius: 50%; width: 40px; height: 40px;">
+                      </v-img>
                     </div>
                   </div>
                   <div>
@@ -136,6 +146,8 @@ import { $getChatMessages } from '@/api/chat';
 import { $createReport } from "@/api/report";
 import { useSubjectStore } from "@/store/subject";
 import { format } from 'date-fns'
+import { findImage } from "@/api/index";
+
 
 const userStore = useUserStore()
 const subjectStore = useSubjectStore()
@@ -155,13 +167,14 @@ reportDialog.value = false;
 
 
 const getCurrentTime = () => {
-  const now = new Date();
-  const hours = now.getHours();
-  const minutes = now.getMinutes();
-  const ampm = hours >= 12 ? "pm" : "am";
-  const hour = hours % 12;
-  const time = `${ampm} ${hour}:${minutes < 10 ? "0" + minutes : minutes}`;
-  return time;
+  return format(new Date(), 'yyyy-MM-dd HH:mm:ss');
+
+  // const hours = now.getHours();
+  // const minutes = now.getMinutes();
+  // const ampm = hours >= 12 ? "pm" : "am";
+  // const hour = hours % 12;
+  // const time = `${ampm} ${hour}:${minutes < 10 ? "0" + minutes : minutes}`;
+  // return time;
 };
 
 async function scrollToLatestMessage() {
@@ -177,10 +190,10 @@ function openReportModal() {
 const showSnackbar = ref(false); // 스낵바
 
 async function createReport() {
-  console.log("신고하기 값", chatRoomNo.value, reportReason.value);
+  // console.log("신고하기 값", chatRoomNo.value, reportReason.value);
   await $createReport(chatRoomNo.value, reportReason.value)
     .then(res => {
-      console.log(res.data);
+      // console.log(res.data);
       reportDialog.value = false; // 성공 시 reportDialog 닫기
       showSnackbar.value = true; // 성공 시 Snackbar 표시
     })
@@ -195,7 +208,7 @@ function loadChatHistory() {
   $getChatMessages(chatRoomNo.value)
     .then(res => {
       chatHistory.value = res.data
-      console.log(res.data)
+      // console.log(res.data)
       // for문을 돌면서 해당 메세지의 sendUserNo 이 `나` 일 경우 오른쪽,
       // 상대방일 경우 왼쪽에 추가
       chatHistory.value.forEach(chatMsg => {
@@ -212,14 +225,16 @@ function loadChatHistory() {
             sender: { nickname: myName, avatarUrl: "" },
             content: chatMsg.chatMsgContent,
             time: formattedDate(chatMsg.chatCreateAt),
+            userImgPath : chatMsg.userImgPath
           });
         } else {
-          console.log(otherName)
+          // console.log(otherName)
           // otherName.value = chatMsg.sendNickname
           messages.value.push({
             sender: { nickname: chatMsg.sendNickname, avatarUrl: "" },
             content: chatMsg.chatMsgContent,
             time: formattedDate(chatMsg.chatCreateAt),
+            userImgPath : chatMsg.userImgPath
           });
         }
       });
@@ -273,9 +288,9 @@ function createWebSocketConnection() {
 
     // 채팅방 구독(subscribe) 요청
     subscription.value = stomp.subscribe(`/sub/chat/room/${chatRoomNo.value}`, (res) => {
-      console.log(res);
+      // console.log(res);
       const chatMsg = JSON.parse(res.body); // 구독하게 되면 받아오게 되는 메세지
-      console.log(chatMsg);
+      // console.log(chatMsg);
       const writer = chatMsg.sendNickname;
 
       let checkDate = checkedDate(chatMsg.chatCreateAt)
@@ -291,7 +306,8 @@ function createWebSocketConnection() {
         messages.value.push({
           sender: { nickname: myName, avatarUrl: "" },
           content: chatMsg.chatMsgContent,
-          time: currentTime
+          time: formattedDate(currentTime),
+          userImgPath : chatMsg.userImgPath
         });
       } else {
         otherName.value = chatMsg.sendNickname
@@ -299,17 +315,20 @@ function createWebSocketConnection() {
         messages.value.push({
           sender: { nickname: writer, avatarUrl: "" },
           content: chatMsg.chatMsgContent,
-          time: currentTime
+          time: formattedDate(currentTime),
+          userImgPath : chatMsg.userImgPath
         });
       }
       scrollToLatestMessage();
     });
 
     //3. send(path, header, message)로 메세지를 보낼 수 있음
+    const currentTime = getCurrentTime();
     const sendData = JSON.stringify({
       chatRoomNo: chatRoomNo.value,
       chatSendUserNo: userStore.getLoginUser.userNo,
-      sendNickname: myName
+      sendNickname: myName,
+      chatCreateAt: currentTime
     })
     stomp.send('/pub/chat/enter', {}, sendData)
   });
@@ -329,22 +348,23 @@ const sendMessage = () => {
   // userMessage가 비어있으면 함수를 종료합니다.
   if (userMessage.value == null || userMessage.value.trim() == "") {
     userMessage.value = ''
-    console.log(userMessage.value)
+    // console.log(userMessage.value)
     return;
 
   } else {
-    console.log(userMessage.value)
+    // console.log(userMessage.value)
     // messages 배열에 새로운 메시지를 추가합니다.
     // const currentTime = getCurrentTime();
-    console.log(myName + ":" + userMessage.value);
+    // console.log(myName + ":" + userMessage.value);
     const sendData = JSON.stringify({
       chatRoomNo: chatRoomNo.value,
       chatSendUserNo: userStore.getLoginUser.userNo,
       sendNickname: myName,
-      chatMsgContent: userMessage.value
+      chatMsgContent: userMessage.value,
+      userImgPath : userStore.getLoginUser.userImgPath
     })
     userMessage.value = '';
-    console.log(sendData)
+    // console.log(sendData)
     stomp.send('/pub/chat/message', {}, sendData)
   }
   // 스크롤을 최신 메시지로 이동시킵니다.
@@ -364,6 +384,16 @@ onBeforeUnmount(() => {
     }
 })
 
+// function findImage(userImg) {
+//   if (userImg) {
+//     // console.log(userImg);
+//     const convertedPath = userImg.replace(/\\/g, '/');
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
+//   } else {
+//     const defaultImg = 'src/main/resources/static/profileImages/default.png'
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${defaultImg}`;
+//   }
+// }
 
 </script>
 
@@ -479,6 +509,7 @@ onBeforeUnmount(() => {
   border-radius:80px;
 }
 
+<<<<<<< HEAD
 .custom-snackbar {
     background-color: #43a047; 
     color: white;  
@@ -513,6 +544,10 @@ onBeforeUnmount(() => {
   transform: translateX(-50%);
   bottom: auto !important;
   top: 50%;
+=======
+.text-box {
+  padding: 0.5rem;
+>>>>>>> e61790b84f28d3371f1047adb3853ed32b8e7340
 }
 
 </style>

@@ -87,12 +87,11 @@ const haruChatRooms = ref([])
 const haruChatStore = useHaruChatStore()
 
 // 채팅방 입장
-function goToChatRoomHaru(haruChatRoom) {
+async function goToChatRoomHaru(haruChatRoom) {
   haruChatStore.setHaruChatRoom(haruChatRoom)
   haruChatStore.setChatRoomNo(haruChatRoom.chatRoomNo)
-  console.log(haruChatRoom)
+  // console.log(haruChatRoom)
   getSelectedCahr(haruChatRoom.chatRoomNo)
-  router.push({ path: '/chatroompersona' })
 }
 
 const userStore = useUserStore()
@@ -100,7 +99,7 @@ const userStore = useUserStore()
 function getHaruChatRooms() {
   $getHaruChatRooms(userStore.getLoginUser.userNo)
     .then(res => {
-      console.log(res.data)
+      // console.log(res.data)
       haruChatRooms.value = res.data
     })
     .catch(err =>
@@ -109,14 +108,15 @@ function getHaruChatRooms() {
 }
 
 // 채팅방 입장 전 해당 채팅방과 연계되어 있는 하루봇 리스트를 조회해서 스토어에 담기
-function getSelectedCahr(chatRoomNo) {
-  $getSelectedCahr(chatRoomNo)
+async function getSelectedCahr(chatRoomNo) {
+  await $getSelectedCahr(chatRoomNo)
     .then(res => {
       const haruchatChar = res.data
       for (const h of haruchatChar) {
         h.userNo = userStore.getLoginUser.userNo
       }
       haruChatStore.setHaruchatChar(haruchatChar);
+      router.push({ path: '/chatroompersona'})
     })
     .catch(err => console.log(err))
 }
@@ -125,7 +125,7 @@ function getSelectedCahr(chatRoomNo) {
 function closeChatRoom(chatRoomNo) {
   $closeHaruChatRoom(chatRoomNo)
     .then(res => {
-      console.log(res.data)
+      // console.log(res.data)
       getHaruChatRooms()
     })
     .catch(err => console.log(err))
@@ -189,4 +189,5 @@ onMounted(async () => {
   padding: 0.5rem;
   justify-content: center;
 }
+
 </style>

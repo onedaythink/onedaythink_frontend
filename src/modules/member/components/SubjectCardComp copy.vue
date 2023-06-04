@@ -44,6 +44,7 @@ export default {
 import { $postMainSubject } from '@/api/subject';
 import { ref, onMounted, nextTick } from 'vue';
 import {useSubjectStore} from '@/store/subject';
+import { findImage } from "@/api/index";
 
 const foramtDate = ref('')
 function formattedDate() {
@@ -91,10 +92,10 @@ function postMainSubject() {
   })
 }
 
-function findImage(subjectImg) {
-  const convertedPath = subjectImg.replace(/\\/g, '/');
-  return `http://localhost:8080/onedaythink/api/v1/imgfind/subjectImg?subjectImgPath=${convertedPath}`;
-}
+// function findImage(subjectImg) {
+//   const convertedPath = subjectImg.replace(/\\/g, '/');
+//   return `http://localhost:8080/onedaythink/api/v1/imgfind/subjectImg?subjectImgPath=${convertedPath}`;
+// }
 
 onMounted( async () => {
   await nextTick()

@@ -124,8 +124,8 @@ function goToChatRoomOther(notifyDetail) {
     toNickname: userStore.getLoginUser.nickname
   }
   chatStore.setChatRoom(chatRoom)
-  console.log(notifyDetail)
-  console.log(chatRoom)
+  // console.log(notifyDetail)
+  // console.log(chatRoom)
   beForeEditNotify(notifyDetail)
   modalSwitch()
   router.push({ path: '/chatroomother' });
@@ -144,18 +144,13 @@ const subscription2 = ref(null);
 
 // WebSocket 연결 생성 함수
 function createWebSocketConnection() {
-  console.log('socket function test')
-  console.log(socket2)
   stomp2.connect({}, () => {
     stompClient2.value = stomp2;
     // 아직 읽지 않은 알림 목록 조회
-    console.log('socket test')
     loadNotifyHistory()
 
     subscription2.value = stomp2.subscribe(`/sub/notify/users/${userStore.getLoginUser.userNo}`, (res) => {
-      console.log(res);
       const msg = JSON.parse(res.body); // 구독하게 되면 받아오게 되는 메세지
-      console.log(msg);
 
       notifyList.value.push(msg)
 
@@ -175,7 +170,7 @@ const notifyList = ref([])
 function loadNotifyHistory() {
   $getNotifies(userStore.getLoginUser.userNo)
     .then(res => {
-      console.log(res.data)
+      // console.log(res.data)
       notifyList.value = res.data
     })
     .catch(err => console.log(err))
@@ -211,7 +206,7 @@ function beforeAllEditNotify() {
 function editNotify(data) {
   $editNotify(data)
     .then(res => {
-      console.log(res.data)
+      // console.log(res.data)
     })
     .catch(err => console.log(err))
 }
@@ -233,7 +228,7 @@ const openModal = ref(false)
 // modal 스위치하는 버튼
 function modalSwitch() {
   openModal.value = !openModal.value
-  console.log(openModal.value)
+  // console.log(openModal.value)
 }
 
 </script>

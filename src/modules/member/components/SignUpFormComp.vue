@@ -96,6 +96,8 @@ import { useRouter } from 'vue-router';
       userPwd: null
   })
 
+  const showPassword = ref(false)
+
   const passwordConfirmation = ref(null)
   const terms = ref(false)
 
@@ -111,11 +113,11 @@ import { useRouter } from 'vue-router';
   }
 
   function checkDuplicateId() {
-    console.log(userData)
+    // console.log(userData)
     $checkUserId(userData.value)
     .then(res => {
       if (res.data != null && res.data !='') {
-        console.log(res.data)
+        // console.log(res.data)
         checkUserId.value = false
       } else {
         checkUserId.value = true
@@ -128,7 +130,7 @@ import { useRouter } from 'vue-router';
     $checkNickname(userData.value)
     .then(res => {
       if (res.data != null && res.data !='') {
-        console.log(res.data)
+        // console.log(res.data)
         checkNickname.value = false
       } else {
         checkNickname.value = true
@@ -142,7 +144,7 @@ import { useRouter } from 'vue-router';
   const passwordValueCheck = ref(null)
   function pwdCheck() {
       passwordValueCheck.value = passwordRegex.test(userData.value.userPwd);
-      console.log(passwordValueCheck.value)
+      // console.log(passwordValueCheck.value)
   }
 
   const passwordDoubleCheck = ref(null)

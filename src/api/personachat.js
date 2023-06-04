@@ -57,8 +57,8 @@ async function $receiveFirstMsgFromChatGPT(haruchatchar){
         data["haruNo"] = haruNoList
 
 
-        console.log(haruchatchar)
-        console.log(data)
+        // console.log(haruchatchar)
+        // console.log(data)
 
         return await axios.post('haruchat/enter', data)
     } catch (err) {
