@@ -180,16 +180,16 @@ const yyyymmdd = `${year}${month}${date}`;
 // }
 
 // userImg 호출
-function findUserImage(userImg) {
-  // console.log(userImg)
-  if (userImg) {
-    // console.log(userImg);
-    const convertedPath = userImg.replace(/\\/g, '/');
-    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
-  } else {
-    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=`;
-  }
-}
+// function findUserImage(userImg) {
+//   // console.log(userImg)
+//   if (userImg) {
+//     // console.log(userImg);
+//     const convertedPath = userImg.replace(/\\/g, '/');
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
+//   } else {
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=`;
+//   }
+// }
 
 // 페이지네이션 관련 변수
 const currentPage = ref(1); // 현재 페이지 상태

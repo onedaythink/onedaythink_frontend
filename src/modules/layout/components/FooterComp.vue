@@ -15,11 +15,6 @@ export default {
 </script>
 
 <style scoped>
-@media (max-width: 420px) {
-  .white--text {
-    color: white;
-  }
-}
 .bg-D1F0EE {
     background-color: #eaf8f8;
   }
@@ -29,4 +24,14 @@ export default {
   width: 420px;
   margin: 0 auto;
 }
+
+@media (max-width: 420px) {
+  .white--text {
+    color: white;
+  }
+  .footer {
+    width: 100%;
+  }
+}
+
 </style>

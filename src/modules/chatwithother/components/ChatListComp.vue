@@ -99,9 +99,9 @@ import { useRouter } from 'vue-router';
 import {$getChatRooms, $closeChatRoom} from '@/api/chat'
 import { ref, nextTick, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useChatStore } from '@/store/chat';
-import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { findImage } from "@/api/index";
+import { getChatSocket } from '@/api/socket';
 
 const router = useRouter()
 const chatRooms = ref([])
@@ -160,7 +160,7 @@ const activeSubscriptions = [];
 
 function init(chatRoom) {
   const stompClient = ref(null);
-  const socket = new SockJS('http://localhost:8080/onedaythink/stomp/ws');
+  const socket = getChatSocket()
   const stomp = Stomp.over(socket);
 //   console.log(chatRoom.chatRoomNo);
 

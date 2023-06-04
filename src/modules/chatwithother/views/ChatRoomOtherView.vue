@@ -129,7 +129,6 @@ export default {
 
 <script setup>
 import { ref, nextTick, onMounted, onBeforeUnmount} from "vue";
-import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useUserStore } from "@/store/user";
 import { useChatStore } from "@/store/chat";
@@ -138,7 +137,7 @@ import { $createReport } from "@/api/report";
 import { useSubjectStore } from "@/store/subject";
 import { format } from 'date-fns'
 import { findImage } from "@/api/index";
-
+import { getChatSocket } from "@/api/socket";
 
 const userStore = useUserStore()
 const subjectStore = useSubjectStore()
@@ -239,19 +238,9 @@ const stompClient = ref(null);
 
 // 채팅방에 대한 구독(subscribe)을 담을 ref 변수
 const subscription = ref(null);
-
-const socket = new SockJS('http://localhost:8080/onedaythink/stomp/ws');
+const socket = getChatSocket()
 const stomp = Stomp.over(socket);
 
-
-// function findOtherName(chatRoom) {
-//   console.log(chatRoom)
-//   if (myName == chatRoom.fromNickname) {
-//     otherName.value = chatRoom.toNickname
-//   } else {
-//     otherName.value = chatRoom.fromNickname
-//   }
-// }
 
 function formattedDate(createAt) {
   return format(new Date(createAt), 'HH:mm');

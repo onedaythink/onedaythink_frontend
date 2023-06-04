@@ -7,7 +7,7 @@
         
         <v-btn icon size="70" v-bind="props" @click="openFileInput(); editProfile = true">
           <v-avatar v-if="userData.userImgPath && userData.userImgPath !== ''" size="70">
-            <img :src="findUserImage(userData.userImgPath)"   style="object-fit: cover; width: 100%; height: 100%;" >
+            <img :src="findImage(userData.userImgPath)"   style="object-fit: cover; width: 100%; height: 100%;" >
           </v-avatar>
         </v-btn>
         <input type="file" accept="image/png" ref="fileInput" style="display: none" @change="onFileChange">
@@ -111,6 +111,7 @@ import { $updateUser, $checkNickname, $checkEmail, $updateUserProfile } from '@/
 
 import { onMounted, nextTick, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { findImage } from '@/api/index';
 
 // 로그인 정보
 const userStore = useUserStore()
@@ -142,16 +143,16 @@ const checkEmail = ref(null)
 const snackbar = ref(false); // 스낵바
 
 // userImg 호출
-function findUserImage(userImg) {
-  // console.log(userImg)
-  if (userImg) {
-    // console.log(userImg);
-    const convertedPath = userImg.replace(/\\/g, '/');
-    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
-  } else {
-    return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=`;
-  }
-}
+// function findUserImage(userImg) {
+//   // console.log(userImg)
+//   if (userImg) {
+//     // console.log(userImg);
+//     const convertedPath = userImg.replace(/\\/g, '/');
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
+//   } else {
+//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=`;
+//   }
+// }
 
 // 프로필 이미지 변경
 const editProfile = ref(false)

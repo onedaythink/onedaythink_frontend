@@ -105,7 +105,7 @@ export default {
 
 <script setup>
 
-import SockJS from 'sockjs-client';
+import { getNotifySocket } from '@/api/socket';
 import Stomp from 'stompjs';
 import { useUserStore } from '@/store/user';
 import { ref, nextTick, onBeforeMount, onMounted } from 'vue';
@@ -135,9 +135,8 @@ function goToChatRoomOther(notifyDetail) {
 const userStore = useUserStore()
 
 const logout = userStore.logout
-
 const stompClient2 = ref(null);
-const socket2 = new SockJS('http://localhost:8080/onedaythink/stomp/notify/ws');
+const socket2 = getNotifySocket()
 const stomp2 = Stomp.over(socket2);
 // 채팅방에 대한 구독(subscribe)을 담을 ref 변수
 const subscription2 = ref(null);

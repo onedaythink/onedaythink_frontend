@@ -6,8 +6,6 @@
           <br><br><br>
           <v-img
             :width="250"
-            aspect-ratio="1/1"
-            cover
             src="~@/assets/하루생각로고메모장.png"
           ></v-img>
           <router-view></router-view>
@@ -37,6 +35,12 @@ export default {
   background-image: url("~@/assets/backgroundpaper.png");
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+@media (max-width: 420px) {
+  #loginback {
+    width: 100%;
+  }
 }
 
 .v-img {

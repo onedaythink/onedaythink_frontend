@@ -1,5 +1,5 @@
 <template>
-  <v-card-text class="main-text text-center">
+  <v-card-text class="main-text text-center ">
     <v-typography class="text-body" variant="body1">
       <span class="double-quotes">"</span><br />저희 하루 생각에 방문해주셔서
       감사합니다.<br />

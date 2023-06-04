@@ -117,13 +117,13 @@ export default {
 </script>
 <script setup>
 import { ref, nextTick, onMounted, onBeforeUnmount,computed} from "vue";
-import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { useUserStore } from '@/store/user';
 import { useHaruChatStore } from '@/store/haruchat';
 import { useSubjectStore } from "@/store/subject";
 import { $getHaruChatMessages, $sendMessage} from '@/api/haruChat';
 import { findImage } from "@/api/index";
+import { getHaruChatSocket } from "@/api/socket";
 
 const userStore = useUserStore()
 const myName = userStore.getLoginUser.nickname
@@ -150,7 +150,7 @@ const getCurrentTime = () => {
   };
 
 const stompClient = ref(null);
-const socket = new SockJS('http://localhost:8080/onedaythink/stomp/haru/ws');
+const socket = getHaruChatSocket()
 const stomp = Stomp.over(socket);
 const subscription = ref(null);
 
