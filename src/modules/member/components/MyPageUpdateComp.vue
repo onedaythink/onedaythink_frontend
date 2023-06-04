@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container style="position: relative;">
     <h2>정보수정 페이지</h2><br>
         <br>
     <div class="profile-image-container">
@@ -7,7 +7,7 @@
         
         <v-btn icon size="70" v-bind="props" @click="openFileInput(); editProfile = true">
           <v-avatar v-if="userData.userImgPath && userData.userImgPath !== ''" size="70">
-            <img :src="findUserImage(userData.userImgPath)"   style="object-fit: cover; width: 100%; height: 100%;" >
+            <img :src="findUserImage(userData.userImgPath)" style="object-fit: cover; width: 100%; height: 100%;" >
           </v-avatar>
         </v-btn>
         <input type="file" accept="image/png" ref="fileInput" style="display: none" @change="onFileChange">
@@ -87,10 +87,14 @@
     ></v-text-field>
 
     <div v-if="passwordDoubleCheck != null && !passwordDoubleCheck">비밀번호가 일치하지 않습니다.</div>
-
     <v-btn class="submit" color="info" @click="updateUser()">확인</v-btn>
-    
+  
   </v-container>
+
+  <div class="custom-snackbar" v-show="snackbar" @click="hideSnackbarAndRedirect" transition="slide">
+    회원정보 수정이 <br>
+    완료되었습니다.
+  </div>
 </template>
 
 <script>
@@ -178,12 +182,12 @@ async function onFileChange(e) {
   reader.readAsDataURL(selectedFile.value);
 
   try {
-    const response = await $updateUserProfile(formData);   // API를 호출하여 파일을 업로드합니다.
-    if (response.data && response.data.userOriginImg) { // 응답에 data 속성과 filename 속성이 있는지 확인합니다.
+    const response = await $updateUserProfile(formData); // file 업로드 api 호출
+    if (response.data && response.data.userOriginImg) {
 
-      // 응답의 data.userOriginImg 새 이미지 파일의 이름을 포함한다고 가정합니다.
-      // 사용자 데이터의 userImgOrigin 값을 새 파일 이름으로 설정합니다.
-      // userImgPath의 값은 server response로부터 받은 새로운 이미지 경로로 수정합니다.
+      // 응답의 data.userOriginImg 새 이미지 파일의 이름을 포함
+      // 사용자 데이터의 userImgOrigin 값을 새 파일 이름으로 설정
+      // userImgPath의 값은 server response로부터 받은 새로운 이미지 경로로 수정
       const imgData = { 
         userOriginImg : response.data.userOriginImg, 
         userImgPath : response.data.userImgPath
@@ -222,14 +226,6 @@ function imgRollbackDefault() {
       }
   userStore.setLoginUserImg(imgData)
 }
-
-// function isClear() {
-//   if (checkNickname.value && passwordValueCheck.value && passwordDoubleCheck.value && checkEmail.value) {
-//     return true;
-//   } else {
-//     return false;
-//   }
-// }
 
 function checkDuplicateNickname() {
     // 닉네임 중복 체크 로직 구현
@@ -290,6 +286,12 @@ function blankCheckInputFormData(formData, label, data){
   }
 }
 
+// 스낵바 클릭시 숨김 기능.
+function hideSnackbarAndRedirect() {
+  snackbar.value = false;
+  router.push('/mypage');
+}
+
 async function updateUser() {
 
   // console.log(newUserUpdate.value)
@@ -303,23 +305,34 @@ async function updateUser() {
   blankCheckInputFormData(formData,'userImgPath', userData.userImgPath)
   // console.log(newUserUpdate.value)
   
-  $updateUser(formData)
-  .then(res => {
-    if(res.data != null && res.data != ''){
-      getUser(res.data)
-      snackbar.value = "회원정보가 수정 되었습니다.";
-      setTimeout(() => {
-        snackbar.value = false;
-      }, 2000);
-      
-      window.alert("회원정보수정에 성공했습니다.")
-      router.push('/mypage')
+// $updateUser(formData)
+//   .then(res => {
+//     if(res.data != null && res.data != ''){
+//       getUser(res.data)
 
-    } else {
-      console.error('회원정보 수정 중 오류 발생');
-    }
-  })
-  .catch(err => console.log(err))
+//       snackbar.value = true; // 스낵바 표시
+//       setTimeout(() => {
+//         snackbar.value = false; // 2초 후에 스낵바 숨김
+//       }, 2000);
+//       // window.alert("회원정보수정에 성공했습니다.")
+//       router.push('/mypage')
+//     } else {
+//       console.error('회원정보 수정 중 오류 발생');
+//     }
+//   })
+//   .catch(err => console.log(err))
+// }
+
+$updateUser(formData)
+    .then(res => {
+      if(res.data != null && res.data != ''){
+        getUser(res.data)
+        snackbar.value = true;
+      } else {
+        console.error('회원정보 수정 중 오류 발생');
+      }
+    })
+    .catch(err => console.log(err))
 }
 
 onMounted(async () => {
@@ -359,16 +372,21 @@ onMounted(async () => {
 
 /* 스낵바 설정 */
 .custom-snackbar {
-  background-color: #43a047; 
-  color: white;  
-  position: absolute;  
-  bottom: 50px;  
-  left: 50%; 
-  transform: translate(-50%, 0); 
-  padding: 16px;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  z-index: 1000; 
+    background-color: #43a047; 
+    color: white;  
+    position: absolute;  
+    top: 50%;  
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    padding: 16px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    z-index: 1000; 
+    white-space: pre-wrap; 
+    text-align: center; 
+    display: flex;       
+    align-items: center; 
+    justify-content: center; 
 }
 
 .slide-enter-active, .slide-leave-active {
