@@ -7,7 +7,7 @@
           <h4 class="mt-2">오늘의 사유</h4>
           <div class="mainbox">
             <v-img class="mt-5" :src="findImage(subjectImg)" width="256px" height="256px" contain></v-img>
-            <h1 class="  subject-text mt-3">"{{ subjectText }}"</h1>
+            <h1 class=" subject-text mt-3">"{{ subjectText }}"</h1>
           </div>
         </v-col>
       </v-row>

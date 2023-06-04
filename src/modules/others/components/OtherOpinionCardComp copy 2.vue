@@ -6,6 +6,8 @@
                     <v-img class="align-end text-white" src="https://cdn.vuetifyjs.com/images/cards/docks.jpg" cover rounded
                         style="border-radius: 50%; width: 70px; height: 70px;">
                     </v-img>
+                </v-col>
+                <v-col cols="3">
                     <v-card-text>
                         {{ opinion.nickname }}
                         <br>
@@ -39,6 +41,8 @@
                     <v-img class="align-end text-white" src="https://cdn.vuetifyjs.com/images/cards/docks.jpg" cover rounded
                         style="border-radius: 50%; width: 70px; height: 70px;">
                     </v-img>
+                </v-col>
+                <v-col cols="3">
                     <v-card-text>
                         하루봇
                         <br>

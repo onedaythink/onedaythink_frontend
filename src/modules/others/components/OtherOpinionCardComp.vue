@@ -3,12 +3,13 @@
         <v-card v-for="(opinion, index) in opinion_list" :key="index">
             <v-row>
                 <v-col cols="3" class="dsssss">
-                    <v-img class="align-end text-white xxx" :src=findImage(opinion.userImgPath) cover rounded>
-                    </v-img>
+                    <div>
+                        <v-img class="align-end text-white xxx" :src=findImage(opinion.userImgPath) cover rounded>
+                        </v-img>
+                    </div>
                     <v-card-text>
                         {{ opinion.nickname }}
                         <br>
-
                         <v-icon color="pink" style="font-size: 12px;">mdi-heart</v-icon> {{ opinion.likeCount }}
                     </v-card-text>
                 </v-col>
@@ -173,6 +174,7 @@ onMounted(async () => {
     margin-bottom: 20px;
     z-index: 1000;
     width: calc(70%);
+    text-align: center;
     /* margin-left: -10px;
     margin-right: -10px; */
 }
@@ -200,6 +202,7 @@ onMounted(async () => {
     flex-direction: column;
     align-items: center;
     text-align: center;
+    margin: auto 0;
 }
 
 .xxx {
@@ -207,4 +210,5 @@ onMounted(async () => {
     width: 50px;
     height: 50px
 }
+
 </style>

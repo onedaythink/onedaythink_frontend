@@ -7,7 +7,7 @@
           <v-textarea id="mythink" name="input-7-1" label="나의 생각" auto-grow v-model="op"></v-textarea>
         </div>
         <v-row>
-          <v-checkbox :checked="opinion.isPublic === 'y'" @change="updateIsPublic" label="타인과 공유"></v-checkbox>
+          <v-checkbox :checked="opinion.isPublic == 'y'" @change="updateIsPublic" label="타인과 공유"></v-checkbox>
           <v-btn color="light-blue-lighten-5" class="mx-auto mr-2" @click="save">저장</v-btn>
         </v-row>
         <br>
@@ -65,15 +65,18 @@ const year = today.getFullYear();
 const month = (today.getMonth() + 1).toString().padStart(2, '0');
 const date = today.getDate().toString().padStart(2, '0');
 const yyyymmdd = `${year}${month}${date}`;
+
 const opinion = ref({
   opinion: '',
   createAt: yyyymmdd,
-  isPublic: 'n',
+  isPublic: 'n'
 });
+
 const op = ref('');
 const myOpinion = ref({
-  opinion: ''
+  opinion : ''
 });
+
 const API_KEY = process.env.VUE_APP_GPT_API_KEY;
 const { Configuration, OpenAIApi } = require('openai');
 const opHelper = ref('');
@@ -107,11 +110,16 @@ function save() {
     });
 }
 
+function setOpinionPublic(data) {
+  opinion.value.isPublic = data.isPublic
+}
+
 async function getMyOpinion() {
   await $getOpinion(userStore.getLoginUser.userNo, yyyymmdd)
     .then((res) => {
       if (res.data != null || res.data != '') {
         myOpinion.value = res.data;
+        setOpinionPublic(res.data)
       }
       op.value = myOpinion.value.opinion;
     })
@@ -154,6 +162,8 @@ async function helper() {
 onMounted(async () => {
   await nextTick()
   getMyOpinion()
+  console.log(opinion.value)
+  console.log(myOpinion.value)
 });
 
 </script>

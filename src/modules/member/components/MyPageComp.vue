@@ -11,7 +11,7 @@
             <v-btn icon size="70" v-bind="props">
               <v-avatar size="70">
                 <img 
-                  :src="findUserImage(user.userImgPath)" 
+                  :src="findImage(user.userImgPath)" 
                   class="rounded-circle" 
                   style="object-fit: cover; width: 100%;"
                 >
@@ -100,7 +100,8 @@
       ></v-pagination>
     </template>
     <template v-else>
-      <div>작성한 의견이 존재하지 않습니다.</div>
+      <div style="text-align: center; color: gray;">Loading...</div>
+      <!-- <div>작성한 의견이 존재하지 않습니다.</div> -->
     </template>
   </v-container>
 </template>

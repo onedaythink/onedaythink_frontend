@@ -13,7 +13,7 @@ function createFlaskAxiosInstance() {
   const BASE_URL = process.env.VUE_APP_BASE_URL_IP_ADDRESS;
   return axios.create({
       withCredentials: true,
-      baseURL: `http://${BASE_URL}:5000/`
+      baseURL: `http://${BASE_URL}:5555/`
   })
 }
 
