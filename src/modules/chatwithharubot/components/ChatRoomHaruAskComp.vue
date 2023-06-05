@@ -16,7 +16,7 @@
             <i></i>
             <i></i>
           </div>
-          <p style="color:#877b78; font-size: 4px;">하루가 질문에 대한 대답을 고민하고 있습니다. <br><span >{{ test_text }}</span></p>
+          <p style="color:#877b78; font-size: 13px;">하루가 질문에 대한 대답을 고민하고 있습니다. <br><span >{{ test_text }}</span></p>
       </div>
     <v-card>  
       <v-card-actions class="topic-btn">
@@ -263,10 +263,10 @@ async function receiveMessage(msg) {
   position: fixed;
   left: 50%;
   top: 50%;
-  z-index: 100;
+  z-index: 100; 
   transform: translate(-50%, -50%);
   padding: 20px;
-  width: 400px;
+  width: 300px;
   text-align: center;
   background: #fffeef;
   box-shadow: 0 3px 0 rgba(0, 0, 0, .2);

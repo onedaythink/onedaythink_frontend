@@ -224,7 +224,7 @@ function loadChatHistory() {
             sender: { nickname: myName, avatarUrl: "" },
             content: chatMsg.chatMsgContent,
             time: formattedDate(chatMsg.chatCreateAt),
-            userImgPath : chatMsg.userImgPath
+            userImgPath : userStore.getLoginUser.userImgPath
           });
         } else {
           // console.log(otherName)
@@ -270,7 +270,7 @@ function createWebSocketConnection() {
     } else {
       otherName.value = chatStore.getChatRoom.fromNickname
     }
-
+    console.log(myName, otherName.value)
     // 과거의 채팅 기록 조회
     loadChatHistory()
 
@@ -296,7 +296,7 @@ function createWebSocketConnection() {
           sender: { nickname: myName, avatarUrl: "" },
           content: chatMsg.chatMsgContent,
           time: formattedDate(currentTime),
-          userImgPath : chatMsg.userImgPath
+          userImgPath : userStore.getLoginUser.userImgPath
         });
       } else {
         otherName.value = chatMsg.sendNickname

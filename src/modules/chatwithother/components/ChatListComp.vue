@@ -6,7 +6,7 @@
                     <v-col cols="3" class="chat-user-img"> 
                         <template v-if="chatRoom.fromUserNo == userStore.getLoginUser.userNo">
                             <v-img class="align-end text-white" :src=findImage(chatRoom.toUserImgPath) cover rounded
-                            style="border-radius: 50%; width: 50px; height: 50px; margin-top: 20px;">
+                            style="border-radius: 50%; width: 50px; max-height: 50px; margin-top: 20px;">
                             </v-img>
                             <v-card-text>
                                 {{ chatRoom.toNickname }}
@@ -14,7 +14,7 @@
                         </template>
                         <template v-else>
                             <v-img class="align-end text-white" :src=findImage(chatRoom.fromUserImgPath) cover rounded
-                              style="border-radius: 50%; width: 50px; height: 50px; margin-top: 20px;">
+                              style="border-radius: 50%; width: 50px; max-height: 50px; margin-top: 20px;">
                            </v-img>
                            <v-card-text>
                                 {{ chatRoom.fromNickname }}
@@ -35,15 +35,18 @@
                 </template>
                 <template v-else>
                     <v-col cols="3" class="chat-user-img">
-                        <v-img class="align-end text-white" :src=findImage(chatRoom.fromUserImgPath) cover rounded
-                            style="border-radius: 50%; width: 50px; height: 50px;  margin-top: 20px;">
-                        </v-img>
                         <template v-if="chatRoom.fromUserNo == userStore.getLoginUser.userNo">
+                            <v-img class="align-end text-white" :src=findImage(chatRoom.toUserImgPath) cover rounded
+                                style="border-radius: 50%; width: 50px; height: 50px;  margin-top: 20px;">
+                            </v-img>
                             <v-card-text>
                                 {{ chatRoom.toNickname }}
                             </v-card-text>
                         </template>
                         <template v-else>
+                            <v-img class="align-end text-white" :src=findImage(chatRoom.fromUserImgPath) cover rounded
+                                style="border-radius: 50%; width: 50px; height: 50px;  margin-top: 20px;">
+                            </v-img>
                             <v-card-text>
                                 {{ chatRoom.fromNickname }}
                             </v-card-text>
@@ -71,7 +74,7 @@
             </v-row>
         </v-card>
         <br>
-        <v-dialog v-model="showConfirmationDialog" max-width="500px">
+        <v-dialog v-model="showConfirmationDialog" max-width="300px">
             <v-card>
                 <v-card-title class="headline">정말로 종료하시겠습니까?</v-card-title>
                 <v-card-actions>
@@ -200,18 +203,6 @@ onBeforeUnmount(() => {
     // })
 })
 
-// userImg 호출
-// function findImage(userImg) {
-//   if (userImg) {
-//     // console.log(userImg);
-//     const convertedPath = userImg.replace(/\\/g, '/');
-//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${convertedPath}`;
-//   } else {
-//     const defaultImg = 'src/main/resources/static/profileImages/default.png'
-//     return `http://localhost:8080/onedaythink/api/v1/imgfind/userImg?userImgPath=${defaultImg}`;
-//   }
-// }
-
 
 // 모달 부분
 const showConfirmationDialog = ref(false)
@@ -267,7 +258,7 @@ function cancelExit() {
 }
 
 .opinion-card {
-    height: 120px;
+    min-height: 120px;
 }
 
 .chat-user-img {

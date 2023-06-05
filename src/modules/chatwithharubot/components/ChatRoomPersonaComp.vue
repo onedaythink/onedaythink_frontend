@@ -74,7 +74,7 @@
   <v-col cols="12">
 
     <!-- 하루봇 선택을 위한 모달 -->
-    <v-dialog v-model="showModal" persistent max-width="500px">
+    <v-dialog v-model="showModal" persistent max-width="300px">
       <v-card>
         <v-card-title>
 
@@ -174,8 +174,7 @@ function createWebSocketConnection() {
           time: getCurrentTime(),
           userImgPath : item.haruImgPath
         });
-
-
+        scrollToLatestMessage();
        }
       })
       // 스크롤을 가장 아랫부분으로 내리기
@@ -306,6 +305,7 @@ const sendMessage = async () => {
           userImgPath : item.haruImgPath
         });
         }
+        scrollToLatestMessage();
       })
       .catch(err => console.log(err))
       messageClear()

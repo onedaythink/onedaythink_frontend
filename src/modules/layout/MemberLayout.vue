@@ -7,9 +7,18 @@
             <v-img class="logo" src="@/assets/headerlogo.png" alt="하루생각" @click="goToHome"></v-img>
           </v-app-bar-title>
           <v-spacer></v-spacer>
-          <v-btn icon style="font-size: 16px; color:#877b78" @click="modalSwitch">
-            <v-icon>mdi-bell</v-icon>
-          </v-btn>
+          <template v-if="notifyList.length > 0">
+            <v-btn icon style="font-size: 16px; color:#877b78" @click="modalSwitch">
+              <v-badge :content="notifyList.length" color="error">
+                <v-icon>mdi-bell</v-icon>
+              </v-badge>
+            </v-btn>
+          </template>
+          <template v-else>
+            <v-btn icon style="font-size: 16px; color:#877b78" @click="modalSwitch">
+              <v-icon>mdi-bell</v-icon>
+            </v-btn>
+          </template>
           <v-app-bar-nav-icon style="font-size: 16px; color:#877b78" variant="text"
             @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         </v-app-bar>
@@ -53,7 +62,7 @@
         <template v-if="notifyList.length > 0">
           <div v-for="notify in notifyList" :key="notify">
             <v-row>
-              <v-col v-if="notify.type == 'invite'" cols="10" @click="goToChatRoomOther(notify)">
+              <v-col v-if="notify.type == 'invite' || 'message'" cols="10" @click="goToChatRoomOther(notify)">
                 {{ notify.message }}
               </v-col>
               <v-col v-else cols="10">
@@ -115,20 +124,21 @@ import { useChatStore } from '@/store/chat';
 
 const router = useRouter()
 
-function goToChatRoomOther(notifyDetail) {
+async function goToChatRoomOther(notifyDetail) {
   // 채팅방 연결
   const chatStore = useChatStore()
+  console.log(notifyDetail)
   const chatRoom = {
     chatRoomNo: notifyDetail.chatRoomNo,
     fromNickname: notifyDetail.inviteNickname,
     toNickname: userStore.getLoginUser.nickname
   }
+  beForeEditNotify(notifyDetail)
   chatStore.setChatRoom(chatRoom)
   // console.log(notifyDetail)
   // console.log(chatRoom)
-  beForeEditNotify(notifyDetail)
   modalSwitch()
-  router.push({ path: '/chatroomother' });
+  await router.push({ path:'/chatroomother'});
 }
 
 
@@ -202,8 +212,8 @@ function beforeAllEditNotify() {
   editNotify(data)
 }
 
-function editNotify(data) {
-  $editNotify(data)
+async function editNotify(data) {
+  await $editNotify(data)
     .then(res => {
       // console.log(res.data)
     })

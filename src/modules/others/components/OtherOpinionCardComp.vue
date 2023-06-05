@@ -192,7 +192,7 @@ onMounted(async () => {
 
 .like-talk-box {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-evenly;
     font-size: 5px;
 }
 

@@ -374,4 +374,8 @@ onMounted(async () => {
   opacity: 0;
   transform: translateY(30px);
 }
+
+.v-row {
+  height:120px;
+}
 </style>
